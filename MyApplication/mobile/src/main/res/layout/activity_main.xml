@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.diyar.myapplication.MainActivity">
+
+    <ImageButton
+        app:srcCompat="@drawable/writing"
+        android:id="@+id/Journal"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="fitCenter"
+        android:background="@android:color/transparent"
+        android:layout_marginLeft="127dp"
+        android:layout_alignTop="@+id/History"
+        android:layout_alignParentEnd="true" />
+
+    <ImageButton
+        app:srcCompat="@drawable/options"
+        android:id="@+id/OptionLevers"
+        android:scaleType="fitCenter"
+        android:background="@android:color/transparent"
+        android:layout_marginLeft="127dp"
+        android:layout_width="25dp"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/textView" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ManDown"
+        android:id="@+id/textView"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/Journal"
+        android:layout_marginTop="15dp" />
+
+    <ImageButton
+        app:srcCompat="@drawable/trend_chart"
+        android:id="@+id/History"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="fitCenter"
+        android:background="@android:color/transparent"
+        android:layout_marginLeft="127dp"
+        android:layout_alignTop="@+id/JoyStick"
+        android:layout_centerHorizontal="true" />
+
+    <ImageButton
+        app:srcCompat="@drawable/transparent"
+        android:id="@+id/JoyStick"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="fitCenter"
+        android:background="@android:color/transparent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/OptionLevers"
+        android:layout_marginBottom="51dp" />
+
+    <ImageButton
+        app:srcCompat="@drawable/drunk_clipart005"
+        android:id="@+id/DrunkMan"
+        android:scaleType="fitCenter"
+        android:layout_marginStart="25dp"
+        android:background="@android:color/transparent"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/Journal" />
+
+    <ImageButton
+        app:srcCompat="@drawable/glass_beer"
+        android:id="@+id/BeerGlass"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="fitCenter"
+        android:background="@android:color/transparent"
+        android:layout_marginTop="74dp"
+        android:layout_below="@+id/OptionLevers"
+        android:layout_alignStart="@+id/History" />
+
+</RelativeLayout>
