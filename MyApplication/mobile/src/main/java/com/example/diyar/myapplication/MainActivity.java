@@ -32,5 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //starting game activity
         startActivity(new Intent(this, OldMainActivity.class));
     }
+
+
 }
 
