@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
 
         //starting game activity
-        startActivity(new Intent(this, OldMainActivity.class));
+        startActivity(new Intent(this, GameMenuActivity.class));
     }
 
 
