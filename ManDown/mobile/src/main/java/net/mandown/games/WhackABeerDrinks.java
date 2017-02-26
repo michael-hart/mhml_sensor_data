@@ -1,6 +1,5 @@
-package com.example.diyar.myapplication;
+package net.mandown.games;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -9,10 +8,9 @@ import android.util.DisplayMetrics;
 import android.os.Handler;
 import android.os.SystemClock;
 
+import com.example.diyar.myapplication.R;
+
 import java.util.Random;
-
-
-import static java.security.AccessController.getContext;
 
 /**
  * Created by Santiago on 2/10/2017.

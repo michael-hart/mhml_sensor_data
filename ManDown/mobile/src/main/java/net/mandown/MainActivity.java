@@ -1,4 +1,4 @@
-package com.example.diyar.myapplication;
+package net.mandown;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 
-import com.google.android.gms.games.Game;
+import com.example.diyar.myapplication.R;
+
+import net.mandown.games.GameMenuActivity;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{

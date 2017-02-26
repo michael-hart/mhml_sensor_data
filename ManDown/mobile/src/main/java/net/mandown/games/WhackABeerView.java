@@ -1,4 +1,4 @@
-package com.example.diyar.myapplication;
+package net.mandown.games;
 
 /**
  * Created by Santiago on 2/5/2017.
@@ -16,6 +16,8 @@ import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 import android.graphics.Color;
 import android.os.Handler;
+
+import com.example.diyar.myapplication.R;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;

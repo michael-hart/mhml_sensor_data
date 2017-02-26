@@ -1,4 +1,4 @@
-package com.example.diyar.myapplication;
+package net.mandown;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

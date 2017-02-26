@@ -1,13 +1,13 @@
-package com.example.diyar.myapplication;
+package net.mandown.games;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
+
+import com.example.diyar.myapplication.R;
 
 public class GameMenuActivity extends AppCompatActivity implements View.OnClickListener{
 

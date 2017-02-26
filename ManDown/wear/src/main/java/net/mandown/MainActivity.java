@@ -1,9 +1,11 @@
-package com.example.diyar.myapplication;
+package net.mandown;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.widget.TextView;
+
+import com.example.diyar.myapplication.R;
 
 public class MainActivity extends Activity {
 

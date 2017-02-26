@@ -1,4 +1,4 @@
-package com.example.diyar.myapplication;
+package net.mandown.games;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 
-public class TightropeWaiterMenuActivity extends AppCompatActivity implements View.OnClickListener{
+import com.example.diyar.myapplication.R;
+
+public class WhackABeerMenuActivity extends AppCompatActivity implements View.OnClickListener{
 
     //image button
     private ImageButton buttonPlay;
@@ -15,7 +17,7 @@ public class TightropeWaiterMenuActivity extends AppCompatActivity implements Vi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tightrope_waiter_menu);
+        setContentView(R.layout.activity_whack_a_beer_menu);
 
         //setting the orientation to landscape
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -32,7 +34,7 @@ public class TightropeWaiterMenuActivity extends AppCompatActivity implements Vi
 
         if(v==buttonPlay){
             //starting game activity
-            startActivity(new Intent(this, TightropeWaiterGameActivity.class));
+            startActivity(new Intent(this, WhackABeerGameActivity.class));
         }
 
     }

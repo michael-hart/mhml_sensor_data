@@ -1,4 +1,4 @@
-package com.example.diyar.myapplication;
+package net.mandown.games;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,18 +6,16 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.example.diyar.myapplication.R;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Created by Santiago on 2/26/2017.
