@@ -2,14 +2,12 @@ package com.example.diyar.myapplication;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 
-public class OldMainActivity extends AppCompatActivity implements View.OnClickListener{
+public class TightropeWaiterMenuActivity extends AppCompatActivity implements View.OnClickListener{
 
     //image button
     private ImageButton buttonPlay;
@@ -17,7 +15,7 @@ public class OldMainActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.oldactivity_main);
+        setContentView(R.layout.activity_tightrope_waiter_menu);
 
         //setting the orientation to landscape
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -32,7 +30,10 @@ public class OldMainActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
 
-        //starting game activity
-        startActivity(new Intent(this, GameActivity.class));
+        if(v==buttonPlay){
+            //starting game activity
+            startActivity(new Intent(this, TightropeWaiterGameActivity.class));
+        }
+
     }
 }
