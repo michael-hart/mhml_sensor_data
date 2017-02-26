@@ -66,7 +66,7 @@ class Drink{
     }
 }
 
-public class Drinks {
+public class WhackABeerDrinks {
     //Bitmap to get character from image
     private Bitmap boom_bm;
 
@@ -103,7 +103,7 @@ public class Drinks {
     private int max_speed_lvl;
 
     //constructor
-    public Drinks(Callback _observer, Context context, DisplayMetrics _dm, int init_pos_x, int init_pos_y) {
+    public WhackABeerDrinks(Callback _observer, Context context, DisplayMetrics _dm, int init_pos_x, int init_pos_y) {
 
         handler  = new Handler();
 

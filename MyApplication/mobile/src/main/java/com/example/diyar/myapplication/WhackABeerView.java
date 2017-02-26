@@ -4,7 +4,6 @@ package com.example.diyar.myapplication;
  * Created by Santiago on 2/5/2017.
  */
 import android.app.Activity;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,13 +17,12 @@ import android.view.SurfaceHolder;
 import android.graphics.Color;
 import android.os.Handler;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class GameView extends SurfaceView implements Drinks.Callback, Runnable {
+public class WhackABeerView extends SurfaceView implements WhackABeerDrinks.Callback, Runnable {
 
     volatile boolean playing;
     private Thread gameThread = null;
@@ -56,8 +54,7 @@ public class GameView extends SurfaceView implements Drinks.Callback, Runnable {
     int heart3_pos_y;
 
     //adding the player to this class
-    //private Player player;
-    private Drinks[] drinks;
+    private WhackABeerDrinks[] drinks;
     private Handler handler;
     private Random rand;
     private int wait_time;
@@ -80,7 +77,7 @@ public class GameView extends SurfaceView implements Drinks.Callback, Runnable {
     private OutputStreamWriter file_out;
     private Callback observer;
 
-    public GameView(Callback _observer, Context context) {
+    public WhackABeerView(Callback _observer, Context context) {
         super(context);
         observer=_observer;
 
@@ -114,13 +111,12 @@ public class GameView extends SurfaceView implements Drinks.Callback, Runnable {
         heart3_pos_y= dm.heightPixels/70;
 
         //initializing player object
-        //player = new Player(context);
-        drinks = new Drinks[5];
-        drinks[0] = new Drinks(this, context,dm,buck1_pos_x,buck1_pos_y);
-        drinks[1] = new Drinks(this, context,dm,buck2_pos_x,buck2_pos_y);
-        drinks[2] = new Drinks(this, context,dm,buck3_pos_x,buck3_pos_y);
-        drinks[3] = new Drinks(this, context,dm,buck4_pos_x,buck4_pos_y);
-        drinks[4] = new Drinks(this, context,dm,buck5_pos_x,buck5_pos_y);
+        drinks = new WhackABeerDrinks[5];
+        drinks[0] = new WhackABeerDrinks(this, context,dm,buck1_pos_x,buck1_pos_y);
+        drinks[1] = new WhackABeerDrinks(this, context,dm,buck2_pos_x,buck2_pos_y);
+        drinks[2] = new WhackABeerDrinks(this, context,dm,buck3_pos_x,buck3_pos_y);
+        drinks[3] = new WhackABeerDrinks(this, context,dm,buck4_pos_x,buck4_pos_y);
+        drinks[4] = new WhackABeerDrinks(this, context,dm,buck5_pos_x,buck5_pos_y);
 
 
         //initializing drawing objects
