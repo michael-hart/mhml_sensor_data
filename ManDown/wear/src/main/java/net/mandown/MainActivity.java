@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.widget.TextView;
 
-import com.example.diyar.myapplication.R;
+import net.mandown.R;
 
 public class MainActivity extends Activity {
 

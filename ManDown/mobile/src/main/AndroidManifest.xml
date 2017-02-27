@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.diyar.myapplication">
+    package="net.mandown">
 
     <application
         android:allowBackup="true"
@@ -11,17 +11,14 @@
         <activity android:name="net.mandown.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".OldMainActivity" />
-        <activity android:name=".GameActivity" />
-        <activity android:name=".GameMenuActivity" />
-        <activity android:name=".WhackABeerMenuActivity" />
-        <activity android:name=".TightropeWaiterMenuActivity" />
-        <activity android:name=".WhackABeerGameActivity" />
-        <activity android:name=".TightropeWaiterGameActivity"></activity>
+        <activity android:name=".games.GameMenuActivity" />
+        <activity android:name=".games.WhackABeerMenuActivity" />
+        <activity android:name=".games.WhackABeerGameActivity" />
+        <activity android:name=".games.TightropeWaiterMenuActivity" />
+        <activity android:name=".games.TightropeWaiterGameActivity" />
     </application>
 
 </manifest>

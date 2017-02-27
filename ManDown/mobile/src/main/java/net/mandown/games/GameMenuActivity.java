@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.diyar.myapplication.R;
+import net.mandown.R;
 
 public class GameMenuActivity extends AppCompatActivity implements View.OnClickListener{
 

@@ -8,7 +8,7 @@ import android.util.DisplayMetrics;
 import android.os.Handler;
 import android.os.SystemClock;
 
-import com.example.diyar.myapplication.R;
+import net.mandown.R;
 
 import java.util.Random;
 

@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.diyar.myapplication.R;
+import net.mandown.R;
 
 public class TightropeWaiterGameActivity extends AppCompatActivity implements TightropeWaiterView.Callback, View.OnClickListener{
 

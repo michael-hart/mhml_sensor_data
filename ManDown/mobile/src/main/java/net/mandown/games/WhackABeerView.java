@@ -17,7 +17,7 @@ import android.view.SurfaceHolder;
 import android.graphics.Color;
 import android.os.Handler;
 
-import com.example.diyar.myapplication.R;
+import net.mandown.R;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;

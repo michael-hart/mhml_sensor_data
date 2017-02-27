@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.diyar.myapplication.R;
+import net.mandown.R;
 
 public class WhackABeerGameActivity extends AppCompatActivity implements WhackABeerView.Callback, View.OnClickListener{
 

@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 
-import com.example.diyar.myapplication.R;
+import net.mandown.R;
 
 public class WhackABeerMenuActivity extends AppCompatActivity implements View.OnClickListener{
 
