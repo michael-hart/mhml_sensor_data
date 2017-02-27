@@ -1,10 +1,13 @@
 package net.mandown.db;
 
 import android.app.IntentService;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 
 import net.mandown.R;
+import net.mandown.db.PassiveDataReaderContract.PassiveDataEntry;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -15,8 +18,19 @@ import net.mandown.R;
  */
 public class DBService extends IntentService {
 
+    private SQLiteDatabase mDb;
+    private ManDownDbHelper mDbHelper;
+    private int row_id = 1;
+
     public DBService() {
         super("DBService");
+        mDbHelper = new ManDownDbHelper(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        // Close database connection
+        mDbHelper.close();
     }
 
     /**
@@ -61,7 +75,19 @@ public class DBService extends IntentService {
      * parameters. Puts passive sensor data in the SQLite database.
      */
     private void handleActionPutPassive(float accel, float gyro, float magnet) {
-        // TODO: Handle action Put Passive
-        throw new UnsupportedOperationException("Not yet implemented");
+        // Get a reference to the writable database
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        // Bung in a default ID of 1 with a user name
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(PassiveDataEntry.COLUMN_NAME_ID, row_id);
+        values.put(PassiveDataEntry.COLUMN_NAME_ACCEL, accel);
+        values.put(PassiveDataEntry.COLUMN_NAME_GYRO, gyro);
+        values.put(PassiveDataEntry.COLUMN_NAME_MAGNET, magnet);
+
+        // Insert the new row, returning the primary key value of the new row
+        long newRowId = db.insert(PassiveDataEntry.TABLE_NAME, null, values);
+
     }
 }

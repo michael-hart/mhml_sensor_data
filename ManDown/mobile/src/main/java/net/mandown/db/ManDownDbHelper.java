@@ -1,5 +1,6 @@
 package net.mandown.db;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
@@ -48,7 +49,16 @@ public class ManDownDbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_ENABLE_FOREIGN);
         db.execSQL(SQL_CREATE_USER_NAME);
         db.execSQL(SQL_CREATE_PASSIVE_DATA);
+
+        // Bung in a default ID of 1 with a user name
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(UserNameEntry.COLUMN_NAME_USER_NAME, "Joe Bloggs");
+
+        // Insert the new row, returning the primary key value of the new row
+        long newRowId = db.insert(UserNameEntry.TABLE_NAME, null, values);
     }
+
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
