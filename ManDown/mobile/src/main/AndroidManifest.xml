@@ -8,9 +8,10 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="net.mandown.MainActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -19,6 +20,10 @@
         <activity android:name=".games.WhackABeerGameActivity" />
         <activity android:name=".games.TightropeWaiterMenuActivity" />
         <activity android:name=".games.TightropeWaiterGameActivity" />
+
+        <service
+            android:name=".db.DBService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

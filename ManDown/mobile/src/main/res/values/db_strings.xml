@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- DB Service Strings -->
+    <string name="get_intoxication">net.mandown.db.get.intoxication</string>
+    <string name="put_passive">net.mandown.db.put.passive</string>
+    <string name="put_whackabeer_score">net.mandown.db.put.whackabeer.score</string>
+    <!-- RT is reaction time -->
+    <string name="put_whackabeer_rt">net.mandown.db.put.whackabeer.rt</string>
+
+    <!-- Data for put passive -->
+    <string name="passive_accel">passive.accel</string>
+    <string name="passive_gyro">passive.gyro</string>
+    <string name="passive_magnet">passive.magnet</string>
+</resources>
