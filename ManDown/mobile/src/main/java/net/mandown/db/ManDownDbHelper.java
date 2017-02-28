@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import net.mandown.db.UserNameReaderContract.UserNameEntry;
 import net.mandown.db.PassiveDataReaderContract.PassiveDataEntry;
@@ -26,11 +27,11 @@ public class ManDownDbHelper extends SQLiteOpenHelper {
 
     private static final String SQL_CREATE_PASSIVE_DATA =
             "CREATE TABLE " + PassiveDataEntry.TABLE_NAME + " (" +
-                    PassiveDataEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    PassiveDataEntry.COLUMN_NAME_ID + " INTEGER," +
-                    // Set ID to be foreign id
-                    "FOREIGN KEY ("+PassiveDataEntry.COLUMN_NAME_ID+") REFERENCES " +
-                    UserNameEntry.TABLE_NAME + "(" + UserNameEntry._ID + ")," +
+                    PassiveDataEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    PassiveDataEntry.COLUMN_NAME_ID + " INTEGER, " +
+                    // Set ID to be foreign id FIXME
+//                    "FOREIGN KEY ("+PassiveDataEntry.COLUMN_NAME_ID+") REFERENCES " +
+//                    UserNameEntry.TABLE_NAME + "(" + UserNameEntry._ID + ")," +
                     // Back to column names
                     PassiveDataEntry.COLUMN_NAME_ACCEL + " REAL," +
                     PassiveDataEntry.COLUMN_NAME_GYRO + " REAL," +
@@ -46,6 +47,9 @@ public class ManDownDbHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
     public void onCreate(SQLiteDatabase db) {
+        Log.i("ManDownDbHelper names", SQL_CREATE_USER_NAME);
+        Log.i("ManDownDbHelper passive", SQL_CREATE_PASSIVE_DATA);
+
         db.execSQL(SQL_ENABLE_FOREIGN);
         db.execSQL(SQL_CREATE_USER_NAME);
         db.execSQL(SQL_CREATE_PASSIVE_DATA);
