@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Clear Database Strings -->
+    <string name="reset_db">net.mandown.db.reset</string>
     <!-- DB Service Strings -->
     <string name="get_intoxication">net.mandown.db.get.intoxication</string>
     <string name="put_passive">net.mandown.db.put.passive</string>
