@@ -75,6 +75,7 @@ public class WhackABeerView extends SurfaceView implements WhackABeerDrinks.Call
     //gameplay variables
     private int lives;
     private int points;
+    private boolean end;
     private ArrayList<Long>  reaction_times;
     private OutputStreamWriter file_out;
     private Callback observer;
@@ -82,6 +83,7 @@ public class WhackABeerView extends SurfaceView implements WhackABeerDrinks.Call
     public WhackABeerView(Callback _observer, Context context) {
         super(context);
         observer=_observer;
+        end =false;
 
         //display metrics
         dm = new DisplayMetrics();
@@ -214,12 +216,15 @@ public class WhackABeerView extends SurfaceView implements WhackABeerDrinks.Call
     private void update() {
         //updating player position
         //player.update();
-        for(int i=0;i<drinks.length;i++){
-            drinks[i].update();
+        if(!end){
+            for(int i=0;i<drinks.length;i++){
+                drinks[i].update();
+            }
+            if(lives<=0){
+                end = true;
+            }
         }
-        if(lives<=0){
-            gameOver();
-        }
+
     }
 
     private void draw() {
@@ -264,6 +269,18 @@ public class WhackABeerView extends SurfaceView implements WhackABeerDrinks.Call
             paint.setTextSize(canvas.getHeight()/15);
             canvas.drawText("Score: "+Integer.toString(points),7*canvas.getWidth()/10,canvas.getHeight()/15,paint);
 
+            if(end){
+                paint.setColor(Color.WHITE);
+                paint.setTextSize(canvas.getHeight()/7);
+                canvas.drawText("GAME OVER",canvas.getWidth()/3,canvas.getHeight()/2,paint);
+                paint.setColor(Color.WHITE);
+                paint.setTextSize(canvas.getHeight()/7);
+                canvas.drawText("Score: "+Integer.toString(points),canvas.getWidth()/3,canvas.getHeight()*2/3,paint);
+                paint.setColor(Color.WHITE);
+                paint.setTextSize(canvas.getHeight()/10);
+                canvas.drawText("Tap to quit",canvas.getWidth()/3,canvas.getHeight()*5/6,paint);
+            }
+
             //Unlocking the canvas
             surfaceHolder.unlockCanvasAndPost(canvas);
         }
@@ -292,7 +309,11 @@ public class WhackABeerView extends SurfaceView implements WhackABeerDrinks.Call
     }
 
     public void tapped(int bucket){
-        drinks[bucket-1].click();
+        if(!end){
+            drinks[bucket-1].click();
+        }else{
+            gameOver();
+        }
     }
 
     public void gameOver(){

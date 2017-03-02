@@ -20,7 +20,7 @@ public class TightropeWaiterMenuActivity extends AppCompatActivity implements Vi
         setContentView(R.layout.activity_tightrope_waiter_menu);
 
         //setting the orientation to landscape
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         //getting the button
         buttonPlay = (ImageButton) findViewById(R.id.buttonPlay);
