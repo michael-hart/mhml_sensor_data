@@ -25,25 +25,27 @@ public class DBServiceTest {
 
     @Before
     public void setUp() throws Exception {
+
         // Get context and start service
         Context c = InstrumentationRegistry.getTargetContext();
-//        c.startService(new Intent(c, DBService.class));
         DBService.startActionResetDatabase(c);
-        // Check static instance is not filled
-        assertNotEquals(DBService.sInstance, null);
+        Thread.sleep(1000);
 
+        // Check static instance is not filled
+        assertNotNull(DBService.sInstance);
         mStaticInstance = DBService.sInstance;
     }
 
     @After
     public void tearDown() throws Exception {
         if (mStaticInstance != null) {
-            mStaticInstance.onDestroy();
+            // mStaticInstance.onDestroy();
         }
     }
 
     @Test
     public void startActionResetDatabase() throws Exception {
+        assertNotNull(mStaticInstance);
         // Insert an extra user name
         SQLiteDatabase w_db = mStaticInstance.getDbHelper().getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -53,6 +55,7 @@ public class DBServiceTest {
 
         // Reset the database
         DBService.startActionResetDatabase(InstrumentationRegistry.getTargetContext());
+        Thread.sleep(1000);
 
         // Check how many usernames there are
         SQLiteDatabase r_db = mStaticInstance.getDbHelper().getReadableDatabase();
@@ -69,6 +72,7 @@ public class DBServiceTest {
 
     @Test
     public void startActionPutPassive() throws Exception {
+        assertNotNull(mStaticInstance);
         // Assumes that getNumPassiveReadings works
         int before_readings = mStaticInstance.getNumPassiveReadings();
         assertNotNull(before_readings);
@@ -78,7 +82,7 @@ public class DBServiceTest {
         }
         int after_readings = mStaticInstance.getNumPassiveReadings();
         assertNotNull(after_readings);
-        assertTrue(after_readings == before_readings + 5);
+        assertEquals(before_readings + 5, after_readings);
     }
 
     @Test

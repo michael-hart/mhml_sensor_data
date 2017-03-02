@@ -28,14 +28,27 @@ public class DBService extends IntentService {
 
     public DBService() {
         super("DBService");
-        Log.i("DBService", "DBService created");
-        sInstance = this;
+        Log.d("DBService", "DBService created");
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        if (sInstance == null) {
+            sInstance = this;
+        }
+        if (mDbHelper == null)
+        {
+            mDbHelper = new ManDownDbHelper(getApplicationContext());
+        }
     }
 
     @Override
     public void onDestroy() {
-        // Close database connection
-        mDbHelper.close();
+        if (mDbHelper != null) {
+            // Close database connection
+            mDbHelper.close();
+        }
     }
 
     /**
@@ -77,11 +90,7 @@ public class DBService extends IntentService {
      */
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.i("DBService", "onHandleIntent called");
-        if (mDbHelper == null)
-        {
-            mDbHelper = new ManDownDbHelper(getApplicationContext());
-        }
+        Log.d("DBService", "onHandleIntent called");
         if (intent != null) {
             final String action = intent.getAction();
 
@@ -119,7 +128,7 @@ public class DBService extends IntentService {
 
         // Insert the new row, returning the primary key value of the new row
         long newRowId = db.insert(PassiveDataEntry.TABLE_NAME, null, values);
-        Log.i("DBService", String.format("Inserted (accel,gyro,magnet)=(%f,%f,%f) as row ID %d",
+        Log.d("DBService", String.format("Inserted (accel,gyro,magnet)=(%f,%f,%f) as row ID %d",
                                          accel, gyro, magnet, row_id));
     }
 
