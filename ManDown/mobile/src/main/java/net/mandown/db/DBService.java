@@ -11,6 +11,9 @@ import android.util.Log;
 import net.mandown.R;
 import net.mandown.db.PassiveDataReaderContract.PassiveDataEntry;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread. TODO Implement separate thread for service work.
@@ -33,6 +36,14 @@ public class DBService extends IntentService {
     public void onDestroy() {
         // Close database connection
         mDbHelper.close();
+    }
+
+    /**
+     * Get the instantiated database helper
+     * @return ManDownDbHelper object or null
+     */
+    public ManDownDbHelper getDbHelper() {
+        return mDbHelper;
     }
 
     public static void startActionResetDatabase(Context context) {
@@ -116,7 +127,10 @@ public class DBService extends IntentService {
      * Return all currently valid user names in a string array
      * TODO return string array and implement null checks
      */
-    public void getUserNames() {
+    public List<String> getUserNames() {
+        // Instantiate return object
+        List<String> names = new ArrayList<String>();
+
         // Get a reference to database
         SQLiteDatabase r_db = mDbHelper.getReadableDatabase();
 
@@ -125,6 +139,8 @@ public class DBService extends IntentService {
         Cursor cursor = r_db.rawQuery(countQuery, null);
         int cnt = cursor.getCount();
         cursor.close();
+
+        return names;
     }
 
     /**

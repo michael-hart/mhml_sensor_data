@@ -4,6 +4,7 @@ import android.app.Instrumentation;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.core.deps.guava.util.concurrent.ExecutionError;
 
 import org.junit.After;
 import org.junit.Before;
@@ -44,6 +45,11 @@ public class ManDownDbHelperTest {
         cursor.close();
         assertEquals(cnt, 1);
     }
+
+    /*
+    Test that database clearing is successful
+    Test that inserting row into passive is correct
+     */
 
     @After
     public void tearDown() throws Exception {
