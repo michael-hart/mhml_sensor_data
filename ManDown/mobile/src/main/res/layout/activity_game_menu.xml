@@ -33,6 +33,22 @@
             android:layout_weight="1"
             android:text="Tightrope Waiter" />
 
+        <Button
+            android:id="@+id/Button_Ring_of_Fire"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Ring of Fire" />
+
+        <Button
+            android:id="@+id/Button_Who_am_I"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Who am I?" />
+
     </LinearLayout>
 
 
