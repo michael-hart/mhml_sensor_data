@@ -16,6 +16,7 @@ import net.mandown.R;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 
 /**
  * Created by Santiago on 2/26/2017.
@@ -33,7 +34,7 @@ class TRWDrink {
 
     public TRWDrink(int _x, int _y, Bitmap _bm){
         x=_x;
-        y=_x;
+        y=_y;
         bm=_bm;
     }
 
@@ -76,6 +77,9 @@ public class TightropeWaiterView extends SurfaceView implements Runnable  {
 
     //private sensor data
     private TRWDrink drink;
+    private int zero_x;
+    private int zero_y;
+    private ArrayList<Float[]> sensordata;
 
     //gameplay variables
     private int steps;
@@ -98,15 +102,19 @@ public class TightropeWaiterView extends SurfaceView implements Runnable  {
         res = getResources();
 
         int drink_width = 250*dm.widthPixels/1280;
-        int drink_height = 400*dm.heightPixels/720;
+        int drink_height = 150*dm.heightPixels/720;
 
         background_bm = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.background),dm.widthPixels,dm.heightPixels,false);
         drink_bm = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.glass_beer),drink_width,drink_height,false);
 
 
         ///NEED SENSOR DATA HERE!!!   AND IN UPDATE!!!!!
-        drink= new TRWDrink(0,0,drink_bm);
+        zero_x = dm.widthPixels/2 - drink_width/2;
+        zero_y = dm.heightPixels/2 - drink_height/2;
 
+        drink= new TRWDrink(zero_x,zero_y,drink_bm);
+
+        sensordata = new ArrayList<>();
 
 
         try {
@@ -132,11 +140,19 @@ public class TightropeWaiterView extends SurfaceView implements Runnable  {
     private void update() {
         //updating player position
         //player.update();
-        drink.Update(10,10);
+        drink.Update(5,5);
 
-        if(drink.getX()>5000){
+        sensordata.add(new Float[]{0.0f,0.0f});
+
+        int dist = distance(drink.getX(),drink.getY());
+
+        if(dist>dm.widthPixels/2){
             gameOver();
         }
+    }
+
+    private int distance (int x, int y){
+        return (int)Math.sqrt(Math.pow(x-zero_x,2)+Math.pow(y-zero_y,2));
     }
 
     private void draw() {
