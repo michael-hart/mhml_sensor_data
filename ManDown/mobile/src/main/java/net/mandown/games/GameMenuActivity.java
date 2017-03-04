@@ -14,6 +14,8 @@ public class GameMenuActivity extends AppCompatActivity implements View.OnClickL
 
     private Button buttonWAB;
     private Button buttonTRW;
+    private Button buttonRF;
+    private Button buttonWI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,15 +24,19 @@ public class GameMenuActivity extends AppCompatActivity implements View.OnClickL
 
 
         //setting the orientation to landscape
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         //getting the button
         buttonWAB = (Button) findViewById(R.id.Button_Whack_a_beer);
         buttonTRW = (Button) findViewById(R.id.Button_Tightrope_Waiter);
+        buttonRF = (Button) findViewById(R.id.Button_Ring_of_Fire);
+        buttonWI = (Button) findViewById(R.id.Button_Who_am_I);
 
         //adding a click listener
         buttonWAB.setOnClickListener(this);
         buttonTRW.setOnClickListener(this);
+        buttonRF.setOnClickListener(this);
+        buttonWI.setOnClickListener(this);
     }
 
     @Override
@@ -44,6 +50,13 @@ public class GameMenuActivity extends AppCompatActivity implements View.OnClickL
             //starting game activity
             startActivity(new Intent(this, TightropeWaiterMenuActivity.class));
         }
-
+        if (v == buttonRF) {
+            //starting game activity
+            startActivity(new Intent(this, RingOfFireMenuActivity.class));
+        }
+        if (v == buttonWI) {
+            //starting game activity
+            startActivity(new Intent(this, WhoAmIMenuActivity.class));
+        }
     }
 }

@@ -23,7 +23,13 @@
 
         <service
             android:name=".db.DBService"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <activity android:name=".games.RingOfFireMenuActivity" />
+        <activity android:name=".games.WhoAmIMenuActivity" />
+        <activity android:name=".games.RingOfFireGameActivity" />
+        <activity android:name=".games.WhoAmIGameActivity" />
+        <activity android:name=".games.Main2Activity"></activity>
     </application>
 
 </manifest>
