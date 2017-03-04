@@ -99,17 +99,7 @@ public class SensorService extends Service implements AlarmManager.OnAlarmListen
     /* Threaded runnable to take data */
     private class SensorDataCollector implements Runnable, SensorEventListener {
 
-        private List<AccelSample> accelSamples;
-
-        private class AccelSample {
-            float mTimestamp, mX, mY, mZ;
-            public AccelSample(long timestamp, float x, float y, float z) {
-                mTimestamp = timestamp;
-                mX = x;
-                mY = y;
-                mZ = z;
-            }
-        }
+        private List<AccelerometerSample> accelSamples;
 
         @Override
         public void run() {
@@ -124,7 +114,7 @@ public class SensorService extends Service implements AlarmManager.OnAlarmListen
             mRunning = true;
 
             // Create new objects
-            accelSamples = new ArrayList<AccelSample>((int)(pollPeriod / mPollRate));
+            accelSamples = new ArrayList<AccelerometerSample>((int)(pollPeriod / mPollRate));
 
             // Critical work done, so unlock
             mVarLock.unlock();
@@ -147,7 +137,6 @@ public class SensorService extends Service implements AlarmManager.OnAlarmListen
             mVarLock.unlock();
 
             // TODO Insert all collected data into the database
-
         }
 
         @Override
@@ -157,8 +146,8 @@ public class SensorService extends Service implements AlarmManager.OnAlarmListen
         public void onSensorChanged(SensorEvent event) {
             switch (event.sensor.getType()) {
                 case Sensor.TYPE_ACCELEROMETER:
-                    accelSamples.add(new AccelSample(event.timestamp, event.values[0],
-                                                     event.values[1], event.values[2]));
+                    accelSamples.add(new AccelerometerSample(event.timestamp, event.values[0],
+                                                             event.values[1], event.values[2]));
                     break;
                 default:
                     Log.w("SensorDataCollector", "Unknown sensor type received");
