@@ -146,6 +146,7 @@ public class DBService extends IntentService {
                 float[] x = intent.getFloatArrayExtra(getString(R.string.accel_x_arr));
                 float[] y = intent.getFloatArrayExtra(getString(R.string.accel_y_arr));
                 float[] z = intent.getFloatArrayExtra(getString(R.string.accel_z_arr));
+                handleActionPutAccelList(timestamps, x, y, z);
             }
         }
     }

@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import net.mandown.db.DBService;
 import net.mandown.games.GameMenuActivity;
+import net.mandown.sensors.SensorService;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -27,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             if (DBService.sInstance != null) {
                 TextView txtDbInfo = (TextView) findViewById(R.id.txtDbView);
-                txtDbInfo.setText(String.format("%d passive data readings",
-                        DBService.sInstance.getNumPassiveReadings()));
+                txtDbInfo.setText(String.format("%d accel data readings",
+                        DBService.sInstance.getNumAccelReadings()));
                 mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
             }
         }
@@ -63,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Reset the database on initialisation
         DBService.startActionResetDatabase(this);
+
+        // Start the sensor service to collect data
+        startService(new Intent(this, SensorService.class));
 
         // Post event to handler to begin DB updates
         mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
