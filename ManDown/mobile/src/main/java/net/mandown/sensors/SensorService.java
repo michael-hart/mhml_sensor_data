@@ -89,6 +89,15 @@ public class SensorService extends Service implements AlarmManager.OnAlarmListen
     }
 
     /**
+     * Block service from taking further data
+     */
+    public void stopPolling() {
+        if (mAlarmManager != null) {
+            mAlarmManager.cancel(this);
+        }
+    }
+
+    /**
      * Class used for client Binder. Use threads with locks for safe multi-threaded access.
      */
     public class SensorBinder extends Binder {
@@ -103,8 +112,7 @@ public class SensorService extends Service implements AlarmManager.OnAlarmListen
     }
 
     @Override
-    public void onAlarm()
-    {
+    public void onAlarm() {
         startPollingNow();
     }
 
