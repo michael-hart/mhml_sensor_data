@@ -65,15 +65,15 @@
         android:layout_marginBottom="51dp" />
 
     <ImageButton
-        app:srcCompat="@drawable/drunk_clipart005"
         android:id="@+id/DrunkMan"
-        android:scaleType="fitCenter"
-        android:layout_marginStart="25dp"
-        android:background="@android:color/transparent"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/Journal" />
+        android:layout_alignStart="@+id/Journal"
+        android:layout_marginStart="25dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/drunk_clipart005" />
 
     <ImageButton
         app:srcCompat="@drawable/glass_beer"
