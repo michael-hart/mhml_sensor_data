@@ -156,6 +156,7 @@ public class SensorService extends Service implements AlarmManager.OnAlarmListen
 
         @Override
         public void onSensorChanged(SensorEvent event) {
+            if (!mRunning) return;
             switch (event.sensor.getType()) {
                 case Sensor.TYPE_ACCELEROMETER:
                     accelSamples.add(new AccelerometerSample(event.timestamp, event.values[0],
