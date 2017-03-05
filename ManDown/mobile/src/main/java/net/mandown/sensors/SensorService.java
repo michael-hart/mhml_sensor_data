@@ -145,7 +145,7 @@ public class SensorService extends Service implements AlarmManager.OnAlarmListen
             // Reset running variable as not taking data
             mRunning = false;
             // Remove listeners
-            mSensorManager.unregisterListener(this, mAccelerometer);
+            mSensorManager.unregisterListener(this);
             mVarLock.unlock();
 
             DBService.startActionPutAccelList(getApplicationContext(), accelSamples);
