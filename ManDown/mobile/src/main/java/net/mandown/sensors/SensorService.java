@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
 
+import net.mandown.R;
 import net.mandown.db.DBService;
 
 import java.util.ArrayList;
@@ -33,9 +34,7 @@ public class SensorService extends Service implements AlarmManager.OnAlarmListen
     private final IBinder mBinder = new SensorBinder();
 
     // Member variables
-    private int mPollRate = DEFAULT_POLL_RATE_US;
-    private int mPollPeriod = DEFAULT_POLL_PERIOD_S;
-    private int mPollInterval = DEFAULT_POLL_INTERVAL_S;
+    private int mPollRate, mPollPeriod, mPollInterval;
     private boolean mRunning = false;
     private Lock mVarLock;
     private AlarmManager mAlarmManager;
@@ -64,6 +63,16 @@ public class SensorService extends Service implements AlarmManager.OnAlarmListen
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i("SensorService", "Received start id " + startId + ": " + intent);
+
+        // Check if there are any extras in the intent
+        mVarLock.lock();
+        mPollRate = intent.getIntExtra(getString(R.string.sensor_poll_rate),
+                DEFAULT_POLL_RATE_US);
+        mPollInterval = intent.getIntExtra(getString(R.string.sensor_poll_interval),
+                DEFAULT_POLL_INTERVAL_S);
+        mPollPeriod = intent.getIntExtra(getString(R.string.sensor_poll_period),
+                DEFAULT_POLL_PERIOD_S);
+        mVarLock.unlock();
 
         // Start the data collection
         startPollingNow();
