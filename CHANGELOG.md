@@ -8,6 +8,13 @@ merged branch, and MAJOR is a change signalling a release.
 
 Each change will list Added, Changed, and Fixed.
 
+## 0.2.0 - 2017-03-05
+### Added
+- SensorService to poll sensors at intervals and put data into database
+
+### Changed
+- Database has new tables for accelerometer, gyroscope, and magnetometer data
+
 ## 0.1.0 - 2017-03-05
 ### Added
 - Entire project in its current status
