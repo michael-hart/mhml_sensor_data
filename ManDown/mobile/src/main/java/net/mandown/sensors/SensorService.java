@@ -159,8 +159,10 @@ public class SensorService extends Service implements AlarmManager.OnAlarmListen
             if (!mRunning) return;
             switch (event.sensor.getType()) {
                 case Sensor.TYPE_ACCELEROMETER:
-                    accelSamples.add(new AccelerometerSample(event.timestamp, event.values[0],
-                                                             event.values[1], event.values[2]));
+                    if (accelSamples != null) {
+                        accelSamples.add(new AccelerometerSample(event.timestamp, event.values[0],
+                                event.values[1], event.values[2]));
+                    }
                     break;
                 default:
                     Log.w("SensorDataCollector", "Unknown sensor type received");
