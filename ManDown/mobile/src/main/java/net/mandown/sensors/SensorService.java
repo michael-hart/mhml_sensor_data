@@ -119,7 +119,9 @@ public class SensorService extends Service implements AlarmManager.OnAlarmListen
     /* Threaded runnable to take data */
     private class SensorDataCollector implements Runnable, SensorEventListener {
 
-        private List<AccelerometerSample> accelSamples;
+        private List<SensorSample> accelSamples;
+        private List<SensorSample> gyroSamples;
+        private List<SensorSample> magnetSamples;
 
         @Override
         public void run() {
@@ -129,12 +131,22 @@ public class SensorService extends Service implements AlarmManager.OnAlarmListen
             long startTime = SystemClock.elapsedRealtime();
             int pollInterval = mPollInterval;
             // Attach listeners to objects
-            mSensorManager.registerListener(this, mAccelerometer, mPollRate);
+            if (mAccelerometer != null) {
+                mSensorManager.registerListener(this, mAccelerometer, mPollRate);
+            }
+            if (mGyroscope != null) {
+                mSensorManager.registerListener(this, mGyroscope, mPollRate);
+            }
+            if (mMagnetometer != null) {
+                mSensorManager.registerListener(this, mMagnetometer, mPollRate);
+            }
             // Set state to recording
             mRunning = true;
 
             // Create new objects
-            accelSamples = new ArrayList<AccelerometerSample>((int)(pollPeriod / mPollRate));
+            accelSamples = new ArrayList<SensorSample>((int)(pollPeriod / mPollRate));
+            gyroSamples = new ArrayList<SensorSample>((int)(pollPeriod / mPollRate));
+            magnetSamples = new ArrayList<SensorSample>((int)(pollPeriod / mPollRate));
 
             // Critical work done, so unlock
             mVarLock.unlock();
@@ -156,7 +168,12 @@ public class SensorService extends Service implements AlarmManager.OnAlarmListen
             mSensorManager.unregisterListener(this);
             mVarLock.unlock();
 
-            DBService.startActionPutAccelList(getApplicationContext(), accelSamples);
+            DBService.startActionPutSensorList(getApplicationContext(), accelSamples,
+                    SensorType.ACCELEROMETER);
+            DBService.startActionPutSensorList(getApplicationContext(), gyroSamples,
+                    SensorType.GYROSCOPE);
+            DBService.startActionPutSensorList(getApplicationContext(), magnetSamples,
+                    SensorType.MAGNETOMETER);
         }
 
         @Override
@@ -168,7 +185,19 @@ public class SensorService extends Service implements AlarmManager.OnAlarmListen
             switch (event.sensor.getType()) {
                 case Sensor.TYPE_ACCELEROMETER:
                     if (accelSamples != null) {
-                        accelSamples.add(new AccelerometerSample(event.timestamp, event.values[0],
+                        accelSamples.add(new SensorSample(event.timestamp, event.values[0],
+                                event.values[1], event.values[2]));
+                    }
+                    break;
+                case Sensor.TYPE_GYROSCOPE:
+                    if (gyroSamples != null) {
+                        gyroSamples.add(new SensorSample(event.timestamp, event.values[0],
+                                event.values[1], event.values[2]));
+                    }
+                    break;
+                case Sensor.TYPE_MAGNETIC_FIELD:
+                    if (magnetSamples != null) {
+                        magnetSamples.add(new SensorSample(event.timestamp, event.values[0],
                                 event.values[1], event.values[2]));
                     }
                     break;

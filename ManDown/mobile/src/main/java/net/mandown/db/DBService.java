@@ -11,7 +11,10 @@ import android.util.Log;
 import net.mandown.R;
 import net.mandown.db.PassiveDataReaderContract.PassiveDataEntry;
 import net.mandown.db.AccelDataReaderContract.AccelDataEntry;
-import net.mandown.sensors.AccelerometerSample;
+import net.mandown.db.GyroDataReaderContract.GyroDataEntry;
+import net.mandown.db.MagnetDataReaderContract.MagnetDataEntry;
+import net.mandown.sensors.SensorSample;
+import net.mandown.sensors.SensorType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,12 +89,13 @@ public class DBService extends IntentService {
     }
 
     /**
-     * Starts this service to perform action Put Passive with the given parameters. If
+     * Starts this service to perform action Put Sensor List with the given parameters. If
      * the service is already performing a task this action will be queued.
      *
      * @see IntentService
      */
-    public static void startActionPutAccelList(Context context, List<AccelerometerSample> list) {
+    public static void startActionPutSensorList(Context context, List<SensorSample> list,
+                                                SensorType type) {
         Intent intent = new Intent(context, DBService.class);
         // Split accelerometer samples into arrays
         long[] timestamps = new long[list.size()];
@@ -100,19 +104,38 @@ public class DBService extends IntentService {
         float[] z = new float[list.size()];
 
         int i = 0;
-        for (AccelerometerSample as : list) {
-            timestamps[i] = as.mTimestamp;
-            x[i] = as.mX;
-            y[i] = as.mY;
-            z[i] = as.mZ;
+        for (SensorSample ss : list) {
+            timestamps[i] = ss.mTimestamp;
+            x[i] = ss.mX;
+            y[i] = ss.mY;
+            z[i] = ss.mZ;
             i++;
         }
 
-        intent.setAction(context.getString(R.string.put_accel_list));
-        intent.putExtra(context.getString(R.string.accel_timestamp_arr), timestamps);
-        intent.putExtra(context.getString(R.string.accel_x_arr), x);
-        intent.putExtra(context.getString(R.string.accel_y_arr), y);
-        intent.putExtra(context.getString(R.string.accel_z_arr), z);
+        switch (type)
+        {
+            case ACCELEROMETER:
+                intent.setAction(context.getString(R.string.put_accel_list));
+                intent.putExtra(context.getString(R.string.accel_timestamp_arr), timestamps);
+                intent.putExtra(context.getString(R.string.accel_x_arr), x);
+                intent.putExtra(context.getString(R.string.accel_y_arr), y);
+                intent.putExtra(context.getString(R.string.accel_z_arr), z);
+                break;
+            case GYROSCOPE:
+                intent.setAction(context.getString(R.string.put_gyro_list));
+                intent.putExtra(context.getString(R.string.gyro_timestamp_arr), timestamps);
+                intent.putExtra(context.getString(R.string.gyro_x_arr), x);
+                intent.putExtra(context.getString(R.string.gyro_y_arr), y);
+                intent.putExtra(context.getString(R.string.gyro_z_arr), z);
+                break;
+            case MAGNETOMETER:
+                intent.setAction(context.getString(R.string.put_magnet_list));
+                intent.putExtra(context.getString(R.string.magnet_timestamp_arr), timestamps);
+                intent.putExtra(context.getString(R.string.magnet_x_arr), x);
+                intent.putExtra(context.getString(R.string.magnet_y_arr), y);
+                intent.putExtra(context.getString(R.string.magnet_z_arr), z);
+                break;
+        }
 
         context.startService(intent);
     }
@@ -147,6 +170,20 @@ public class DBService extends IntentService {
                 float[] y = intent.getFloatArrayExtra(getString(R.string.accel_y_arr));
                 float[] z = intent.getFloatArrayExtra(getString(R.string.accel_z_arr));
                 handleActionPutAccelList(timestamps, x, y, z);
+            } else if (getString(R.string.put_gyro_list).equals(action)) {
+                long[] timestamps =
+                        intent.getLongArrayExtra(getString(R.string.gyro_timestamp_arr));
+                float[] x = intent.getFloatArrayExtra(getString(R.string.gyro_x_arr));
+                float[] y = intent.getFloatArrayExtra(getString(R.string.gyro_y_arr));
+                float[] z = intent.getFloatArrayExtra(getString(R.string.gyro_z_arr));
+                handleActionPutGyroList(timestamps, x, y, z);
+            } else if (getString(R.string.put_magnet_list).equals(action)) {
+                long[] timestamps =
+                        intent.getLongArrayExtra(getString(R.string.magnet_timestamp_arr));
+                float[] x = intent.getFloatArrayExtra(getString(R.string.magnet_x_arr));
+                float[] y = intent.getFloatArrayExtra(getString(R.string.magnet_y_arr));
+                float[] z = intent.getFloatArrayExtra(getString(R.string.magnet_z_arr));
+                handleActionPutMagnetList(timestamps, x, y, z);
             }
         }
     }
@@ -190,6 +227,46 @@ public class DBService extends IntentService {
             values.put(AccelDataEntry.COLUMN_NAME_ACCEL_Z, acc_z[i]);
 
             long newRowId = db.insert(AccelDataEntry.TABLE_NAME, null, values);
+        }
+    }
+
+    private void handleActionPutGyroList(long[] timestamp, float[] gyr_x, float[] gyr_y,
+                                         float[] gyr_z)
+    {
+        // Get a reference to the writable database
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        for (int i = 0; i < timestamp.length; i++) {
+            // Bung in a default ID of 1 with a user name
+            // Create a new map of values, where column names are the keys
+            ContentValues values = new ContentValues();
+            values.put(GyroDataEntry.COLUMN_NAME_ID, row_id);
+            values.put(GyroDataEntry.COLUMN_NAME_TS, timestamp[i]);
+            values.put(GyroDataEntry.COLUMN_NAME_GYRO_X, gyr_x[i]);
+            values.put(GyroDataEntry.COLUMN_NAME_GYRO_Y, gyr_y[i]);
+            values.put(GyroDataEntry.COLUMN_NAME_GYRO_Z, gyr_z[i]);
+
+            long newRowId = db.insert(GyroDataEntry.TABLE_NAME, null, values);
+        }
+    }
+
+    private void handleActionPutMagnetList(long[] timestamp, float[] mag_x, float[] mag_y,
+                                           float[] mag_z)
+    {
+        // Get a reference to the writable database
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        for (int i = 0; i < timestamp.length; i++) {
+            // Bung in a default ID of 1 with a user name
+            // Create a new map of values, where column names are the keys
+            ContentValues values = new ContentValues();
+            values.put(MagnetDataEntry.COLUMN_NAME_ID, row_id);
+            values.put(MagnetDataEntry.COLUMN_NAME_TS, timestamp[i]);
+            values.put(MagnetDataEntry.COLUMN_NAME_MAGNET_X, mag_x[i]);
+            values.put(MagnetDataEntry.COLUMN_NAME_MAGNET_Y, mag_y[i]);
+            values.put(MagnetDataEntry.COLUMN_NAME_MAGNET_Z, mag_z[i]);
+
+            long newRowId = db.insert(MagnetDataEntry.TABLE_NAME, null, values);
         }
     }
 
