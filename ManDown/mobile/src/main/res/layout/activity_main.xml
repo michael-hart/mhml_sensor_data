@@ -60,20 +60,20 @@
         android:layout_height="100dp"
         android:scaleType="fitCenter"
         android:background="@android:color/transparent"
+        android:layout_marginBottom="51dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/OptionLevers"
-        android:layout_marginBottom="51dp" />
+        android:layout_toStartOf="@+id/Journal" />
 
     <ImageButton
         android:id="@+id/DrunkMan"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/Journal"
-        android:layout_marginStart="25dp"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/drunk_clipart005" />
+        app:srcCompat="@drawable/drunk_clipart005"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="8dp" />
 
     <ImageButton
         app:srcCompat="@drawable/glass_beer"
@@ -82,17 +82,19 @@
         android:layout_height="100dp"
         android:scaleType="fitCenter"
         android:background="@android:color/transparent"
-        android:layout_marginTop="74dp"
-        android:layout_below="@+id/OptionLevers"
-        android:layout_alignStart="@+id/History" />
+        android:layout_marginTop="71dp"
+        android:layout_below="@+id/txtDbView"
+        android:layout_alignStart="@+id/History"
+        android:layout_marginStart="12dp" />
 
     <TextView
         android:text="DBInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="19dp"
+        android:id="@+id/txtDbView"
         android:layout_below="@+id/OptionLevers"
-        android:layout_alignStart="@+id/OptionLevers"
-        android:layout_marginTop="18dp"
-        android:id="@+id/txtDbView" />
+        android:layout_toEndOf="@+id/OptionLevers"
+        android:layout_marginStart="9dp" />
 
 </RelativeLayout>
