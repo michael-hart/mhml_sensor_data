@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sensor_poll_rate">net.mandown.sensors.poll.rate</string>
+    <string name="sensor_poll_period">net.mandown.sensors.poll.period</string>
+    <string name="sensor_poll_interval">net.mandown.sensors.poll.interval</string>
+</resources>
