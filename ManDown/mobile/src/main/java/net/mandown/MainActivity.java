@@ -16,10 +16,14 @@ import android.widget.TextView;
 
 import net.mandown.db.DBService;
 import net.mandown.games.GameMenuActivity;
+import net.mandown.history.HistoryActivity;
+import net.mandown.journal.JournalActivity;
 import net.mandown.sensors.SensorService;
 
+import net.mandown.R;
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     // Set up a new handler to update the home textview with number of DB entries every 100ms
     private final Handler mDbUpdateHandler = new Handler();
@@ -35,6 +39,16 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private ImageButton btnGamePlay;
+    private ImageButton btnBeerGlass;
+    private ImageButton btnJournal;
+    private ImageButton btnHistory;
+
+    //Buttons to be used later
+    // private ImageButton btnOptions;
+    // private ImageButton btnEmergency;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,24 +57,25 @@ public class MainActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         //getting the button
-        ImageButton btnGamePlay = (ImageButton) findViewById(R.id.JoyStick);
-        //adding a click listener
-        btnGamePlay.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                //starting game activity
-                startActivity(new Intent(getApplicationContext(), GameMenuActivity.class));
-            }
-        });
 
-        // Set Beer glass to manually insert new passive data entry into database
-        ImageButton btnBeerGlass = (ImageButton) findViewById(R.id.BeerGlass);
-        // Add the click listener
-        btnBeerGlass.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Insert new entry
-                DBService.startActionPutPassive(getApplicationContext(), 0, 0, 0);
-            }
-        });
+        btnGamePlay = (ImageButton) findViewById(R.id.JoyStick);
+        btnBeerGlass = (ImageButton) findViewById(R.id.BeerGlass);
+        btnJournal  = (ImageButton) findViewById(R.id.Journal);
+        btnHistory  = (ImageButton) findViewById(R.id.History);
+
+        // Buttons to be used later
+        // btnOptions  = (ImageButton) findViewById(R.id.OptionLevers);
+        // btnEmergency= (ImageButton) findViewById(R.id.DrunkMan);
+
+        //adding a click listener
+        btnGamePlay.setOnClickListener(this);
+        btnBeerGlass.setOnClickListener(this);
+        btnJournal.setOnClickListener(this);
+        btnHistory.setOnClickListener(this);
+        // Buttons to be used later
+        // btnHistory.setOnClickListener(this);
+        // btnHistory.setOnClickListener(this);
+
 
         // Reset the database on initialisation
         DBService.startActionResetDatabase(this);
@@ -71,6 +86,28 @@ public class MainActivity extends AppCompatActivity {
         // Post event to handler to begin DB updates
         mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
 
+
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        if (v == btnGamePlay) {
+            //starting game menu activity
+            startActivity(new Intent(this, GameMenuActivity.class));
+        }
+        if (v == btnHistory) {
+            //starting game activity
+            startActivity(new Intent(this, HistoryActivity.class));
+        }
+        if (v == btnJournal) {
+            //starting game activity
+            startActivity(new Intent(this, JournalActivity.class));
+        }
+        if (v == btnBeerGlass) {
+            //starting sensor activity
+            DBService.startActionPutPassive(getApplicationContext(), 0, 0, 0);
+        }
     }
 
 }
