@@ -25,6 +25,9 @@
         <service
             android:name=".db.DBService"
             android:exported="false" />
+        <service
+            android:name=".sensors.SensorService"
+            android:exported="false" />
 
         <activity android:name=".games.RingOfFireMenuActivity" />
         <activity android:name=".games.WhoAmIMenuActivity" />

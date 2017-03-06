@@ -5,6 +5,9 @@
     <!-- DB Service Strings -->
     <string name="get_intoxication">net.mandown.db.get.intoxication</string>
     <string name="put_passive">net.mandown.db.put.passive</string>
+    <string name="put_accel_list">net.mandown.db.put.accel.list</string>
+    <string name="put_gyro_list">net.mandown.db.put.gyro.list</string>
+    <string name="put_magnet_list">net.mandown.db.put.magnet.list</string>
     <string name="put_whackabeer_score">net.mandown.db.put.whackabeer.score</string>
     <!-- RT is reaction time -->
     <string name="put_whackabeer_rt">net.mandown.db.put.whackabeer.rt</string>
@@ -13,4 +16,23 @@
     <string name="passive_accel">passive.accel</string>
     <string name="passive_gyro">passive.gyro</string>
     <string name="passive_magnet">passive.magnet</string>
+
+    <!-- Data for put accel -->
+    <string name="accel_timestamp_arr">accel.timestamp.arr</string>
+    <string name="accel_x_arr">accel.x.arr</string>
+    <string name="accel_y_arr">accel.y.arr</string>
+    <string name="accel_z_arr">accel.z.arr</string>
+
+    <!-- Data for put gyro -->
+    <string name="gyro_timestamp_arr">gyro.timestamp.arr</string>
+    <string name="gyro_x_arr">gyro.x.arr</string>
+    <string name="gyro_y_arr">gyro.y.arr</string>
+    <string name="gyro_z_arr">gyro.z.arr</string>
+
+    <!-- Data for put magnet -->
+    <string name="magnet_timestamp_arr">magnet.timestamp.arr</string>
+    <string name="magnet_x_arr">magnet.x.arr</string>
+    <string name="magnet_y_arr">magnet.y.arr</string>
+    <string name="magnet_z_arr">magnet.z.arr</string>
+
 </resources>
