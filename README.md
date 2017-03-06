@@ -41,11 +41,19 @@ The first screen to be displayed to the user. Checks with the DBService to see i
 
 TODO Diyar: Your existing UI work will mainly fit in here, but also implementing a sign-in activity, preferably with Firebase Authentication (talk to Arshan?). Block access to the activity until sign-in is complete. Might also want a developer mode so we use a standard user ID and don't need to sign in to use the app.
 
+Other TODOs: Journal activity which sends alcohol unit data to databse. 
+             History activity which pulls intoxication findings and displays in table/graph.
+             Options to allow user customisation i.e. text size.
+             Emergency button which links to other users?
+             Warning popups when High Intoxication read.
+
 #### Game Activities
 
 This includes all games to be written as part of the application, such as Ring of Fire and Whack-A-Beer. These games will be used as normal, using DBService to write data into Firebase. As Intent Services are threaded by default, the games can continue to write data uninterrupted.
 
 TODO Santi: Modify game data so it is written to Firebase using DBService.
+
+other notice: Whack-a-beer hit-box has inaccuracy, as low detection rate when tapping a popping up beer. 
 
 ## Server-side Application
 
