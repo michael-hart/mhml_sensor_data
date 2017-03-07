@@ -52,19 +52,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Set Beer glass to manually insert new passive data entry into database
-        ImageButton btnBeerGlass = (ImageButton) findViewById(R.id.BeerGlass);
-        // Add the click listener
-        btnBeerGlass.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Insert new entry
-                DBService.startActionPutPassive(getApplicationContext(), 0, 0, 0);
-            }
-        });
-
-        // Reset the database on initialisation
-        DBService.startActionResetDatabase(this);
-
         // Start the sensor service to collect data
         startService(new Intent(this, SensorService.class));
 

@@ -1,22 +1,22 @@
 package net.mandown.db;
 
 import android.app.IntentService;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.provider.Settings;
 import android.util.Log;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import net.mandown.R;
-import net.mandown.db.PassiveDataReaderContract.PassiveDataEntry;
-import net.mandown.db.AccelDataReaderContract.AccelDataEntry;
-import net.mandown.db.GyroDataReaderContract.GyroDataEntry;
-import net.mandown.db.MagnetDataReaderContract.MagnetDataEntry;
 import net.mandown.sensors.SensorSample;
 import net.mandown.sensors.SensorType;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,11 +25,14 @@ import java.util.List;
  */
 public class DBService extends IntentService {
 
-    private ManDownDbHelper mDbHelper;
-    // Default row ID until we can sign a user into a server and get the User ID from there
-    private int row_id = 1;
     // Track latest instance with static variable to allow static calls
     public static DBService sInstance;
+
+    // Keep a reference to the database
+    DatabaseReference mRef;
+
+    // User reference
+    private String mAndroidId;
 
     public DBService() {
         super("DBService");
@@ -42,49 +45,35 @@ public class DBService extends IntentService {
         if (sInstance == null) {
             sInstance = this;
         }
-        if (mDbHelper == null)
-        {
-            mDbHelper = new ManDownDbHelper(getApplicationContext());
-        }
+
+        // Get unique Android ID
+        mAndroidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        // Instantiate reference to database
+        mRef = (FirebaseDatabase.getInstance()).getReference("Users").child(mAndroidId);
+
     }
 
     @Override
     public void onDestroy() {
-        if (mDbHelper != null) {
-            // Close database connection
-            mDbHelper.close();
-        }
     }
 
     /**
-     * Get the instantiated database helper
-     * @return ManDownDbHelper object or null
-     */
-    public ManDownDbHelper getDbHelper() {
-        return mDbHelper;
-    }
-
-    public static void startActionResetDatabase(Context context) {
-        Intent intent = new Intent(context, DBService.class);
-        intent.setAction(context.getString(R.string.reset_db));
-        context.startService(intent);
-    }
-
-    /**
-     * Starts this service to perform action Put Passive with the given parameters. If
+     * Put an ArrayList of reaction times into the Firebase Database. If
      * the service is already performing a task this action will be queued.
      *
      * @see IntentService
      */
-    public static void startActionPutPassive(Context context,
-                                             float accel,
-                                             float gyro,
-                                             float magnet) {
+    public static void startActionPutReactionTimes(Context context, List<Long> rtList) {
         Intent intent = new Intent(context, DBService.class);
-        intent.setAction(context.getString(R.string.put_passive));
-        intent.putExtra(context.getString(R.string.passive_accel),   accel);
-        intent.putExtra(context.getString(R.string.passive_gyro),    gyro);
-        intent.putExtra(context.getString(R.string.passive_magnet),  magnet);
+        long[] reactionTimes = new long[rtList.size()];
+        int count = 0;
+        for (Long i : rtList) {
+            reactionTimes[count++] = i;
+        }
+
+        intent.setAction(context.getString(R.string.put_whackabeer_rt));
+        intent.putExtra(context.getString(R.string.rt_arr), reactionTimes);
         context.startService(intent);
     }
 
@@ -151,18 +140,11 @@ public class DBService extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
 
-            // Put passive sensor data reading
-            if (getString(R.string.reset_db).equals(action)) {
-                mDbHelper.onUpgrade(mDbHelper.getWritableDatabase(), 1, 1);
-            } else if (getString(R.string.put_passive).equals(action)) {
-                final float accel  = intent.getFloatExtra(getString(R.string.passive_accel),  0f);
-                final float gyro   = intent.getFloatExtra(getString(R.string.passive_gyro),   0f);
-                final float magnet = intent.getFloatExtra(getString(R.string.passive_magnet), 0f);
-                handleActionPutPassive(accel, gyro, magnet);
-            } else if (getString(R.string.put_whackabeer_score).equals(action)) {
+            if (getString(R.string.put_whackabeer_score).equals(action)) {
                 // TODO handle put whack-a-beer score
             } else if (getString(R.string.put_whackabeer_rt).equals(action)) {
-                // TODO handle put whack-a-beer reaction time
+                long[] reactionTimes = intent.getLongArrayExtra(getString(R.string.rt_arr));
+                handleActionPutReactionTimes(reactionTimes);
             } else if (getString(R.string.put_accel_list).equals(action)) {
                 long[] timestamps =
                         intent.getLongArrayExtra(getString(R.string.accel_timestamp_arr));
@@ -188,86 +170,74 @@ public class DBService extends IntentService {
         }
     }
 
-    /**
-     * Handle action Put Passive in the provided background thread with the provided
-     * parameters. Puts passive sensor data in the SQLite database.
-     */
-    private void handleActionPutPassive(float accel, float gyro, float magnet) {
-        // Get a reference to the writable database
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-        // Bung in a default ID of 1 with a user name
-        // Create a new map of values, where column names are the keys
-        ContentValues values = new ContentValues();
-        values.put(PassiveDataEntry.COLUMN_NAME_ID, row_id);
-        values.put(PassiveDataEntry.COLUMN_NAME_ACCEL, accel);
-        values.put(PassiveDataEntry.COLUMN_NAME_GYRO, gyro);
-        values.put(PassiveDataEntry.COLUMN_NAME_MAGNET, magnet);
-
-        // Insert the new row, returning the primary key value of the new row
-        long newRowId = db.insert(PassiveDataEntry.TABLE_NAME, null, values);
-        Log.d("DBService", String.format("Inserted (accel,gyro,magnet)=(%f,%f,%f) as row ID %d",
-                                         accel, gyro, magnet, row_id));
+    private void handleActionPutReactionTimes(long[] times) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+        String format = dateFormat.format(new Date());
+        List<Long> listTimes = new ArrayList<Long>();
+        for (int i = 0; i < times.length; i++) {
+            listTimes.add(times[i]);
+        }
+        mRef.child("reaction").child(format).setValue(listTimes);
     }
 
     private void handleActionPutAccelList(long[] timestamp, float[] acc_x, float[] acc_y,
                                           float[] acc_z)
     {
         // Get a reference to the writable database
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-        for (int i = 0; i < timestamp.length; i++) {
-            // Bung in a default ID of 1 with a user name
-            // Create a new map of values, where column names are the keys
-            ContentValues values = new ContentValues();
-            values.put(AccelDataEntry.COLUMN_NAME_ID, row_id);
-            values.put(AccelDataEntry.COLUMN_NAME_TS, timestamp[i]);
-            values.put(AccelDataEntry.COLUMN_NAME_ACCEL_X, acc_x[i]);
-            values.put(AccelDataEntry.COLUMN_NAME_ACCEL_Y, acc_y[i]);
-            values.put(AccelDataEntry.COLUMN_NAME_ACCEL_Z, acc_z[i]);
-
-            long newRowId = db.insert(AccelDataEntry.TABLE_NAME, null, values);
-        }
+//        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+//
+//        for (int i = 0; i < timestamp.length; i++) {
+//            // Bung in a default ID of 1 with a user name
+//            // Create a new map of values, where column names are the keys
+//            ContentValues values = new ContentValues();
+//            values.put(AccelDataEntry.COLUMN_NAME_ID, row_id);
+//            values.put(AccelDataEntry.COLUMN_NAME_TS, timestamp[i]);
+//            values.put(AccelDataEntry.COLUMN_NAME_ACCEL_X, acc_x[i]);
+//            values.put(AccelDataEntry.COLUMN_NAME_ACCEL_Y, acc_y[i]);
+//            values.put(AccelDataEntry.COLUMN_NAME_ACCEL_Z, acc_z[i]);
+//
+//            long newRowId = db.insert(AccelDataEntry.TABLE_NAME, null, values);
+//        }
     }
 
     private void handleActionPutGyroList(long[] timestamp, float[] gyr_x, float[] gyr_y,
                                          float[] gyr_z)
     {
         // Get a reference to the writable database
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-        for (int i = 0; i < timestamp.length; i++) {
-            // Bung in a default ID of 1 with a user name
-            // Create a new map of values, where column names are the keys
-            ContentValues values = new ContentValues();
-            values.put(GyroDataEntry.COLUMN_NAME_ID, row_id);
-            values.put(GyroDataEntry.COLUMN_NAME_TS, timestamp[i]);
-            values.put(GyroDataEntry.COLUMN_NAME_GYRO_X, gyr_x[i]);
-            values.put(GyroDataEntry.COLUMN_NAME_GYRO_Y, gyr_y[i]);
-            values.put(GyroDataEntry.COLUMN_NAME_GYRO_Z, gyr_z[i]);
-
-            long newRowId = db.insert(GyroDataEntry.TABLE_NAME, null, values);
-        }
+//        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+//
+//        for (int i = 0; i < timestamp.length; i++) {
+//            // Bung in a default ID of 1 with a user name
+//            // Create a new map of values, where column names are the keys
+//            ContentValues values = new ContentValues();
+//            values.put(GyroDataEntry.COLUMN_NAME_ID, row_id);
+//            values.put(GyroDataEntry.COLUMN_NAME_TS, timestamp[i]);
+//            values.put(GyroDataEntry.COLUMN_NAME_GYRO_X, gyr_x[i]);
+//            values.put(GyroDataEntry.COLUMN_NAME_GYRO_Y, gyr_y[i]);
+//            values.put(GyroDataEntry.COLUMN_NAME_GYRO_Z, gyr_z[i]);
+//
+//            long newRowId = db.insert(GyroDataEntry.TABLE_NAME, null, values);
+//        }
     }
 
     private void handleActionPutMagnetList(long[] timestamp, float[] mag_x, float[] mag_y,
                                            float[] mag_z)
     {
         // Get a reference to the writable database
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-        for (int i = 0; i < timestamp.length; i++) {
-            // Bung in a default ID of 1 with a user name
-            // Create a new map of values, where column names are the keys
-            ContentValues values = new ContentValues();
-            values.put(MagnetDataEntry.COLUMN_NAME_ID, row_id);
-            values.put(MagnetDataEntry.COLUMN_NAME_TS, timestamp[i]);
-            values.put(MagnetDataEntry.COLUMN_NAME_MAGNET_X, mag_x[i]);
-            values.put(MagnetDataEntry.COLUMN_NAME_MAGNET_Y, mag_y[i]);
-            values.put(MagnetDataEntry.COLUMN_NAME_MAGNET_Z, mag_z[i]);
-
-            long newRowId = db.insert(MagnetDataEntry.TABLE_NAME, null, values);
-        }
+//        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+//
+//        for (int i = 0; i < timestamp.length; i++) {
+//            // Bung in a default ID of 1 with a user name
+//            // Create a new map of values, where column names are the keys
+//            ContentValues values = new ContentValues();
+//            values.put(MagnetDataEntry.COLUMN_NAME_ID, row_id);
+//            values.put(MagnetDataEntry.COLUMN_NAME_TS, timestamp[i]);
+//            values.put(MagnetDataEntry.COLUMN_NAME_MAGNET_X, mag_x[i]);
+//            values.put(MagnetDataEntry.COLUMN_NAME_MAGNET_Y, mag_y[i]);
+//            values.put(MagnetDataEntry.COLUMN_NAME_MAGNET_Z, mag_z[i]);
+//
+//            long newRowId = db.insert(MagnetDataEntry.TABLE_NAME, null, values);
+//        }
     }
 
     /**
@@ -279,13 +249,13 @@ public class DBService extends IntentService {
         List<String> names = new ArrayList<String>();
 
         // Get a reference to database
-        SQLiteDatabase r_db = mDbHelper.getReadableDatabase();
-
-        // Get the IDs and user names currently in the database
-        String countQuery = "SELECT * FROM " + UserNameReaderContract.UserNameEntry.TABLE_NAME;
-        Cursor cursor = r_db.rawQuery(countQuery, null);
-        int cnt = cursor.getCount();
-        cursor.close();
+//        SQLiteDatabase r_db = mDbHelper.getReadableDatabase();
+//
+//        // Get the IDs and user names currently in the database
+//        String countQuery = "SELECT * FROM " + UserNameReaderContract.UserNameEntry.TABLE_NAME;
+//        Cursor cursor = r_db.rawQuery(countQuery, null);
+//        int cnt = cursor.getCount();
+//        cursor.close();
 
         return names;
     }
@@ -295,42 +265,42 @@ public class DBService extends IntentService {
      * @return number of passive readings in database
      */
     public int getNumPassiveReadings() {
-        if (mDbHelper == null)
-        {
-            return -1;
-        }
-        // Get a reference to database
-        SQLiteDatabase r_db = mDbHelper.getReadableDatabase();
-
+//        if (mDbHelper == null)
+//        {
+//            return -1;
+//        }
+//        // Get a reference to database
+//        SQLiteDatabase r_db = mDbHelper.getReadableDatabase();
+//
         int cnt = -1;
-
-        if (r_db != null) {
-            // Get the IDs and user names currently in the database
-            String countQuery = "SELECT * FROM " + PassiveDataEntry.TABLE_NAME;
-            Cursor cursor = r_db.rawQuery(countQuery, null);
-            cnt = cursor.getCount();
-            cursor.close();
-        }
+//
+//        if (r_db != null) {
+//            // Get the IDs and user names currently in the database
+//            String countQuery = "SELECT * FROM " + PassiveDataEntry.TABLE_NAME;
+//            Cursor cursor = r_db.rawQuery(countQuery, null);
+//            cnt = cursor.getCount();
+//            cursor.close();
+//        }
         return cnt;
     }
 
     public int getNumAccelReadings() {
-        if (mDbHelper == null)
-        {
-            return -1;
-        }
-        // Get a reference to database
-        SQLiteDatabase r_db = mDbHelper.getReadableDatabase();
-
+//        if (mDbHelper == null)
+//        {
+//            return -1;
+//        }
+//        // Get a reference to database
+//        SQLiteDatabase r_db = mDbHelper.getReadableDatabase();
+//
         int cnt = -1;
-
-        if (r_db != null) {
-            // Get the IDs and user names currently in the database
-            String countQuery = "SELECT * FROM " + AccelDataEntry.TABLE_NAME;
-            Cursor cursor = r_db.rawQuery(countQuery, null);
-            cnt = cursor.getCount();
-            cursor.close();
-        }
+//
+//        if (r_db != null) {
+//            // Get the IDs and user names currently in the database
+//            String countQuery = "SELECT * FROM " + AccelDataEntry.TABLE_NAME;
+//            Cursor cursor = r_db.rawQuery(countQuery, null);
+//            cnt = cursor.getCount();
+//            cursor.close();
+//        }
         return cnt;
     }
 }
