@@ -1,5 +1,7 @@
 package net.mandown.journal;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -15,21 +17,10 @@ import net.mandown.games.GameMenuActivity;
 import net.mandown.sensors.SensorService;
 
 
-public class JournalActivity extends AppCompatActivity {
+public class JournalActivity extends AppCompatActivity implements View.OnClickListener {
 
-    // Set up a new handler to update the home textview with number of DB entries every 100ms
-//    private final Handler mDbUpdateHandler = new Handler();
-//    private Runnable mUpdateDBTxt = new Runnable() {
-//        @Override
-//        public void run() {
-//            if (DBService.sInstance != null) {
-//                TextView txtDbInfo = (TextView) findViewById(R.id.txtDbView);
-//                txtDbInfo.setText(String.format("%d accel data readings",
-//                        DBService.sInstance.getNumAccelReadings()));
-//                mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
-//            }
-//        }
-//    };
+    private ImageButton btnOptions;
+    private ImageButton btnEmergency;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,36 +29,33 @@ public class JournalActivity extends AppCompatActivity {
         //setting the orientation to landscape
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        //getting the button
-//        ImageButton btnGamePlay = (ImageButton) findViewById(R.id.JoyStick);
-//        //adding a click listener
-//        btnGamePlay.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                //starting game activity
-//                startActivity(new Intent(getApplicationContext(), GameMenuActivity.class));
-//            }
-//        });
-
-//        // Set Beer glass to manually insert new passive data entry into database
-//        ImageButton btnBeerGlass = (ImageButton) findViewById(R.id.BeerGlass);
-//        // Add the click listener
-//        btnBeerGlass.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                // Insert new entry
-//                DBService.startActionPutPassive(getApplicationContext(), 0, 0, 0);
-//            }
-//        });
-//
-//        // Reset the database on initialisation
-//        DBService.startActionResetDatabase(this);
-//
-//        // Start the sensor service to collect data
-//        startService(new Intent(this, SensorService.class));
-//
-//        // Post event to handler to begin DB updates
-//        mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
+        btnOptions  = (ImageButton) findViewById(R.id.OptionLevers);
+        btnEmergency= (ImageButton) findViewById(R.id.DrunkMan);
+        btnOptions.setOnClickListener(this);
+        btnEmergency.setOnClickListener(this);
 
     }
+    @Override
+    public void onClick(View v) {
 
+        if (v == btnEmergency) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Contact Emergency Help")
+                    .setMessage("Are you sure you want to send a distress call")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // continue with delete
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
+
+    }
 }
 

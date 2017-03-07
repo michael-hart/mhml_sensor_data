@@ -1,6 +1,8 @@
 package net.mandown;
 
+import android.app.AlertDialog;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
@@ -43,10 +45,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton btnBeerGlass;
     private ImageButton btnJournal;
     private ImageButton btnHistory;
-
-    //Buttons to be used later
-    // private ImageButton btnOptions;
-    // private ImageButton btnEmergency;
+    private ImageButton btnOptions;
+    private ImageButton btnEmergency;
 
 
     @Override
@@ -62,19 +62,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnBeerGlass = (ImageButton) findViewById(R.id.BeerGlass);
         btnJournal  = (ImageButton) findViewById(R.id.Journal);
         btnHistory  = (ImageButton) findViewById(R.id.History);
-
-        // Buttons to be used later
-        // btnOptions  = (ImageButton) findViewById(R.id.OptionLevers);
-        // btnEmergency= (ImageButton) findViewById(R.id.DrunkMan);
+        btnOptions  = (ImageButton) findViewById(R.id.OptionLevers);
+        btnEmergency= (ImageButton) findViewById(R.id.DrunkMan);
 
         //adding a click listener
         btnGamePlay.setOnClickListener(this);
         btnBeerGlass.setOnClickListener(this);
         btnJournal.setOnClickListener(this);
         btnHistory.setOnClickListener(this);
-        // Buttons to be used later
-        // btnHistory.setOnClickListener(this);
-        // btnHistory.setOnClickListener(this);
+        btnOptions.setOnClickListener(this);
+        btnEmergency.setOnClickListener(this);
 
 
         // Reset the database on initialisation
@@ -107,6 +104,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (v == btnBeerGlass) {
             //starting sensor activity
             DBService.startActionPutPassive(getApplicationContext(), 0, 0, 0);
+        }
+        if (v == btnEmergency) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Contact Emergency Help")
+                    .setMessage("Are you sure you want to send a distress call")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // continue with delete
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
         }
     }
 
