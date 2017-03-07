@@ -183,61 +183,80 @@ public class DBService extends IntentService {
     private void handleActionPutAccelList(long[] timestamp, float[] acc_x, float[] acc_y,
                                           float[] acc_z)
     {
-        // Get a reference to the writable database
-//        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-//
-//        for (int i = 0; i < timestamp.length; i++) {
-//            // Bung in a default ID of 1 with a user name
-//            // Create a new map of values, where column names are the keys
-//            ContentValues values = new ContentValues();
-//            values.put(AccelDataEntry.COLUMN_NAME_ID, row_id);
-//            values.put(AccelDataEntry.COLUMN_NAME_TS, timestamp[i]);
-//            values.put(AccelDataEntry.COLUMN_NAME_ACCEL_X, acc_x[i]);
-//            values.put(AccelDataEntry.COLUMN_NAME_ACCEL_Y, acc_y[i]);
-//            values.put(AccelDataEntry.COLUMN_NAME_ACCEL_Z, acc_z[i]);
-//
-//            long newRowId = db.insert(AccelDataEntry.TABLE_NAME, null, values);
-//        }
+        // TODO change timestamp to real time string
+
+        // Convert all the parameters to lists
+        List<Long> stamps = new ArrayList<Long>();
+        List<Float> x = new ArrayList<Float>();
+        List<Float> y = new ArrayList<Float>();
+        List<Float> z = new ArrayList<Float>();
+
+        for (int i = 0; i < timestamp.length; i++) {
+            stamps.add(timestamp[i]);
+            x.add(acc_x[i]);
+            y.add(acc_y[i]);
+            z.add(acc_z[i]);
+        }
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+        String format = dateFormat.format(new Date());
+        mRef.child("accelerometer").child(format).child("timestamp").setValue(stamps);
+        mRef.child("accelerometer").child(format).child("x").setValue(x);
+        mRef.child("accelerometer").child(format).child("y").setValue(y);
+        mRef.child("accelerometer").child(format).child("z").setValue(z);
+
+
     }
 
     private void handleActionPutGyroList(long[] timestamp, float[] gyr_x, float[] gyr_y,
                                          float[] gyr_z)
     {
-        // Get a reference to the writable database
-//        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-//
-//        for (int i = 0; i < timestamp.length; i++) {
-//            // Bung in a default ID of 1 with a user name
-//            // Create a new map of values, where column names are the keys
-//            ContentValues values = new ContentValues();
-//            values.put(GyroDataEntry.COLUMN_NAME_ID, row_id);
-//            values.put(GyroDataEntry.COLUMN_NAME_TS, timestamp[i]);
-//            values.put(GyroDataEntry.COLUMN_NAME_GYRO_X, gyr_x[i]);
-//            values.put(GyroDataEntry.COLUMN_NAME_GYRO_Y, gyr_y[i]);
-//            values.put(GyroDataEntry.COLUMN_NAME_GYRO_Z, gyr_z[i]);
-//
-//            long newRowId = db.insert(GyroDataEntry.TABLE_NAME, null, values);
-//        }
+        // TODO change timestamp to real time string
+
+        // Convert all the parameters to lists
+        List<Long> stamps = new ArrayList<Long>();
+        List<Float> x = new ArrayList<Float>();
+        List<Float> y = new ArrayList<Float>();
+        List<Float> z = new ArrayList<Float>();
+
+        for (int i = 0; i < timestamp.length; i++) {
+            stamps.add(timestamp[i]);
+            x.add(gyr_x[i]);
+            y.add(gyr_y[i]);
+            z.add(gyr_z[i]);
+        }
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+        String format = dateFormat.format(new Date());
+        mRef.child("gyro").child(format).child("timestamp").setValue(stamps);
+        mRef.child("gyro").child(format).child("x").setValue(x);
+        mRef.child("gyro").child(format).child("y").setValue(y);
     }
 
     private void handleActionPutMagnetList(long[] timestamp, float[] mag_x, float[] mag_y,
                                            float[] mag_z)
     {
-        // Get a reference to the writable database
-//        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-//
-//        for (int i = 0; i < timestamp.length; i++) {
-//            // Bung in a default ID of 1 with a user name
-//            // Create a new map of values, where column names are the keys
-//            ContentValues values = new ContentValues();
-//            values.put(MagnetDataEntry.COLUMN_NAME_ID, row_id);
-//            values.put(MagnetDataEntry.COLUMN_NAME_TS, timestamp[i]);
-//            values.put(MagnetDataEntry.COLUMN_NAME_MAGNET_X, mag_x[i]);
-//            values.put(MagnetDataEntry.COLUMN_NAME_MAGNET_Y, mag_y[i]);
-//            values.put(MagnetDataEntry.COLUMN_NAME_MAGNET_Z, mag_z[i]);
-//
-//            long newRowId = db.insert(MagnetDataEntry.TABLE_NAME, null, values);
-//        }
+        // TODO change timestamp to real time string
+
+        // Convert all the parameters to lists
+        List<Long> stamps = new ArrayList<Long>();
+        List<Float> x = new ArrayList<Float>();
+        List<Float> y = new ArrayList<Float>();
+        List<Float> z = new ArrayList<Float>();
+
+        for (int i = 0; i < timestamp.length; i++) {
+            stamps.add(timestamp[i]);
+            x.add(mag_x[i]);
+            y.add(mag_y[i]);
+            z.add(mag_z[i]);
+        }
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+        String format = dateFormat.format(new Date());
+        mRef.child("magnetometer").child(format).child("timestamp").setValue(stamps);
+        mRef.child("magnetometer").child(format).child("x").setValue(x);
+        mRef.child("magnetometer").child(format).child("y").setValue(y);
+        mRef.child("magnetometer").child(format).child("z").setValue(z);
     }
 
     /**
@@ -247,15 +266,7 @@ public class DBService extends IntentService {
     public List<String> getUserNames() {
         // Instantiate return object
         List<String> names = new ArrayList<String>();
-
-        // Get a reference to database
-//        SQLiteDatabase r_db = mDbHelper.getReadableDatabase();
-//
-//        // Get the IDs and user names currently in the database
-//        String countQuery = "SELECT * FROM " + UserNameReaderContract.UserNameEntry.TABLE_NAME;
-//        Cursor cursor = r_db.rawQuery(countQuery, null);
-//        int cnt = cursor.getCount();
-//        cursor.close();
+        // FIXME
 
         return names;
     }
@@ -265,42 +276,17 @@ public class DBService extends IntentService {
      * @return number of passive readings in database
      */
     public int getNumPassiveReadings() {
-//        if (mDbHelper == null)
-//        {
-//            return -1;
-//        }
-//        // Get a reference to database
-//        SQLiteDatabase r_db = mDbHelper.getReadableDatabase();
-//
+
         int cnt = -1;
-//
-//        if (r_db != null) {
-//            // Get the IDs and user names currently in the database
-//            String countQuery = "SELECT * FROM " + PassiveDataEntry.TABLE_NAME;
-//            Cursor cursor = r_db.rawQuery(countQuery, null);
-//            cnt = cursor.getCount();
-//            cursor.close();
-//        }
+        // FIXME
+
         return cnt;
     }
 
     public int getNumAccelReadings() {
-//        if (mDbHelper == null)
-//        {
-//            return -1;
-//        }
-//        // Get a reference to database
-//        SQLiteDatabase r_db = mDbHelper.getReadableDatabase();
-//
+        // FIXME
         int cnt = -1;
-//
-//        if (r_db != null) {
-//            // Get the IDs and user names currently in the database
-//            String countQuery = "SELECT * FROM " + AccelDataEntry.TABLE_NAME;
-//            Cursor cursor = r_db.rawQuery(countQuery, null);
-//            cnt = cursor.getCount();
-//            cursor.close();
-//        }
+
         return cnt;
     }
 }
