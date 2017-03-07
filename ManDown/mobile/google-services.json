@@ -1,0 +1,107 @@
+{
+  "project_info": {
+    "project_number": "823710583580",
+    "firebase_url": "https://mandown-application.firebaseio.com",
+    "project_id": "mandown-application",
+    "storage_bucket": "mandown-application.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:823710583580:android:37b3bf227a49110e",
+        "android_client_info": {
+          "package_name": "com.example.diyar.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "823710583580-bcpo741e6f448647m2g5po9nlj9phkf5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.diyar.myapplication",
+            "certificate_hash": "c4411ae2a85e191445faf6f01c1c6e013e9aa140"
+          }
+        },
+        {
+          "client_id": "823710583580-6mlpkmmdsd8dfohe7pg2vvt2veaajfh6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOHwtasy4b2DJODEMxZBYHJCKIBlZH7do"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "823710583580-6mlpkmmdsd8dfohe7pg2vvt2veaajfh6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:823710583580:android:93714602d4e995a3",
+        "android_client_info": {
+          "package_name": "net.mandown"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "823710583580-6idb9p4nkcubmp07u938fa19bnsj50od.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "net.mandown",
+            "certificate_hash": "62c4072761bee95fa8ebdc2cea1cacb372579128"
+          }
+        },
+        {
+          "client_id": "823710583580-5eog3smi3fpr1dahlldm8ellk60s7vk1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "net.mandown",
+            "certificate_hash": "c4411ae2a85e191445faf6f01c1c6e013e9aa140"
+          }
+        },
+        {
+          "client_id": "823710583580-6mlpkmmdsd8dfohe7pg2vvt2veaajfh6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOHwtasy4b2DJODEMxZBYHJCKIBlZH7do"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "823710583580-6mlpkmmdsd8dfohe7pg2vvt2veaajfh6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
