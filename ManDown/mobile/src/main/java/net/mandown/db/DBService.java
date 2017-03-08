@@ -336,14 +336,7 @@ public class DBService extends IntentService {
     private void handleActionPutMLValues(String ml) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         String format = dateFormat.format(new Date());
-        //List<Float[]> listTimes = new ArrayList<Long>();
-        //for (int i = 0; i < times.length; i++) {
-        //    listTimes.add(times[i]);
-        //}
-
         mRef.child("Drunkness").child(format).setValue(ml);
-
-
     }
 
 
