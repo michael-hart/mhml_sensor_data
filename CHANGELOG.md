@@ -8,6 +8,13 @@ merged branch, and MAJOR is a change signalling a release.
 
 Each change will list Added, Changed, and Fixed.
 
+## 0.4.0 - 2017-03-08
+### Changed
+- Firebase has been moved into DBService
+
+### Removed
+- All SQLite functionality has been removed
+
 ## 0.3.0 - 2017-03-06
 ### Changed
 - UI has more controls and theme is coloured
