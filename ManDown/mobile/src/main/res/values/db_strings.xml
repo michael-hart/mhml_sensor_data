@@ -5,7 +5,6 @@
     <string name="put_gyro_list">net.mandown.db.put.gyro.list</string>
     <string name="put_magnet_list">net.mandown.db.put.magnet.list</string>
     <string name="put_whackabeer_score">net.mandown.db.put.whackabeer.score</string>
-    <string name="put_watch_accel">net.mandown.db.put.watch.accel</string>
 
     <!-- RT is reaction time -->
     <string name="put_whackabeer_rt">net.mandown.db.put.whackabeer.rt</string>

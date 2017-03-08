@@ -262,7 +262,31 @@ public class DBService extends IntentService {
     private void handleActionPutMLValues(String ml) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         String format = dateFormat.format(new Date());
-        mRef.child("Drunkness").child(format).setValue(ml);
+        List<Long> listTimes = new ArrayList<Long>();
+        for (int i = 0; i < times.length; i++) {
+            listTimes.add(times[i]);
+        }
+        mRef.child("reaction").child(format).setValue(listTimes);
+
+        //////reading from firebase
+        DatabaseReference mRef2= mRef.child("reaction");
+        // Read from the database
+        mRef2.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                Map<String,Long> value = (Map)dataSnapshot.getValue();
+                Log.d("Value is: " , String.valueOf(value.entrySet()));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("Failed to read value.", error.toException());
+            }
+        });
+        ///////////////////
     }
 
     private void handleActionPutReactionTimes(ArrayList<Long> rt) {
