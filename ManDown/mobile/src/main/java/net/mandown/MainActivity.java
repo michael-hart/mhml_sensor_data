@@ -92,7 +92,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Reset the database on initialisation
     //    DBService.startActionResetDatabase(this);
 
-
         // Start the sensor service to collect data
         if (this != null) {
             startService(new Intent(this, SensorService.class));

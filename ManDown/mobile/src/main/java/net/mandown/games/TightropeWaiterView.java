@@ -1,12 +1,17 @@
 package net.mandown.games;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.os.Bundle;
+import android.os.ResultReceiver;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -92,7 +97,8 @@ class TRWDrink {
 
 }
 
-public class TightropeWaiterView extends SurfaceView implements Runnable  {
+
+public class TightropeWaiterView extends SurfaceView implements Runnable {
 
     volatile boolean playing;
     private Thread gameThread = null;
@@ -120,9 +126,34 @@ public class TightropeWaiterView extends SurfaceView implements Runnable  {
     private OutputStreamWriter file_out;
     private Callback observer;
 
+    //accel values
+    public float acc_x = 0.0f;
+    public float acc_y = 0.0f;
+
+    //getting context and broadcast
+    public Context localcontext;
+    //ResultReceiver resultReceiver;
+
+    private BroadcastReceiver br = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            Bundle bundle = intent.getExtras();
+            if (bundle != null) {
+                acc_x = bundle.getFloat("x");
+                acc_y = bundle.getFloat("y");
+            }
+        }
+    };
+
+
     public TightropeWaiterView(Callback _observer, Context context) {
         super(context);
         observer=_observer;
+
+        //getting context
+        localcontext = context;
 
         //display metrics
         dm = new DisplayMetrics();
@@ -160,23 +191,39 @@ public class TightropeWaiterView extends SurfaceView implements Runnable  {
 
     }
 
+    //Function to allow accel service to update accelerometer readings
+    public void updateAccValues(float x, float y) {
+        acc_x = x;
+        acc_y = y;
+    }
+
     @Override
     public void run() {
+        //Start accelerometer service
+        //resultReceiver = new ResultReceiver(null);
+        Intent intent = new Intent(localcontext, GetSensor.class);
+        //intent.putExtra("receiver", resultReceiver);
+        localcontext.startService(intent);
+        localcontext.registerReceiver(br, new IntentFilter("publish accel"));
+
         while (playing) {
             update();
             draw();
             control();
         }
+
+        localcontext.stopService(intent);
+        localcontext.unregisterReceiver(br);
     }
 
 
     private void update() {
         //updating player position
         //player.update();
-        drink.Update(0,0);
-        plate.Update(0.5f);
-
-        sensordata.add(new Float[]{0.0f,0.0f});
+        drink.Update(Math.round(acc_x*(-20)),Math.round(acc_y*20));
+		plate.Update(0.5f);
+		
+        sensordata.add(new Float[]{acc_x,acc_y});
 
         int dist = distance(drink.getX(),drink.getY());
 

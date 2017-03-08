@@ -31,6 +31,8 @@
             android:name=".sensors.SensorService"
             android:exported="false" />
 
+        <service android:name=".games.GetSensor" />
+
         <activity android:name=".games.RingOfFireMenuActivity" />
         <activity android:name=".games.WhoAmIMenuActivity" />
         <activity android:name=".games.RingOfFireGameActivity" />
