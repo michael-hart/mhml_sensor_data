@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         DBService.startActionResetDatabase(this);
 
         // Start the sensor service to collect data
-        startService(new Intent(this, SensorService.class));
+        //startService(new Intent(this, SensorService.class));
 
         // Post event to handler to begin DB updates
         mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
