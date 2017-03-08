@@ -6,8 +6,11 @@ import android.content.Context;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import net.mandown.R;
 import net.mandown.sensors.SensorSample;
@@ -18,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -178,6 +182,26 @@ public class DBService extends IntentService {
             listTimes.add(times[i]);
         }
         mRef.child("reaction").child(format).setValue(listTimes);
+
+        //////reading from firebase
+        DatabaseReference mRef2= mRef.child("reaction");
+        // Read from the database
+        mRef2.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                Map<String,Long> value = (Map)dataSnapshot.getValue();
+                Log.d("Value is: " , String.valueOf(value.entrySet()));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("Failed to read value.", error.toException());
+            }
+        });
+        ///////////////////
     }
 
     private void handleActionPutAccelList(long[] timestamp, float[] acc_x, float[] acc_y,
