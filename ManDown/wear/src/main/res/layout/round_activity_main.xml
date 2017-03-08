@@ -54,4 +54,12 @@
         android:layout_below="@+id/Wine"
         android:layout_centerHorizontal="true" />
 
+    <TextView
+        android:id="@+id/acc_reading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/Cocktail"
+        android:layout_alignStart="@+id/Beer"
+        android:text="TextView" />
+
 </RelativeLayout>
