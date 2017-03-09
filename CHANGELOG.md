@@ -8,6 +8,10 @@ merged branch, and MAJOR is a change signalling a release.
 
 Each change will list Added, Changed, and Fixed.
 
+## 0.6.0 - 2017-03-09
+### Changed
+- Modified SensorService to schedule tasks using a timer instead of AlarmManager
+
 ## 0.5.0 - 2017-03-09
 ### Added
 - Added disclaimer on app start-up
