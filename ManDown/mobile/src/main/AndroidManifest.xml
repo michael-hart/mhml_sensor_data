@@ -3,7 +3,6 @@
     package="net.mandown">
 
     <application
-        android:debuggable="true"
         android:allowBackup="true"
         android:icon="@drawable/turkey"
         android:label="@string/app_name"
@@ -33,7 +32,6 @@
         <activity android:name=".games.WhoAmIMenuActivity" />
         <activity android:name=".games.RingOfFireGameActivity" />
         <activity android:name=".games.WhoAmIGameActivity" />
-        <activity android:name=".games.Main2Activity"></activity>
     </application>
 
 </manifest>
