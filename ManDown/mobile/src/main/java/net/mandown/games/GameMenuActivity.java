@@ -6,16 +6,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import net.mandown.R;
 
 public class GameMenuActivity extends AppCompatActivity implements View.OnClickListener{
 
 
-    private Button buttonWAB;
-    private Button buttonTRW;
-    private Button buttonRF;
-    private Button buttonWI;
+    private ImageButton buttonWAB;
+    private ImageButton buttonTRW;
+    private ImageButton buttonRF;
+    private ImageButton buttonWI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,10 +28,10 @@ public class GameMenuActivity extends AppCompatActivity implements View.OnClickL
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         //getting the button
-        buttonWAB = (Button) findViewById(R.id.Button_Whack_a_beer);
-        buttonTRW = (Button) findViewById(R.id.Button_Tightrope_Waiter);
-        buttonRF = (Button) findViewById(R.id.Button_Ring_of_Fire);
-        buttonWI = (Button) findViewById(R.id.Button_Who_am_I);
+        buttonWAB = (ImageButton) findViewById(R.id.Button_Whack_a_beer);
+        buttonTRW = (ImageButton) findViewById(R.id.Button_Tightrope_Waiter);
+        buttonRF = (ImageButton) findViewById(R.id.Button_Ring_of_Fire);
+        buttonWI = (ImageButton) findViewById(R.id.Button_Who_am_I);
 
         //adding a click listener
         buttonWAB.setOnClickListener(this);

@@ -29,7 +29,7 @@ public class RingOfFireGameActivity extends AppCompatActivity implements RingOfF
         super.onCreate(savedInstanceState);
         Log.d("onCreate","Created my game activity");
         //setting the orientation to landscape
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         game = new FrameLayout(this);
         view = new RingOfFireView(this,this);
