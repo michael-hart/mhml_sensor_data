@@ -8,6 +8,10 @@ merged branch, and MAJOR is a change signalling a release.
 
 Each change will list Added, Changed, and Fixed.
 
+## 0.5.0 - 2017-03-09
+### Added
+- Added disclaimer on app start-up
+
 ## 0.4.0 - 2017-03-08
 ### Changed
 - Firebase has been moved into DBService
