@@ -60,6 +60,11 @@
         <activity android:name=".games.WhoAmIMenuActivity" />
         <activity android:name=".games.RingOfFireGameActivity" />
         <activity android:name=".games.WhoAmIGameActivity" />
+
+        <service
+            android:name=".db.IntoxicationService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

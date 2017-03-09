@@ -42,6 +42,7 @@ import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
 import net.mandown.db.DBService;
+import net.mandown.db.IntoxicationService;
 import net.mandown.games.GameMenuActivity;
 import net.mandown.history.HistoryActivity;
 import net.mandown.journal.JournalActivity;
@@ -141,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Reset the database on initialisation
         //    DBService.startActionResetDatabase(this);
-
+        
         // Start the sensor service to collect data
         if (this != null) {
             startService(new Intent(this, SensorService.class));
