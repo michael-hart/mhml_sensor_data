@@ -323,34 +323,6 @@ public class  WhackABeerView extends SurfaceView implements WhackABeerDrinks.Cal
     }
 
     public void gameOver(){
-
-        double myReactionTime = 1.66;
-
-        //create and populate map containing pairs of attribute name and value - both strings
-        Map<String,String> classifyMe = new HashMap<String,String>();
-            classifyMe.put("ax","0.85"); classifyMe.put("ay","0.87"); classifyMe.put("az","0.75");
-            classifyMe.put("gx","1.13"); classifyMe.put("gy","-1.02"); classifyMe.put("gz","1.01");
-            //example of using a variable; cast to a string using ""+ (or .toString() depending on scope)
-            classifyMe.put("rt", ""+myReactionTime);
-
-        try {
-            //register with model
-            RealtimePrediction myPrediction = new RealtimePrediction();
-
-            // Connect the object to the internet
-            myPrediction.connect();
-
-            //pass the map to the predict method of the RealtimePrediction object
-            myPrediction.predict(classifyMe);
-
-            String predictionLabel = myPrediction.getPredictedLabel();
-            float predictionScore = myPrediction.getPredictedScore(predictionLabel);
-
-            Log.d("Classification:", predictionLabel);
-            Log.d("Confidence: ", "" + predictionScore);
-        } catch (PredictionException pe) {
-            Log.e("WhackABeerView", "Exception when predicting: " + pe.getStackTrace());
-        }
         DBService.startActionPutReactionTimes(getContext(), reaction_times);
         observer.gameOver();
     }
