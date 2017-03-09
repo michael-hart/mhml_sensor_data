@@ -19,6 +19,8 @@ import android.os.Handler;
 
 import net.mandown.R;
 import net.mandown.db.DBService;
+import net.mandown.ml.PredictionException;
+import net.mandown.ml.RealtimePrediction;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -26,16 +28,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.services.machinelearning.AmazonMachineLearningClient;
-import com.amazonaws.services.machinelearning.model.EntityStatus;
-import com.amazonaws.services.machinelearning.model.GetMLModelRequest;
-import com.amazonaws.services.machinelearning.model.GetMLModelResult;
-import com.amazonaws.services.machinelearning.model.PredictRequest;
-import com.amazonaws.services.machinelearning.model.PredictResult;
-import com.amazonaws.services.machinelearning.model.RealtimeEndpointStatus;
-import com.amazonaws.auth.*;
 
 
 public class  WhackABeerView extends SurfaceView implements WhackABeerDrinks.Callback, Runnable {
@@ -93,49 +85,6 @@ public class  WhackABeerView extends SurfaceView implements WhackABeerDrinks.Cal
     private ArrayList<Long>  reaction_times;
     private OutputStreamWriter file_out;
     private Callback observer;
-
-    public class AndroidRealtimePrediction {
-
-        private final String mlModelId;
-        private String endpoint;
-        private AmazonMachineLearningClient client;
-
-        public AndroidRealtimePrediction(String mlModelId, AWSCredentials credentials) {
-            this.mlModelId = mlModelId;
-            this.client = new AmazonMachineLearningClient(credentials);
-            getRealtimeEndpoint();  // look up and cache the realtime endpoint for this model
-        }
-
-        //connect to the realtime endpoint of the model
-        private void getRealtimeEndpoint() {
-            GetMLModelRequest request = new GetMLModelRequest();
-            request.setMLModelId(mlModelId);
-            GetMLModelResult result = client.getMLModel(request);
-
-            //some debugging
-            if (!result.getStatus().equals(EntityStatus.COMPLETED.toString())) {
-                throw new IllegalStateException("ML model " + mlModelId + " needs to be completed.");
-            }
-            if (!result.getEndpointInfo().getEndpointStatus().equals(RealtimeEndpointStatus.READY.toString())) {
-                throw new IllegalStateException("ML model " + mlModelId + "'s real-time endpoint is not yet ready or needs to be created.");
-            }
-
-            this.endpoint = result.getEndpointInfo().getEndpointUrl();
-        }
-
-        //connect and predict, return full prediction as a PredictResult object
-        public PredictResult predict(Map<String, String> record) {
-            PredictRequest request = new PredictRequest();
-            request.setMLModelId(mlModelId);
-            request.setPredictEndpoint(endpoint);
-
-            // Populate record with data relevant to the ML model
-            request.setRecord(record);
-            PredictResult result = client.predict(request);
-
-            return result;
-        }
-    }
 
     public WhackABeerView(Callback _observer, Context context) {
         super(context);
@@ -374,13 +323,6 @@ public class  WhackABeerView extends SurfaceView implements WhackABeerDrinks.Cal
     }
 
     public void gameOver(){
-        //admin aws credentials - should stay the same
-        BasicAWSCredentials credentials = new BasicAWSCredentials("AKIAJQJKGOLKOOFNATNQ", "/95X3cv3ZODgD1YUBn4h73+8MjbY/TJG9/qYY2WF");
-        //model id - will change when we get actual data and another model is made
-        String mlModelId = "ml-SE2VPcgnZdb";
-        //register with model
-        AndroidRealtimePrediction myPrediction = new AndroidRealtimePrediction(mlModelId, credentials);
-
 
         double myReactionTime = 1.66;
 
@@ -391,17 +333,24 @@ public class  WhackABeerView extends SurfaceView implements WhackABeerDrinks.Cal
             //example of using a variable; cast to a string using ""+ (or .toString() depending on scope)
             classifyMe.put("rt", ""+myReactionTime);
 
-        //pass the map to the predict method of the AndroidRealtimePrediction object
-        PredictResult mhmlPrediction = myPrediction.predict(classifyMe);
+        try {
+            //register with model
+            RealtimePrediction myPrediction = new RealtimePrediction();
 
-        //full prediction
-        // Log.d("ADebugTag", "Value: " + mhmlPrediction.getPrediction());
+            // Connect the object to the internet
+            myPrediction.connect();
 
-        String predictionLabel = mhmlPrediction.getPrediction().getPredictedLabel();
-        Float predictionScore = mhmlPrediction.getPrediction().getPredictedScores().get(predictionLabel);
+            //pass the map to the predict method of the RealtimePrediction object
+            myPrediction.predict(classifyMe);
 
-        Log.d("Classification:", predictionLabel);
-        Log.d("Confidence: ", ""+predictionScore);
+            String predictionLabel = myPrediction.getPredictedLabel();
+            float predictionScore = myPrediction.getPredictedScore(predictionLabel);
+
+            Log.d("Classification:", predictionLabel);
+            Log.d("Confidence: ", "" + predictionScore);
+        } catch (PredictionException pe) {
+            Log.e("WhackABeerView", "Exception when predicting: " + pe.getStackTrace());
+        }
         DBService.startActionPutReactionTimes(getContext(), reaction_times);
         observer.gameOver();
     }
