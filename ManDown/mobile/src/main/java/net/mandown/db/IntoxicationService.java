@@ -6,8 +6,13 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import net.mandown.R;
+import net.mandown.ml.PredictionException;
+import net.mandown.ml.RealtimePrediction;
+import net.mandown.sensors.SensorSample;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
@@ -24,6 +29,9 @@ public class IntoxicationService extends Service {
     private int mCheckPeriod = INTOX_CHECK_PERIOD_S;
     private Lock mVarLock;
     private boolean mRunning;
+
+    private long mLastTimestamp = 0;
+    private float mIntoxicationLevel = 0f;
 
     // Binder for allowing activities to bind to service
     private final IBinder mBinder = new IntoxBinder();
@@ -126,9 +134,50 @@ public class IntoxicationService extends Service {
      * Threaded task to check intoxication
      */
     private class IntoxChecker implements Runnable {
+        private RealtimePrediction predictor;
         @Override
         public void run() {
-            // TODO Implement me!
+            // If the last timestamp is 0, get the current timestamp as the most recent and exit
+            if (mLastTimestamp == 0) {
+                mVarLock.lock();
+                mLastTimestamp = System.currentTimeMillis();
+                mIntoxicationLevel = 0f;
+                mVarLock.unlock();
+                return;
+            }
+
+            // Grab the recent data to get a prediction from
+            List<SensorSample> accel = DBService.getAccelDataSince(mLastTimestamp);
+            List<SensorSample> gyro = DBService.getGyroDataSince(mLastTimestamp);
+            List<SensorSample> magnet = DBService.getMagnetDataSince(mLastTimestamp);
+            List<Integer> reactions = DBService.getReactionTimesSince(mLastTimestamp);
+
+            // Package the samples into a Map
+            Map<String, String> classifySamples = new HashMap<String, String>();
+            // TODO package times into map
+
+            String resultLabel;
+            float resultScore = 0f;
+
+            // Create and connect the predictor
+            try {
+                predictor = new RealtimePrediction();
+                predictor.connect();
+                // Create a prediction from samples
+                predictor.predict(classifySamples);
+                resultLabel = predictor.getPredictedLabel();
+                resultScore = predictor.getPredictedScore(resultLabel);
+            } catch (PredictionException pe) {
+                Log.e("IntoxicationService", "Error in prediction: " pe.getStackTrace());
+                return;
+            }
+
+            mVarLock.lock();
+            mIntoxicationLevel = resultScore;
+            mVarLock.unlock();
+
+            // TODO broadcast a notification to the user if above a certain level
+
         }
     }
 
