@@ -72,6 +72,31 @@ public class DBService extends IntentService {
         context.startService(intent);
     }
 
+
+
+    ////////////////////////////
+
+    public static void startActionPutSensorGamedata(Context context, ArrayList<Float[]> stList) {
+        Intent intent = new Intent(context, DBService.class);
+        //float[] sensor_games = new float[4*stList.size()];
+        //int count = 0;
+        //for (Float[] i : stList) {
+        //   for(Float j : i) {
+        //        sensor_games[count++] = i[j];
+        //    }
+        //}
+
+
+        intent.setAction("net.mandown.db.put.tightropewaiter.sn");
+        intent.putExtra("sensor.arr",stList);
+        context.startService(intent);
+
+    }
+
+    //////////////////////////////////////////
+
+
+
     /**
      * Starts this service to perform action Put Sensor List with the given parameters. If
      * the service is already performing a task this action will be queued.
@@ -198,6 +223,35 @@ public class DBService extends IntentService {
         });
         ///////////////////
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private void handleActionPutSensorGamedata(ArrayList<Float[]> sn) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+        String format = dateFormat.format(new Date());
+        //List<Long> listTimes = new ArrayList<Long>();
+        //for (int i = 0; i < times.length; i++) {
+        //    listTimes.add(times[i]);
+        //}
+        mRef.child("SensorGame").child(format).setValue(sn);
+
+
+    }
+
+
+
+
+
 
     private void handleActionPutAccelList(ArrayList<Long> timestamps, ArrayList<Float> acc_x,
                                           ArrayList<Float> acc_y, ArrayList<Float> acc_z)
