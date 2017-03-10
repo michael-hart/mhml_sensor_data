@@ -1,8 +1,6 @@
 package net.mandown.sensors;
 
-import android.app.AlarmManager;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -18,17 +16,18 @@ import net.mandown.db.DBService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 
-public class SensorService extends Service implements AlarmManager.OnAlarmListener {
+public class SensorService extends Service {
 
     // Define constants for use in Service
-//    public static final int DEFAULT_POLL_RATE_US = 100000; // 100ms
-    public static final int DEFAULT_POLL_RATE_US = 100; // 100us
-    public static final int DEFAULT_POLL_PERIOD_S = 2; // 30s
-    public static final int DEFAULT_POLL_INTERVAL_S = 1; // 10 minutes
+    public static final int DEFAULT_POLL_RATE_US = 100000; // 100ms
+    public static final int DEFAULT_POLL_PERIOD_S = 30; // 30s
+    public static final int DEFAULT_POLL_INTERVAL_S = 600; // 10 minutes
 
     // Binder given to clients
     private final IBinder mBinder = new SensorBinder();
@@ -37,13 +36,16 @@ public class SensorService extends Service implements AlarmManager.OnAlarmListen
     private int mPollRate, mPollPeriod, mPollInterval;
     private boolean mRunning = false;
     private Lock mVarLock;
-    private AlarmManager mAlarmManager;
 
     // Sensor member variables
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
     private Sensor mGyroscope;
     private Sensor mMagnetometer;
+
+    // Timer for scheduling the sensor task
+    private Timer mScheduleTimer;
+    private boolean mTimerIsCancelled = true;
 
     // Constructor replacement method
     @Override
@@ -55,9 +57,7 @@ public class SensorService extends Service implements AlarmManager.OnAlarmListen
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-
-        // Get alarm manager from context
-        mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        mScheduleTimer = new Timer();
     }
 
     @Override
@@ -75,10 +75,10 @@ public class SensorService extends Service implements AlarmManager.OnAlarmListen
         mVarLock.unlock();
 
         // Start the data collection
-        startPollingNow();
+        rescheduleDataCollection();
 
-        // Return not sticky, as service will restart itself after an interval using alarm
-        return START_NOT_STICKY;
+        // Return sticky, as service must stay alive to use the timer interval
+        return START_STICKY;
     }
 
     @Override
@@ -92,8 +92,11 @@ public class SensorService extends Service implements AlarmManager.OnAlarmListen
      * Block service from taking further data
      */
     public void stopPolling() {
-        if (mAlarmManager != null) {
-            mAlarmManager.cancel(this);
+        if (!mTimerIsCancelled) {
+            mVarLock.lock();
+            mScheduleTimer.cancel();
+            mTimerIsCancelled = true;
+            mVarLock.unlock();
         }
     }
 
@@ -109,11 +112,6 @@ public class SensorService extends Service implements AlarmManager.OnAlarmListen
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
-    }
-
-    @Override
-    public void onAlarm() {
-        startPollingNow();
     }
 
     /* Threaded runnable to take data */
@@ -227,6 +225,8 @@ public class SensorService extends Service implements AlarmManager.OnAlarmListen
         mVarLock.lock();
         mPollPeriod = pollPeriod;
         mVarLock.unlock();
+        // Adjust timer interval
+        rescheduleDataCollection();
     }
 
     int getPollPeriod() {
@@ -237,28 +237,32 @@ public class SensorService extends Service implements AlarmManager.OnAlarmListen
         mVarLock.lock();
         mPollInterval = pollInterval;
         mVarLock.unlock();
+        // Adjust timer interval
+        rescheduleDataCollection();
     }
 
     int getPollInterval() {
         return mPollInterval;
     }
 
-    void startPollingNow() {
+    /**
+     * Cancels existing task and reschedules with new interval
+     */
+    void rescheduleDataCollection() {
         mVarLock.lock();
-        // Check and remove pre-existing alarms
-         mAlarmManager.cancel(this);
-
-        // Set an alarm to trigger service to restart
-        mAlarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                          SystemClock.elapsedRealtime() + (mPollPeriod + mPollInterval) * 1000,
-                          "SensorService Start Collection", this, null);
-
-        // Only start running if not already running
-        if (!mRunning) {
-            // Spawn a thread to do the work
-            (new Thread(new SensorDataCollector())).start();
-        }
-
+        stopPolling();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                // Only start running if not already running
+                if (!mRunning) {
+                    // Spawn a thread to do the work
+                    (new Thread(new SensorDataCollector())).start();
+                }
+            }
+        };
+        mScheduleTimer.scheduleAtFixedRate(task, 0, (mPollInterval + mPollPeriod) * 1000);
+        mTimerIsCancelled = false;
         mVarLock.unlock();
     }
 

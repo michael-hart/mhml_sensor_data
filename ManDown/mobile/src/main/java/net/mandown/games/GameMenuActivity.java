@@ -23,7 +23,7 @@ public class GameMenuActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_game_menu);
 
 
-        //setting the orientation to landscape
+        //setting the orientation to portrait
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         //getting the button

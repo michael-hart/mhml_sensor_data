@@ -1,15 +1,11 @@
 package net.mandown;
 
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
-import android.media.Image;
 import android.os.Handler;
-import android.os.IBinder;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -20,6 +16,13 @@ import net.mandown.sensors.SensorService;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    private final String mDisclaimerText =
+            "This app is distributed for the collection of accelerometer, gyroscope, and " +
+            "magnetometer data over time. The use of the app's games will collect information " +
+            "and store it online. The app does not accept responsibility for inaccurate readings " +
+            "or results for intoxication levels.\n\nIf you wish to opt out, please uninstall " +
+            "the application.";
 
     // Set up a new handler to update the home textview with number of DB entries every 100ms
     private final Handler mDbUpdateHandler = new Handler();
@@ -52,25 +55,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Set Beer glass to manually insert new passive data entry into database
-        ImageButton btnBeerGlass = (ImageButton) findViewById(R.id.BeerGlass);
-        // Add the click listener
-        btnBeerGlass.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Insert new entry
-                DBService.startActionPutPassive(getApplicationContext(), 0, 0, 0);
-            }
-        });
-
-        // Reset the database on initialisation
-        DBService.startActionResetDatabase(this);
-
         // Start the sensor service to collect data
-        //startService(new Intent(this, SensorService.class));
+        startService(new Intent(this, SensorService.class));
 
         // Post event to handler to begin DB updates
         mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
 
+        // Create a disclaimer window using AlertDialog
+        AlertDialog dialog = (new AlertDialog.Builder(this))
+                .setTitle("ManDown Disclaimer")
+                .setMessage(mDisclaimerText)
+                .setPositiveButton("I understand", null)
+                .create();
+        dialog.show();
     }
 
 }
