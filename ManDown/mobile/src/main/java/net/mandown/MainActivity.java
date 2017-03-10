@@ -9,7 +9,6 @@ import android.content.pm.ActivityInfo;
 import android.media.Image;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -84,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         // Reset the database on initialisation
-        DBService.startActionResetDatabase(this);
+    //    DBService.startActionResetDatabase(this);
 
 
         // Start the sensor service to collect data
@@ -113,10 +112,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (v == btnBeerGlass) {
             //starting sensor activity
-            DBService.startActionPutPassive(getApplicationContext(), 0, 0, 0);
+       //     DBService.startActionPutPassive(getApplicationContext(), 0, 0, 0);
         }
         if (v == btnEmergency) {
-            new AlertDialog.Builder(this)
+            new android.app.AlertDialog.Builder(this)
                     .setTitle("Contact Emergency Help")
                     .setMessage("Are you sure you want to send a distress call")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -134,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         // Create a disclaimer window using AlertDialog
-        AlertDialog dialog = (new AlertDialog.Builder(this))
+        android.app.AlertDialog dialog = (new android.app.AlertDialog.Builder(this))
                 .setTitle("ManDown Disclaimer")
                 .setMessage(mDisclaimerText)
                 .setPositiveButton("I understand", null)

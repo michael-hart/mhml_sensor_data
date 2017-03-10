@@ -99,4 +99,22 @@
         android:inputType="numberDecimal"
         android:textSize="14sp" />
 
+    <EditText
+        android:id="@+id/display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="none"
+        android:layout_marginTop="31dp"
+        android:layout_below="@+id/Unit_input"
+        android:layout_alignStart="@+id/Unit_input" />
+
+    <Button
+        android:id="@+id/Confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/display"
+        android:layout_centerHorizontal="true"
+        android:text="Confirm" />
+
 </RelativeLayout>
