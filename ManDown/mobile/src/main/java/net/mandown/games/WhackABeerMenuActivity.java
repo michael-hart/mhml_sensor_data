@@ -20,7 +20,7 @@ public class WhackABeerMenuActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_whack_a_beer_menu);
 
         //setting the orientation to landscape
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         //getting the button
         buttonPlay = (ImageButton) findViewById(R.id.buttonPlay);
