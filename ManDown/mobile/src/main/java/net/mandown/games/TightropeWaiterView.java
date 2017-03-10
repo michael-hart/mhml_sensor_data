@@ -17,6 +17,7 @@ import android.view.SurfaceView;
 
 import net.mandown.R;
 import net.mandown.db.DBService;
+import net.mandown.sensors.SensorBroadcastService;
 import net.mandown.sensors.SensorSample;
 import net.mandown.sensors.SensorType;
 
@@ -208,7 +209,7 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
         Context context = getContext();
 
         //Start accelerometer service
-        Intent intent = new Intent(getContext(), GetSensor.class);
+        Intent intent = new Intent(getContext(), SensorBroadcastService.class);
         context.startService(intent);
         context.registerReceiver(br, new IntentFilter(context.getString(R.string.accel_broadcast)));
 

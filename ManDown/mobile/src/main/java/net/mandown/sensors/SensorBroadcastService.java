@@ -1,4 +1,4 @@
-package net.mandown.games;
+package net.mandown.sensors;
 
 import android.app.Service;
 import android.content.Intent;
@@ -10,7 +10,7 @@ import android.os.IBinder;
 
 import net.mandown.R;
 
-public class GetSensor extends Service implements SensorEventListener {
+public class SensorBroadcastService extends Service implements SensorEventListener {
 
     //Sensors
     private static SensorManager mSensorManager;
