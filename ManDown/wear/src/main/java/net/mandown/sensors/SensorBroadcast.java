@@ -9,7 +9,7 @@ import android.hardware.SensorManager;
 import android.os.IBinder;
 import android.util.Log;
 
-public class GetSensor extends Service implements SensorEventListener {
+public class SensorBroadcast extends Service implements SensorEventListener {
 
 //    public float acc_x = 0.0f;
 //    public float acc_y = 0.0f;
@@ -65,7 +65,7 @@ public class GetSensor extends Service implements SensorEventListener {
         // If sensor is unreliable, then just return
         if (event.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE)
         {
-            Log.i("sensor error", "ERRORRRRRR");
+            //Log.i("sensor error", "ERRORRRRRR");
             return;
         }
 

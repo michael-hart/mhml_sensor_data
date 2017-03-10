@@ -23,7 +23,7 @@ public class SensorBroadcastService extends Service implements SensorEventListen
         // Create member objects
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-    }
+}
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -43,7 +43,6 @@ public class SensorBroadcastService extends Service implements SensorEventListen
     }
 
     private void publishResults(long ts, float x, float y, float z) {
-
         Intent intent = new Intent(getString(R.string.accel_broadcast));
         intent.putExtra("ts", ts);
         intent.putExtra("x", x);

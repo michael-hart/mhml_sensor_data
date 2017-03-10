@@ -140,7 +140,6 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
         public void onReceive(Context context, Intent intent) {
             long ts;
             float x, y, z;
-
             ts = intent.getLongExtra("ts", -1);
             x = intent.getFloatExtra("x", -1);
             y = intent.getFloatExtra("y", -1);
@@ -221,7 +220,6 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
 
         context.stopService(intent);
         context.unregisterReceiver(br);
-
         // Insert sensor values into database
         DBService.startActionPutSensorList(context, mSensorData, SensorType.ACCELEROMETER);
     }
@@ -233,7 +231,7 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
         drink.Update(Math.round(mAccX *(-20)),Math.round(mAccY *20));
 		plate.Update(0.5f);
 
-        mSensorData.add(new SensorSample(mAccTS, mAccX, mAccY, mAccZ));
+        //mSensorData.add(new SensorSample(mAccTS, mAccX, mAccY, mAccZ));
 
         int dist = distance(drink.getX(),drink.getY());
 
