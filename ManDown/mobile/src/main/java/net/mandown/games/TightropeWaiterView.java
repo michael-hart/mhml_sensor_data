@@ -10,14 +10,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.os.Bundle;
-import android.os.ResultReceiver;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import net.mandown.R;
+import net.mandown.db.DBService;
+import net.mandown.sensors.SensorSample;
+import net.mandown.sensors.SensorType;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -85,7 +86,7 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
     private TRWDrink drink;
     private int zero_x;
     private int zero_y;
-    private ArrayList<Float[]> sensordata;
+    private ArrayList<SensorSample> mSensorData;
 
     //gameplay variables
     private int steps;
@@ -93,22 +94,25 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
     private Callback observer;
 
     //accel values
-    public float acc_x = 0.0f;
-    public float acc_y = 0.0f;
-
-    //getting context and broadcast
-    public Context localcontext;
-    //ResultReceiver resultReceiver;
+    private long mAccTS = 0;
+    private float mAccX = 0.0f;
+    private float mAccY = 0.0f;
+    private float mAccZ = 0.0f;
 
     private BroadcastReceiver br = new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            long ts;
+            float x, y, z;
 
-            Bundle bundle = intent.getExtras();
-            if (bundle != null) {
-                acc_x = bundle.getFloat("x");
-                acc_y = bundle.getFloat("y");
+            ts = intent.getLongExtra("ts", -1);
+            x = intent.getFloatExtra("x", -1);
+            y = intent.getFloatExtra("y", -1);
+            z = intent.getFloatExtra("z", -1);
+
+            if (ts > -1) {
+                updateAccValues(ts, x, y, z);
             }
         }
     };
@@ -117,9 +121,6 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
     public TightropeWaiterView(Callback _observer, Context context) {
         super(context);
         observer=_observer;
-
-        //getting context
-        localcontext = context;
 
         //display metrics
         dm = new DisplayMetrics();
@@ -135,42 +136,48 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
         int drink_width = 250*dm.widthPixels/1280;
         int drink_height = 150*dm.heightPixels/720;
 
-        background_bm = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.background),dm.widthPixels,dm.heightPixels,false);
-        drink_bm = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.glass_beer),drink_width,drink_height,false);
+        background_bm = Bitmap.createScaledBitmap(
+                BitmapFactory.decodeResource(res, R.drawable.background),
+                dm.widthPixels, dm.heightPixels, false);
+        drink_bm = Bitmap.createScaledBitmap(
+                BitmapFactory.decodeResource(res, R.drawable.glass_beer),
+                drink_width, drink_height, false);
 
         ///NEED SENSOR DATA HERE!!!   AND IN UPDATE!!!!!
         zero_x = dm.widthPixels/2 - drink_width/2;
         zero_y = dm.heightPixels/2 - drink_height/2;
 
-        drink= new TRWDrink(zero_x,zero_y,drink_bm);
-
-        sensordata = new ArrayList<>();
-
+        drink = new TRWDrink(zero_x,zero_y,drink_bm);
 
         try {
-            file_out = new OutputStreamWriter(context.openFileOutput("reaction.txt", Context.MODE_PRIVATE));
+            file_out = new OutputStreamWriter(
+                    context.openFileOutput("reaction.txt", Context.MODE_PRIVATE));
         }
         catch (IOException e) {
             Log.e("Exception", "File write failed: " + e.toString());
         }
-
-
     }
 
     //Function to allow accel service to update accelerometer readings
-    public void updateAccValues(float x, float y) {
-        acc_x = x;
-        acc_y = y;
+    public void updateAccValues(long ts, float x, float y, float z) {
+        mAccTS = ts;
+        mAccX = x;
+        mAccY = y;
+        mAccZ = z;
+        mSensorData.add(new SensorSample(ts, x, y, z));
     }
 
     @Override
     public void run() {
+        // Clear sensor data array list
+        mSensorData = new ArrayList<>();
+
+        Context context = getContext();
+
         //Start accelerometer service
-        //resultReceiver = new ResultReceiver(null);
-        Intent intent = new Intent(localcontext, GetSensor.class);
-        //intent.putExtra("receiver", resultReceiver);
-        localcontext.startService(intent);
-        localcontext.registerReceiver(br, new IntentFilter("publish accel"));
+        Intent intent = new Intent(getContext(), GetSensor.class);
+        context.startService(intent);
+        context.registerReceiver(br, new IntentFilter(context.getString(R.string.accel_broadcast)));
 
         while (playing) {
             update();
@@ -178,17 +185,20 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
             control();
         }
 
-        localcontext.stopService(intent);
-        localcontext.unregisterReceiver(br);
+        context.stopService(intent);
+        context.unregisterReceiver(br);
+
+        // Insert sensor values into database
+        DBService.startActionPutSensorList(context, mSensorData, SensorType.ACCELEROMETER);
     }
 
 
     private void update() {
         //updating player position
         //player.update();
-        drink.Update(Math.round(acc_x*(-20)),Math.round(acc_y*20));
+        drink.Update(Math.round(mAccX *(-20)),Math.round(mAccY *20));
 
-        sensordata.add(new Float[]{acc_x,acc_y});
+        mSensorData.add(new SensorSample(mAccTS, mAccX, mAccY, mAccZ));
 
         int dist = distance(drink.getX(),drink.getY());
 
@@ -251,7 +261,6 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
             Log.e("Exception", "File write failed: " + e.toString());
         }
         observer.gameOver();
-
     }
 
     interface Callback {
