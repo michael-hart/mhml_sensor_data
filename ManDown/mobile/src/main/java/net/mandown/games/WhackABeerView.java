@@ -18,6 +18,7 @@ import android.graphics.Color;
 import android.os.Handler;
 
 import net.mandown.R;
+import net.mandown.db.DBService;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -317,18 +318,8 @@ public class WhackABeerView extends SurfaceView implements WhackABeerDrinks.Call
     }
 
     public void gameOver(){
-        try {
-            OutputStreamWriter outputStreamWriter = file_out;
-            for(int i=0;i<reaction_times.size();i++){
-                outputStreamWriter.write(Long.toString(reaction_times.get(i)));
-            }
-            outputStreamWriter.close();
-        }
-        catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
-        }
+        DBService.startActionPutReactionTimes(getContext(), reaction_times);
         observer.gameOver();
-
     }
 
     interface Callback {
