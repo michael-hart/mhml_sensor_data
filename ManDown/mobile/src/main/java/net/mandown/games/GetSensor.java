@@ -7,12 +7,10 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
-import android.util.Log;
+
+import net.mandown.R;
 
 public class GetSensor extends Service implements SensorEventListener {
-
-//    public float acc_x = 0.0f;
-//    public float acc_y = 0.0f;
 
     //Sensors
     private static SensorManager mSensorManager;
@@ -29,10 +27,7 @@ public class GetSensor extends Service implements SensorEventListener {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        //Log.i("SensorService", "Received start id " + startId + ": " + intent);
-
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
-
         return START_STICKY;
     }
 
@@ -47,32 +42,30 @@ public class GetSensor extends Service implements SensorEventListener {
         mSensorManager.unregisterListener(this, mAccelerometer);
     }
 
-    private void publishResults(float x, float y) {
+    private void publishResults(long ts, float x, float y, float z) {
 
-        Intent intent = new Intent("publish accel");
+        Intent intent = new Intent(getString(R.string.accel_broadcast));
+        intent.putExtra("ts", ts);
         intent.putExtra("x", x);
         intent.putExtra("y", y);
+        intent.putExtra("z", z);
 
         sendBroadcast(intent);
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        //Log.i("well well well", Float.toString(event.values[0]) + ' ' + Float.toString(event.values[1]));
         // If sensor is unreliable, then just return
         if (event.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE)
         {
             return;
         }
 
-        publishResults(event.values[0], event.values[1]);
+        publishResults(event.timestamp, event.values[0], event.values[1], event.values[2]);
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
-
-
-
 }
