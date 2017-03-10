@@ -336,7 +336,7 @@ public class DBService extends IntentService {
         //for (int i = 0; i < times.length; i++) {
         //    listTimes.add(times[i]);
         //}
-        mRef.child("SensorGame").child(format).setValue(sn.toArray());
+        mRef.child("SensorGame").child(format).setValue(sn);
 
 
     }
