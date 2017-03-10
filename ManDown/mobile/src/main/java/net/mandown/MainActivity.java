@@ -1,16 +1,11 @@
 package net.mandown;
 
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
-import android.media.Image;
 import android.os.Handler;
-import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -61,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Start the sensor service to collect data
-        //startService(new Intent(this, SensorService.class));
+        startService(new Intent(this, SensorService.class));
 
         // Post event to handler to begin DB updates
         mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
