@@ -20,6 +20,9 @@
         <activity android:name=".games.WhackABeerGameActivity" />
         <activity android:name=".games.TightropeWaiterMenuActivity" />
         <activity android:name=".games.TightropeWaiterGameActivity" />
+        <activity android:name=".journal.JournalActivity" />
+        <activity android:name=".history.HistoryActivity" />
+
 
         <service
             android:name=".db.DBService"
@@ -32,6 +35,7 @@
         <activity android:name=".games.WhoAmIMenuActivity" />
         <activity android:name=".games.RingOfFireGameActivity" />
         <activity android:name=".games.WhoAmIGameActivity" />
+
     </application>
 
 </manifest>

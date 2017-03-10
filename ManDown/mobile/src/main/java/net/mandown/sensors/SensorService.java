@@ -28,6 +28,7 @@ public class SensorService extends Service {
 
     // Define constants for use in Service
     public static final int DEFAULT_POLL_RATE_US = 100000; // 100ms
+
     public static final int DEFAULT_POLL_PERIOD_S = 30; // 30s
     public static final int DEFAULT_POLL_INTERVAL_S = 600; // 10 minutes
 

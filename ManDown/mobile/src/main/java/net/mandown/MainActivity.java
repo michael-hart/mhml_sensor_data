@@ -1,6 +1,8 @@
 package net.mandown;
 
+import android.app.AlertDialog;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
@@ -17,10 +19,14 @@ import android.widget.TextView;
 
 import net.mandown.db.DBService;
 import net.mandown.games.GameMenuActivity;
+import net.mandown.history.HistoryActivity;
+import net.mandown.journal.JournalActivity;
 import net.mandown.sensors.SensorService;
 
+import net.mandown.R;
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private final String mDisclaimerText =
             "This app is distributed for the collection of accelerometer, gyroscope, and " +
@@ -43,6 +49,14 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private ImageButton btnGamePlay;
+    private ImageButton btnBeerGlass;
+    private ImageButton btnJournal;
+    private ImageButton btnHistory;
+    private ImageButton btnOptions;
+    private ImageButton btnEmergency;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,20 +65,73 @@ public class MainActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         //getting the button
-        ImageButton btnGamePlay = (ImageButton) findViewById(R.id.JoyStick);
+
+        btnGamePlay = (ImageButton) findViewById(R.id.JoyStick);
+        btnBeerGlass = (ImageButton) findViewById(R.id.BeerGlass);
+        btnJournal  = (ImageButton) findViewById(R.id.Journal);
+        btnHistory  = (ImageButton) findViewById(R.id.History);
+        btnOptions  = (ImageButton) findViewById(R.id.OptionLevers);
+        btnEmergency= (ImageButton) findViewById(R.id.DrunkMan);
+
         //adding a click listener
-        btnGamePlay.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                //starting game activity
-                startActivity(new Intent(getApplicationContext(), GameMenuActivity.class));
-            }
-        });
+
+        btnGamePlay.setOnClickListener(this);
+        btnBeerGlass.setOnClickListener(this);
+        btnJournal.setOnClickListener(this);
+        btnHistory.setOnClickListener(this);
+        btnOptions.setOnClickListener(this);
+        btnEmergency.setOnClickListener(this);
+
+
+        // Reset the database on initialisation
+        DBService.startActionResetDatabase(this);
+
 
         // Start the sensor service to collect data
         startService(new Intent(this, SensorService.class));
 
         // Post event to handler to begin DB updates
         mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
+
+
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        if (v == btnGamePlay) {
+            //starting game menu activity
+            startActivity(new Intent(this, GameMenuActivity.class));
+        }
+        if (v == btnHistory) {
+            //starting game activity
+            startActivity(new Intent(this, HistoryActivity.class));
+        }
+        if (v == btnJournal) {
+            //starting game activity
+            startActivity(new Intent(this, JournalActivity.class));
+        }
+        if (v == btnBeerGlass) {
+            //starting sensor activity
+            DBService.startActionPutPassive(getApplicationContext(), 0, 0, 0);
+        }
+        if (v == btnEmergency) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Contact Emergency Help")
+                    .setMessage("Are you sure you want to send a distress call")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // continue with delete
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
 
         // Create a disclaimer window using AlertDialog
         AlertDialog dialog = (new AlertDialog.Builder(this))
@@ -73,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton("I understand", null)
                 .create();
         dialog.show();
+
     }
 
 }
