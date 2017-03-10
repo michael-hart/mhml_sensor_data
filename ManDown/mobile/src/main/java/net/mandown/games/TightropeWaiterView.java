@@ -19,9 +19,6 @@ import android.view.SurfaceView;
 
 import net.mandown.R;
 import net.mandown.db.DBService;
-import net.mandown.sensors.SensorBroadcastService;
-import net.mandown.sensors.SensorSample;
-import net.mandown.sensors.SensorType;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -311,6 +308,7 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
         try {
             OutputStreamWriter outputStreamWriter = file_out;
             outputStreamWriter.close();
+            DBService.startActionPutSensorGamedata(getContext(), sensordata);
         }
         catch (IOException e) {
             Log.e("Exception", "File write failed: " + e.toString());

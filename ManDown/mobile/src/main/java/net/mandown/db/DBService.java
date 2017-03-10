@@ -79,6 +79,28 @@ public class DBService extends IntentService {
         context.startService(intent);
     }
 
+
+    public static void startActionPutSensorGamedata(Context context, List<Float[]> stList) {
+        Intent intent = new Intent(context, DBService.class);
+        float[] sensor_games = new float[4*stList.size()];
+        int count = 0;
+        for (Float[] i : stList) {
+            for(Float j : i) {
+                sensor_games[count++] = i[j];
+            }
+        }
+
+
+        intent.setAction("net.mandown.db.put.tightropewaiter.sn");
+        intent.putExtra("sensor.arr",sensor_games);
+        context.startService(intent);
+
+
+    }
+
+
+
+
     /**
      * Starts this service to perform action Put Sensor List with the given parameters. If
      * the service is already performing a task this action will be queued.
@@ -197,17 +219,19 @@ public class DBService extends IntentService {
             if (getString(R.string.put_whackabeer_score).equals(action)) {
                 // TODO handle put whack-a-beer score
             } else if (getString(R.string.put_whackabeer_rt).equals(action)) {
-                ArrayList<Long> reactionTimes = (ArrayList<Long>)
-                        intent.getSerializableExtra(getString(R.string.rt_arr));
-            } else if (getString(R.string.put_accel_list).equals(action)) {
-                ArrayList<Long> timestamps = (ArrayList<Long>)
-                        intent.getSerializableExtra(getString(R.string.accel_timestamp_arr));
-                ArrayList<Float> x = (ArrayList<Float>)
-                        intent.getSerializableExtra(getString(R.string.accel_x_arr));
-                ArrayList<Float> y = (ArrayList<Float>)
-                        intent.getSerializableExtra(getString(R.string.accel_y_arr));
-                ArrayList<Float> z = (ArrayList<Float>)
-                        intent.getSerializableExtra(getString(R.string.accel_z_arr));
+                long[] reactionTimes = intent.getLongArrayExtra(getString(R.string.rt_arr));
+                handleActionPutReactionTimes(reactionTimes);
+
+            } else if (getString(R.string.put_tightropewaiter_sn).equals(action)) {
+                float[] sensor_game_readings = intent.getFloatArrayExtra(getString(R.string.sensor_arr));
+                handleActionPutSensorGamedata(sensor_game_readings);
+            }
+            else if (getString(R.string.put_accel_list).equals(action)) {
+                long[] timestamps =
+                        intent.getLongArrayExtra(getString(R.string.accel_timestamp_arr));
+                float[] x = intent.getFloatArrayExtra(getString(R.string.accel_x_arr));
+                float[] y = intent.getFloatArrayExtra(getString(R.string.accel_y_arr));
+                float[] z = intent.getFloatArrayExtra(getString(R.string.accel_z_arr));
                 handleActionPutAccelList(timestamps, x, y, z);
             } else if (getString(R.string.put_gyro_list).equals(action)) {
                 ArrayList<Long> timestamps = (ArrayList<Long>)
@@ -270,8 +294,24 @@ public class DBService extends IntentService {
         ///////////////////
     }
 
-    private void handleActionPutAccelList(ArrayList<Long> timestamps, ArrayList<Float> acc_x,
-                                          ArrayList<Float> acc_y, ArrayList<Float> acc_z)
+
+
+
+    private void handleActionPutSensorGamedata(float[] sn) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+        String format = dateFormat.format(new Date());
+        //List<Long> listTimes = new ArrayList<Long>();
+        //for (int i = 0; i < times.length; i++) {
+        //    listTimes.add(times[i]);
+        //}
+        mRef.child("SensorGame").child(format).setValue(sn);
+
+
+    }
+
+
+    private void handleActionPutAccelList(long[] timestamp, float[] acc_x, float[] acc_y,
+                                          float[] acc_z)
     {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         String format = dateFormat.format(new Date());
