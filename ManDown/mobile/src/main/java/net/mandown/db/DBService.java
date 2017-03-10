@@ -73,6 +73,16 @@ public class DBService extends IntentService {
      * @see IntentService
      */
     public static void startActionPutReactionTimes(Context context, ArrayList<Long> rtList) {
+
+        /*
+        long[] react_time = new long[rtList.size()];
+        int count=0;
+        for (long i: react_time){
+            react_time[count++]=i;
+        }
+        */
+
+
         Intent intent = new Intent(context, DBService.class);
         intent.setAction(context.getString(R.string.put_whackabeer_rt));
         intent.putExtra(context.getString(R.string.rt_arr), rtList);
@@ -222,19 +232,22 @@ public class DBService extends IntentService {
             if (getString(R.string.put_whackabeer_score).equals(action)) {
                 // TODO handle put whack-a-beer score
             } else if (getString(R.string.put_whackabeer_rt).equals(action)) {
-                long[] reactionTimes = intent.getLongArrayExtra(getString(R.string.rt_arr));
+                ArrayList<Long> reactionTimes = (ArrayList<Long>)
+                        intent.getSerializableExtra(getString(R.string.rt_arr));
                 handleActionPutReactionTimes(reactionTimes);
-
-            } else if (getString(R.string.put_tightropewaiter_sn).equals(action)) {
-                float[] sensor_game_readings = intent.getFloatArrayExtra(getString(R.string.sensor_arr));
-                handleActionPutSensorGamedata(sensor_game_readings);
-            }
-            else if (getString(R.string.put_accel_list).equals(action)) {
-                long[] timestamps =
-                        intent.getLongArrayExtra(getString(R.string.accel_timestamp_arr));
-                float[] x = intent.getFloatArrayExtra(getString(R.string.accel_x_arr));
-                float[] y = intent.getFloatArrayExtra(getString(R.string.accel_y_arr));
-                float[] z = intent.getFloatArrayExtra(getString(R.string.accel_z_arr));
+            }  else if (getString(R.string.put_tightropewaiter_sn).equals(action)) {
+                ArrayList<Float[]> SensorGameData = (ArrayList<Float[]>)
+                        intent.getSerializableExtra(getString(R.string.sensor_arr));
+                handleActionPutSensorGamedata(SensorGameData);
+            } else if (getString(R.string.put_accel_list).equals(action)) {
+                ArrayList<Long> timestamps = (ArrayList<Long>)
+                        intent.getSerializableExtra(getString(R.string.accel_timestamp_arr));
+                ArrayList<Float> x = (ArrayList<Float>)
+                        intent.getSerializableExtra(getString(R.string.accel_x_arr));
+                ArrayList<Float> y = (ArrayList<Float>)
+                        intent.getSerializableExtra(getString(R.string.accel_y_arr));
+                ArrayList<Float> z = (ArrayList<Float>)
+                        intent.getSerializableExtra(getString(R.string.accel_z_arr));
                 handleActionPutAccelList(timestamps, x, y, z);
             } else if (getString(R.string.put_gyro_list).equals(action)) {
                 ArrayList<Long> timestamps = (ArrayList<Long>)
@@ -270,11 +283,18 @@ public class DBService extends IntentService {
         }
     }
 
-    private void handleActionPutReactionTimes(ArrayList<Long> times) {
+    private void handleActionPutReactionTimes(ArrayList<Long> rt) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         String format = dateFormat.format(new Date());
 
-        mRef.child("reaction").child(format).setValue(times);
+
+
+
+        //ArrayList<Long> listTimes = new ArrayList<Long>();
+        //for (int i = 0; i < times.length; i++) {
+        //    listTimes.add(times[i]);
+        //}
+        mRef.child("reaction").child(format).setValue(rt);
 
         //////reading from firebase
         DatabaseReference mRef2= mRef.child("reaction");
@@ -312,11 +332,11 @@ public class DBService extends IntentService {
     private void handleActionPutSensorGamedata(ArrayList<Float[]> sn) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         String format = dateFormat.format(new Date());
-        //List<Long> listTimes = new ArrayList<Long>();
+        //List<Float[]> listTimes = new ArrayList<Long>();
         //for (int i = 0; i < times.length; i++) {
         //    listTimes.add(times[i]);
         //}
-        mRef.child("SensorGame").child(format).setValue(sn);
+        mRef.child("SensorGame").child(format).setValue(sn.toArray());
 
 
     }
