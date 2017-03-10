@@ -305,14 +305,8 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
     }
 
     public void gameOver(){
-        try {
-            OutputStreamWriter outputStreamWriter = file_out;
-            outputStreamWriter.close();
-            DBService.startActionPutSensorGamedata(getContext(), sensordata);
-        }
-        catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
-        }
+        DBService.startActionPutSensorGamedata(getContext(),sensordata);
+        //Log.d("hi", String.valueOf(sensordata));
         observer.gameOver();
     }
 

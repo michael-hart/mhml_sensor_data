@@ -80,24 +80,27 @@ public class DBService extends IntentService {
     }
 
 
-    public static void startActionPutSensorGamedata(Context context, List<Float[]> stList) {
+
+    ////////////////////////////
+
+    public static void startActionPutSensorGamedata(Context context, ArrayList<Float[]> stList) {
         Intent intent = new Intent(context, DBService.class);
-        float[] sensor_games = new float[4*stList.size()];
-        int count = 0;
-        for (Float[] i : stList) {
-            for(Float j : i) {
-                sensor_games[count++] = i[j];
-            }
-        }
+        //float[] sensor_games = new float[4*stList.size()];
+        //int count = 0;
+        //for (Float[] i : stList) {
+        //   for(Float j : i) {
+        //        sensor_games[count++] = i[j];
+        //    }
+        //}
 
 
         intent.setAction("net.mandown.db.put.tightropewaiter.sn");
-        intent.putExtra("sensor.arr",sensor_games);
+        intent.putExtra("sensor.arr",stList);
         context.startService(intent);
-
 
     }
 
+    //////////////////////////////////////////
 
 
 
@@ -297,7 +300,16 @@ public class DBService extends IntentService {
 
 
 
-    private void handleActionPutSensorGamedata(float[] sn) {
+
+
+
+
+
+
+
+
+
+    private void handleActionPutSensorGamedata(ArrayList<Float[]> sn) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         String format = dateFormat.format(new Date());
         //List<Long> listTimes = new ArrayList<Long>();
@@ -310,8 +322,12 @@ public class DBService extends IntentService {
     }
 
 
-    private void handleActionPutAccelList(long[] timestamp, float[] acc_x, float[] acc_y,
-                                          float[] acc_z)
+
+
+
+
+    private void handleActionPutAccelList(ArrayList<Long> timestamps, ArrayList<Float> acc_x,
+                                          ArrayList<Float> acc_y, ArrayList<Float> acc_z)
     {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         String format = dateFormat.format(new Date());
