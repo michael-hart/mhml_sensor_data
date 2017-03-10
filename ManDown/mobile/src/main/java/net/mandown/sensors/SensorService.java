@@ -25,10 +25,10 @@ import java.util.concurrent.locks.ReentrantLock;
 public class SensorService extends Service implements AlarmManager.OnAlarmListener {
 
     // Define constants for use in Service
-//    public static final int DEFAULT_POLL_RATE_US = 100000; // 100ms
-    public static final int DEFAULT_POLL_RATE_US = 100; // 100us
-    public static final int DEFAULT_POLL_PERIOD_S = 2; // 30s
-    public static final int DEFAULT_POLL_INTERVAL_S = 1; // 10 minutes
+    public static final int DEFAULT_POLL_RATE_US = 100000; // 100ms
+//    public static final int DEFAULT_POLL_RATE_US = 100; // 100us
+    public static final int DEFAULT_POLL_PERIOD_S = 5; // 30s
+    public static final int DEFAULT_POLL_INTERVAL_S = 60; // 10 minutes
 
     // Binder given to clients
     private final IBinder mBinder = new SensorBinder();
