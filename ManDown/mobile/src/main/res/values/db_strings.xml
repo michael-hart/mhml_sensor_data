@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Clear Database Strings -->
-    <string name="reset_db">net.mandown.db.reset</string>
     <!-- DB Service Strings -->
     <string name="get_intoxication">net.mandown.db.get.intoxication</string>
-    <string name="put_passive">net.mandown.db.put.passive</string>
     <string name="put_accel_list">net.mandown.db.put.accel.list</string>
     <string name="put_gyro_list">net.mandown.db.put.gyro.list</string>
     <string name="put_magnet_list">net.mandown.db.put.magnet.list</string>
@@ -12,10 +9,8 @@
     <!-- RT is reaction time -->
     <string name="put_whackabeer_rt">net.mandown.db.put.whackabeer.rt</string>
 
-    <!-- Data for put passive -->
-    <string name="passive_accel">passive.accel</string>
-    <string name="passive_gyro">passive.gyro</string>
-    <string name="passive_magnet">passive.magnet</string>
+    <!-- Data for put accel -->
+    <string name="rt_arr">rt.arr</string>
 
     <!-- Data for put accel -->
     <string name="accel_timestamp_arr">accel.timestamp.arr</string>

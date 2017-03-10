@@ -8,6 +8,21 @@ merged branch, and MAJOR is a change signalling a release.
 
 Each change will list Added, Changed, and Fixed.
 
+## 0.6.0 - 2017-03-09
+### Changed
+- Modified SensorService to schedule tasks using a timer instead of AlarmManager
+
+## 0.5.0 - 2017-03-09
+### Added
+- Added disclaimer on app start-up
+
+## 0.4.0 - 2017-03-08
+### Changed
+- Firebase has been moved into DBService
+
+### Removed
+- All SQLite functionality has been removed
+
 ## 0.3.0 - 2017-03-06
 ### Changed
 - UI has more controls and theme is coloured
