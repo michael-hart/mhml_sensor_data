@@ -73,21 +73,9 @@ public class DBService extends IntentService {
      * @see IntentService
      */
     public static void startActionPutReactionTimes(Context context, ArrayList<Long> rtList) {
-
-        if(!rtList.isEmpty()) {
-            mRecentReaction = rtList;
-        }
-
         Intent intent = new Intent(context, DBService.class);
         intent.setAction(context.getString(R.string.put_whackabeer_rt));
         intent.putExtra(context.getString(R.string.rt_arr), rtList);
-        context.startService(intent);
-    }
-
-    public static void startActionPutML(Context context, String MLvalues) {
-        Intent intent = new Intent(context, DBService.class);
-        intent.setAction(context.getString(R.string.put_ml_values));
-        intent.putExtra(context.getString(R.string.classif), MLvalues);
         context.startService(intent);
     }
 
@@ -206,15 +194,11 @@ public class DBService extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
 
-            if (getString(R.string.put_whackabeer_rt).equals(action)) {
+            if (getString(R.string.put_whackabeer_score).equals(action)) {
+                // TODO handle put whack-a-beer score
+            } else if (getString(R.string.put_whackabeer_rt).equals(action)) {
                 ArrayList<Long> reactionTimes = (ArrayList<Long>)
                         intent.getSerializableExtra(getString(R.string.rt_arr));
-                handleActionPutReactionTimes(reactionTimes);
-            } else if (getString(R.string.put_ml_values).equals(action)) {
-                //ArrayList<Long> reactionTimes = (ArrayList<Long>)
-                String MLValues= (new String());
-                        intent.getSerializableExtra(getString(R.string.classif));
-                handleActionPutMLValues(MLValues);
             } else if (getString(R.string.put_accel_list).equals(action)) {
                 ArrayList<Long> timestamps = (ArrayList<Long>)
                         intent.getSerializableExtra(getString(R.string.accel_timestamp_arr));
@@ -259,14 +243,11 @@ public class DBService extends IntentService {
         }
     }
 
-    private void handleActionPutMLValues(String ml) {
+    private void handleActionPutReactionTimes(ArrayList<Long> times) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         String format = dateFormat.format(new Date());
-        List<Long> listTimes = new ArrayList<Long>();
-        for (int i = 0; i < times.length; i++) {
-            listTimes.add(times[i]);
-        }
-        mRef.child("reaction").child(format).setValue(listTimes);
+
+        mRef.child("reaction").child(format).setValue(times);
 
         //////reading from firebase
         DatabaseReference mRef2= mRef.child("reaction");
@@ -289,33 +270,6 @@ public class DBService extends IntentService {
         ///////////////////
     }
 
-    private void handleActionPutReactionTimes(ArrayList<Long> rt) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
-        String format = dateFormat.format(new Date());
-        mRef.child("reaction").child(format).setValue(rt);
-    }
-
-    private void handleActionPutSensorGamedata(ArrayList<SensorSample> sn) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
-        String format = dateFormat.format(new Date());
-        mRef.child("SensorGame").child(format).setValue(sn);
-
-
-    }
-
-    private void handleActionPutWatchList(ArrayList<Long> timestamps, ArrayList<Float> acc_x,
-                                          ArrayList<Float> acc_y, ArrayList<Float> acc_z)
-    {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
-        String format = dateFormat.format(new Date());
-        mRef.child("watch").child(format).child("timestamp").setValue(timestamps);
-        mRef.child("watch").child(format).child("x").setValue(acc_x);
-        mRef.child("watch").child(format).child("y").setValue(acc_y);
-        mRef.child("watch").child(format).child("z").setValue(acc_z);
-    }
-
-
-
     private void handleActionPutAccelList(ArrayList<Long> timestamps, ArrayList<Float> acc_x,
                                           ArrayList<Float> acc_y, ArrayList<Float> acc_z)
     {
@@ -325,6 +279,28 @@ public class DBService extends IntentService {
         mRef.child("accelerometer").child(format).child("x").setValue(acc_x);
         mRef.child("accelerometer").child(format).child("y").setValue(acc_y);
         mRef.child("accelerometer").child(format).child("z").setValue(acc_z);
+    }
+
+    private void handleActionPutGyroList(ArrayList<Long> timestamps, ArrayList<Float> gyr_x,
+                                          ArrayList<Float> gyr_y, ArrayList<Float> gyr_z)
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+        String format = dateFormat.format(new Date());
+        mRef.child("accelerometer").child(format).child("timestamp").setValue(timestamps);
+        mRef.child("accelerometer").child(format).child("x").setValue(gyr_x);
+        mRef.child("accelerometer").child(format).child("y").setValue(gyr_y);
+        mRef.child("accelerometer").child(format).child("z").setValue(gyr_z);
+    }
+
+    private void handleActionPutMagnetList(ArrayList<Long> timestamps, ArrayList<Float> mag_x,
+                                         ArrayList<Float> mag_y, ArrayList<Float> mag_z)
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+        String format = dateFormat.format(new Date());
+        mRef.child("accelerometer").child(format).child("timestamp").setValue(timestamps);
+        mRef.child("accelerometer").child(format).child("x").setValue(mag_x);
+        mRef.child("accelerometer").child(format).child("y").setValue(mag_y);
+        mRef.child("accelerometer").child(format).child("z").setValue(mag_z);
     }
 
     private void handleActionPutGyroList(ArrayList<Long> timestamps, ArrayList<Float> gyr_x,
