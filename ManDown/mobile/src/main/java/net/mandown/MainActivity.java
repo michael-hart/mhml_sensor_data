@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.media.Image;
@@ -16,7 +15,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -87,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnHistory.setOnClickListener(this);
         btnOptions.setOnClickListener(this);
         btnEmergency.setOnClickListener(this);
-
 
         // Reset the database on initialisation
     //    DBService.startActionResetDatabase(this);
