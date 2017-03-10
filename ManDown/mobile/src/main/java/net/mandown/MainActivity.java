@@ -6,16 +6,30 @@ import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.DataEvent;
+import com.google.android.gms.wearable.DataEventBuffer;
+import com.google.android.gms.wearable.DataItem;
+import com.google.android.gms.wearable.DataMap;
+import com.google.android.gms.wearable.DataMapItem;
+import com.google.android.gms.wearable.Wearable;
 
 import net.mandown.db.DBService;
 import net.mandown.games.GameMenuActivity;
 import net.mandown.sensors.SensorService;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements
+        DataApi.DataListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener{
 
     private final String mDisclaimerText =
             "This app is distributed for the collection of accelerometer, gyroscope, and " +
@@ -37,6 +51,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
+    //Communication variables
+    private GoogleApiClient mGoogleApiClient;
+    private static final String BEER_KEY = "net.mandown.key.beer";
+    private static final long CONNECTION_TIME_OUT_MS = 100;
+    private TextView beerview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +88,63 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton("I understand", null)
                 .create();
         dialog.show();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+
+        beerview = (TextView) findViewById(R.id.watchtext);
     }
 
+    //Communications code below
+    @Override
+    public void onConnected(Bundle bundle) {
+        Wearable.DataApi.addListener(mGoogleApiClient, this);
+        Log.i("Connected","Connected!");
+    }
+
+    @Override
+    public void onConnectionSuspended(int cause){
+        Log.d("Connection suspended", "onConnectionSuspended: " + cause);
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        Log.d("connect failed", "onConnectionFailed: " + result);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mGoogleApiClient.connect();
+        Log.i("RConnected","ResumeConnected!");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Wearable.DataApi.removeListener(mGoogleApiClient, this);
+        mGoogleApiClient.disconnect();
+        Log.i("dis","Disconnected");
+    }
+
+    @Override
+    public void onDataChanged(DataEventBuffer dataEvents) {
+        Log.i("data","data CHANGED!");
+        for (DataEvent event : dataEvents) {
+            if (event.getType() == DataEvent.TYPE_CHANGED) {
+                // DataItem changed
+                DataItem item = event.getDataItem();
+                if (item.getUri().getPath().compareTo("/beer") == 0) {
+                    DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
+                    ((TextView) findViewById(R.id.watchtext)).setText(dataMap.getString(BEER_KEY));
+                }
+            } else if (event.getType() == DataEvent.TYPE_DELETED) {
+                // DataItem deleted
+            }
+        }
+    }
 }
 

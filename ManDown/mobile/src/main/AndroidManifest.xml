@@ -9,10 +9,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
+            <meta-data
+                android:name="com.google.android.gms.version"
+                android:value="@integer/google_play_services_version" />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.DATA_CHANGED"/>
+                <data android:scheme="wear"
+                    android:host="*" />
+                <!-- I believe pathPrefix is optional, removing it will make the service listener to all data change events -->
+                android:pathPrefix="/YourDataMapPathPrefix"/>
             </intent-filter>
         </activity>
         <activity android:name=".games.GameMenuActivity" />
@@ -29,7 +40,7 @@
             android:exported="false" />
 
         <service
-            android:name=".sensors.SensorService"
+            android:name=".sensors.SensorBroadcastService"
             android:exported="false" />
 
         <activity android:name=".games.RingOfFireMenuActivity" />
