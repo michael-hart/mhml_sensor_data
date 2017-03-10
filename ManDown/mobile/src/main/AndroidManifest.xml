@@ -45,17 +45,9 @@
         <service
             android:name=".sensors.SensorService"
             android:exported="false" />
-
         <service
             android:name=".sensors.SensorBroadcastService"
             android:exported="false" />
-
-        <!--<service android:name=".comms.WearListenerService">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />-->
-            <!--</intent-filter>-->
-        <!--</service>-->
-
         <activity android:name=".games.RingOfFireMenuActivity" />
         <activity android:name=".games.WhoAmIMenuActivity" />
         <activity android:name=".games.RingOfFireGameActivity" />

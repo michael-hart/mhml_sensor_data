@@ -93,7 +93,7 @@ public class DBService extends IntentService {
 
     ////////////////////////////
 
-    public static void startActionPutSensorGamedata(Context context, ArrayList<Float[]> stList) {
+    public static void startActionPutSensorGamedata(Context context, ArrayList<SensorSample> stList) {
         Intent intent = new Intent(context, DBService.class);
         //float[] sensor_games = new float[4*stList.size()];
         //int count = 0;
@@ -236,7 +236,7 @@ public class DBService extends IntentService {
                         intent.getSerializableExtra(getString(R.string.rt_arr));
                 handleActionPutReactionTimes(reactionTimes);
             }  else if (getString(R.string.put_tightropewaiter_sn).equals(action)) {
-                ArrayList<Float[]> SensorGameData = (ArrayList<Float[]>)
+                ArrayList<SensorSample> SensorGameData = (ArrayList<SensorSample>)
                         intent.getSerializableExtra(getString(R.string.sensor_arr));
                 handleActionPutSensorGamedata(SensorGameData);
             } else if (getString(R.string.put_accel_list).equals(action)) {
@@ -329,7 +329,7 @@ public class DBService extends IntentService {
 
 
 
-    private void handleActionPutSensorGamedata(ArrayList<Float[]> sn) {
+    private void handleActionPutSensorGamedata(ArrayList<SensorSample> sn) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         String format = dateFormat.format(new Date());
         //List<Float[]> listTimes = new ArrayList<Long>();
