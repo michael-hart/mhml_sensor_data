@@ -55,6 +55,9 @@ public class MainActivity extends AppCompatActivity implements
     //Communication variables
     private GoogleApiClient mGoogleApiClient;
     private static final String BEER_KEY = "net.mandown.key.beer";
+    private static final String WINE_KEY = "net.mandown.key.wine";
+    private static final String COCKTAIL_KEY = "net.mandown.key.cocktail";
+    private static final String SHOT_KEY = "net.mandown.key.shot";
     private static final long CONNECTION_TIME_OUT_MS = 100;
     private TextView beerview;
 
@@ -102,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onConnected(Bundle bundle) {
         Wearable.DataApi.addListener(mGoogleApiClient, this);
-        Log.i("Connected","Connected!");
+        Log.i("listener Connected","Mobile Connected!");
     }
 
     @Override
@@ -140,7 +143,26 @@ public class MainActivity extends AppCompatActivity implements
                 if (item.getUri().getPath().compareTo("/beer") == 0) {
                     DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
                     ((TextView) findViewById(R.id.watchtext)).setText(dataMap.getString(BEER_KEY));
+                    //dataMap.remove(BEER_KEY); //Delete item so the next write is a "new" entry to trigger onDataChanged
+                    dataMap.putString(BEER_KEY, "unknown");
                 }
+                else if (item.getUri().getPath().compareTo("/wine") == 0) {
+                    DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
+                    ((TextView) findViewById(R.id.watchtext)).setText(dataMap.getString(WINE_KEY));
+                    //dataMap.remove(WINE_KEY);
+                    dataMap.putString(WINE_KEY, "unknown");
+                }
+                else if (item.getUri().getPath().compareTo("/cocktail") == 0) {
+                    DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
+                    ((TextView) findViewById(R.id.watchtext)).setText(dataMap.getString(COCKTAIL_KEY));
+                    dataMap.remove(COCKTAIL_KEY);
+                }
+                else if (item.getUri().getPath().compareTo("/shot") == 0) {
+                    DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
+                    ((TextView) findViewById(R.id.watchtext)).setText(dataMap.getString(SHOT_KEY));
+                    dataMap.remove(SHOT_KEY);
+                }
+
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
                 // DataItem deleted
             }
