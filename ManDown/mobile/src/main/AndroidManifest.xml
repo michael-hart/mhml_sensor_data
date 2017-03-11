@@ -21,10 +21,10 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED"/>
+                <!--<action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />-->
                 <data android:scheme="wear"
                     android:host="*" />
-                <!-- I believe pathPrefix is optional, removing it will make the service listener to all data change events -->
-                android:pathPrefix="/YourDataMapPathPrefix"/>
+                    <!--android:pathPrefix="/beer" />-->
             </intent-filter>
         </activity>
         <activity android:name=".games.GameMenuActivity" />
@@ -45,6 +45,12 @@
         <service
             android:name=".sensors.SensorBroadcastService"
             android:exported="false" />
+
+        <!--<service android:name=".comms.WearListenerService">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />-->
+            <!--</intent-filter>-->
+        <!--</service>-->
 
         <activity android:name=".games.RingOfFireMenuActivity" />
         <activity android:name=".games.WhoAmIMenuActivity" />

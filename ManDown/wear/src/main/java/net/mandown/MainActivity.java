@@ -37,6 +37,9 @@ public class MainActivity extends Activity implements
     //For watch-phone communication
     private static final long CONNECTION_TIME_OUT_MS = 100;
     private static final String BEER_KEY = "net.mandown.key.beer";
+    private static final String WINE_KEY = "net.mandown.key.wine";
+    private static final String COCKTAIL_KEY = "net.mandown.key.cocktail";
+    private static final String SHOT_KEY = "net.mandown.key.shot";
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -126,6 +129,7 @@ public class MainActivity extends Activity implements
     @Override
     public void onConnected(Bundle bundle) {
         Wearable.DataApi.addListener(mGoogleApiClient, this);
+        Log.d("connected","WEARABLE CONNECTED!");
     }
 
     @Override
@@ -138,14 +142,95 @@ public class MainActivity extends Activity implements
         Log.d("connect failed", "onConnectionFailed: " + result);
     }
 
+    private String beertext = "beer";
+    private String winetext = "wine";
+    private String cocktailtext = "cocktail";
+    private String shottext = "shot";
+
     //Send message
     public void drankbeer(View v) {
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/beer");
-        putDataMapReq.getDataMap().putString(BEER_KEY, "Beer!");
+        putDataMapReq.getDataMap().putString(BEER_KEY, beertext);
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
         putDataReq.setUrgent();
         PendingResult<DataApi.DataItemResult> pendingResult =
                 Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
         Log.d("beer","SENT BEER!");
+        if (beertext == "beer")
+        {
+            beertext = "notbeer";
+        }
+        else
+        {
+            beertext = "beer";
+        }
+    }
+
+//    private void msgBeer(View v) {
+//        Wearable.MessageApi.sendMessage(googleApiClient, transcriptionNodeId,
+//                VOICE_TRANSCRIPTION_MESSAGE_PATH, voiceData).setResultCallback(
+//                new ResultCallback() {
+//                    @Override
+//                    public void onResult(SendMessageResult sendMessageResult) {
+//                        if (!sendMessageResult.getStatus().isSuccess()) {
+//                            // Failed to send message
+//                        }
+//                    }
+//                }
+//        );
+//    }
+
+    public void drankwine(View v) {
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/wine");
+        putDataMapReq.getDataMap().putString(WINE_KEY, winetext);
+        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+        putDataReq.setUrgent();
+        PendingResult<DataApi.DataItemResult> pendingResult =
+                Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+        Log.d("wine","SENT WINE!");
+        if (winetext == "wine")
+        {
+            winetext = "notwine";
+        }
+        else
+        {
+            winetext = "wine";
+        }
+    }
+
+    public void drankcocktail(View v) {
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/cocktail");
+        putDataMapReq.getDataMap().putString(COCKTAIL_KEY, cocktailtext);
+        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+        putDataReq.setUrgent();
+        PendingResult<DataApi.DataItemResult> pendingResult =
+                Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+        Log.d("cocktail","SENT COCKTAIL!");
+        if (cocktailtext == "cocktail")
+        {
+            cocktailtext = "notcocktail";
+        }
+        else
+        {
+            cocktailtext = "cocktail";
+        }
+    }
+
+    public void drankshot(View v) {
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/shot");
+        putDataMapReq.getDataMap().putString(SHOT_KEY, shottext);
+        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+        putDataReq.setUrgent();
+        PendingResult<DataApi.DataItemResult> pendingResult =
+                Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+        Log.d("shot","SENT SHOT!");
+        if (shottext == "shot")
+        {
+            shottext = "notshot";
+        }
+        else
+        {
+            shottext = "shot";
+        }
     }
 }
