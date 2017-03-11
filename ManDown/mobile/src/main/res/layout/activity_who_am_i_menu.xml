@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,12 +10,31 @@
     android:background="@drawable/background"
     tools:context="net.mandown.games.WhoAmIMenuActivity">
 
+    <TextView
+        android:id="@+id/Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textSize="50dp"
+        android:textColor="@color/white_opaque"
+        android:text="WHO AM I?"/>
+
+    <TextView
+        android:id="@+id/desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25dp"
+        android:textColor="@color/white_opaque"
+        android:text="A fun social game\nTurn by turn try put the phone on your forehead, tap the screen and guess which the celebrity you are by asking questions to your friends"
+        android:layout_below="@+id/Title"
+        android:layout_alignStart="@+id/buttonPlay" />
+
     <ImageButton
         android:id="@+id/buttonPlay"
         android:background="@drawable/playnow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/buttonScore"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

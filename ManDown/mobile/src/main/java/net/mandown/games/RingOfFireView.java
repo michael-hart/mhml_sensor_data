@@ -74,6 +74,7 @@ public class RingOfFireView extends SurfaceView implements Runnable  {
 
     //gameplay variables
     private RingOfFireView.Callback observer;
+    private int cards_left;
 
     public RingOfFireView(RingOfFireView.Callback _observer, Context context) {
         super(context);
@@ -90,25 +91,31 @@ public class RingOfFireView extends SurfaceView implements Runnable  {
         paint = new Paint();
         res = getResources();
 
-        int card_width = 250*dm.widthPixels/1280;
-        int card_height = 150*dm.heightPixels/720;
+        int card_width = 600*dm.widthPixels/720;
+        int card_height = 600*dm.heightPixels/1080;
 
         background_bm = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.background),dm.widthPixels,dm.heightPixels,false);
-        Bitmap card_bm = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.heart),card_width,card_height,false);
+        Bitmap card_you_bm = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.you),card_width,card_height,false);
+        Bitmap card_them_bm = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.them),card_width,card_height,false);
+        Bitmap card_him_bm = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.him),card_width,card_height,false);
+        Bitmap card_everyone_bm = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.everyone),card_width,card_height,false);
+        Bitmap card_RF_bm = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.circle_of_fire),card_width,card_height,false);
 
         card = new Card[6];
 
-        card[0] = new Card(card_bm,"Distribute 4 Sip");
-        card[1] = new Card(card_bm,"You drink 1 Sip");
-        card[2] = new Card(card_bm,"You drink 2 Sip");
-        card[3] = new Card(card_bm,"Make someone drink 1 Sip");
-        card[4] = new Card(card_bm,"Make someone drink 2 Sip");
-        card[5] = new Card(card_bm,"Everyone drinks 1 Sip");
+        card[0] = new Card(card_them_bm,"Distribute 5 Sip");
+        card[1] = new Card(card_you_bm,"You drink 1 Sip");
+        card[2] = new Card(card_you_bm,"You drink 2 Sip");
+        card[3] = new Card(card_him_bm,"Offer drink 1 Sip");
+        card[4] = new Card(card_him_bm,"Offer drink 2 Sip");
+        card[5] = new Card(card_everyone_bm,"All drink 1 Sip");
 
         rand = new Random();
         prob_arr = new int[]{0,1,1,2,2,3,3,4,4,5,5};
 
-        cur_card = new Card(card_bm,"Tap to draw card");
+        cards_left = 30;
+
+        cur_card = new Card(card_RF_bm,"Tap to draw card");
     }
 
     private Card rand_card(){
@@ -140,11 +147,13 @@ public class RingOfFireView extends SurfaceView implements Runnable  {
             canvas.drawBitmap(background_bm,0,0,paint);//.drawColor(Color.BLACK);
             //Drawing the player
 
-            canvas.drawBitmap(cur_card.getBm(),canvas.getWidth()/3,canvas.getHeight()/2,paint);
+            canvas.drawBitmap(cur_card.getBm(),(canvas.getWidth()-cur_card.getBm().getWidth())/2,(canvas.getHeight()-cur_card.getBm().getHeight())/2,paint);
 
             paint.setColor(Color.WHITE);
-            paint.setTextSize(canvas.getHeight()/7);
-            canvas.drawText(cur_card.getText(),canvas.getWidth()/3,canvas.getHeight()*2/3,paint);
+            paint.setTextSize(canvas.getWidth()/10);
+            canvas.drawText(cur_card.getText(),canvas.getWidth()/ 8,canvas.getHeight()*9/10,paint);
+
+            canvas.drawText(Integer.toString(cards_left),canvas.getWidth()/2-20,canvas.getHeight() *1/ 8,paint);
 
             //Unlocking the canvas
             surfaceHolder.unlockCanvasAndPost(canvas);
@@ -184,7 +193,12 @@ public class RingOfFireView extends SurfaceView implements Runnable  {
     }
 
     public void tapped(){
-        cur_card = rand_card();
+        cards_left -=1;
+        if(cards_left <= -1){
+            gameOver();
+        }else{
+            cur_card = rand_card();
+        }
     }
 
 }

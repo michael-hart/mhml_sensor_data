@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,12 +11,33 @@
     android:background="@drawable/background"
     tools:context="net.mandown.games.RingOfFireMenuActivity">
 
+    <TextView
+        android:id="@+id/Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textSize="50dp"
+        android:textColor="@color/white_opaque"
+        android:text="RING OF FIRE"/>
+
+    <TextView
+        android:id="@+id/desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25dp"
+        android:textColor="@color/white_opaque"
+        android:text="A fun drinking game\nTurn by turn pick a card and follow the instructions"
+        android:layout_below="@+id/Title"
+        android:layout_alignStart="@+id/buttonPlay" />
+
     <ImageButton
         android:id="@+id/buttonPlay"
         android:background="@drawable/playnow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/buttonScore"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
-</android.support.constraint.ConstraintLayout>
+
+
+</RelativeLayout>

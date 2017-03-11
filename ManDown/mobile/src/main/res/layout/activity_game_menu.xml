@@ -8,48 +8,53 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/background"
     tools:context="net.mandown.games.GameMenuActivity">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:orientation="vertical"
-        >
+        android:textSize="50dp"
+        android:textColor="@color/white_opaque"
+        android:text="GAMES" />
 
-        <Button
-            android:id="@+id/Button_Whack_a_beer"
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Whack A Beer" />
+    <ImageButton
+        android:id="@+id/Button_Whack_a_beer"
+        android:background="@drawable/button_whack_a_beer"
+        android:layout_width="500dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/Title"
+        android:layout_alignParentStart="true" />
 
-        <Button
-            android:id="@+id/Button_Tightrope_Waiter"
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Tightrope Waiter" />
+    <ImageButton
+        android:id="@+id/Button_Tightrope_Waiter"
+        android:background="@drawable/button_tightrope_waiter"
+        android:layout_width="500dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/Button_Whack_a_beer"
+        android:layout_alignParentStart="true" />
 
-        <Button
-            android:id="@+id/Button_Ring_of_Fire"
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Ring of Fire" />
+    <ImageButton
+        android:id="@+id/Button_Ring_of_Fire"
+        android:background="@drawable/button_ring_of_fire"
+        android:layout_width="500dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/Button_Tightrope_Waiter"
+        android:layout_alignParentStart="true" />
 
-        <Button
-            android:id="@+id/Button_Who_am_I"
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Who am I?" />
-
-    </LinearLayout>
+    <ImageButton
+        android:id="@+id/Button_Who_am_I"
+        android:background="@drawable/button_who_am_i"
+        android:layout_width="500dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/Button_Ring_of_Fire"
+        android:layout_alignParentStart="true" />
 
 
 </RelativeLayout>
