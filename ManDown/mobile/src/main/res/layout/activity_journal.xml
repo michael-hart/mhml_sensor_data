@@ -34,13 +34,13 @@
 
     <ImageButton
         android:id="@+id/ShotUnit"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/shot3"
+        app:srcCompat="@drawable/shot"
         android:layout_alignBottom="@+id/WineUnit"
-        android:layout_alignEnd="@+id/DrunkMan" />
+        android:layout_alignEnd="@+id/Unit_input" />
 
     <ImageButton
         app:srcCompat="@drawable/options"

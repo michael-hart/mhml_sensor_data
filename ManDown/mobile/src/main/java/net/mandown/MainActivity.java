@@ -9,7 +9,6 @@ import android.content.pm.ActivityInfo;
 import android.media.Image;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ImageButton btnGamePlay;
     private ImageButton btnBeerGlass;
-    private ImageButton btnJournal;
+ //   private ImageButton btnJournal;
     private ImageButton btnHistory;
     private ImageButton btnOptions;
     private ImageButton btnEmergency;
@@ -68,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btnGamePlay = (ImageButton) findViewById(R.id.JoyStick);
         btnBeerGlass = (ImageButton) findViewById(R.id.BeerGlass);
-        btnJournal  = (ImageButton) findViewById(R.id.Journal);
+    //    btnJournal  = (ImageButton) findViewById(R.id.Journal);
         btnHistory  = (ImageButton) findViewById(R.id.History);
         btnOptions  = (ImageButton) findViewById(R.id.OptionLevers);
         btnEmergency= (ImageButton) findViewById(R.id.DrunkMan);
@@ -77,14 +76,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btnGamePlay.setOnClickListener(this);
         btnBeerGlass.setOnClickListener(this);
-        btnJournal.setOnClickListener(this);
+     //   btnJournal.setOnClickListener(this);
         btnHistory.setOnClickListener(this);
         btnOptions.setOnClickListener(this);
         btnEmergency.setOnClickListener(this);
 
 
         // Reset the database on initialisation
-        DBService.startActionResetDatabase(this);
+    //    DBService.startActionResetDatabase(this);
 
 
         // Start the sensor service to collect data
@@ -107,13 +106,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //starting game activity
             startActivity(new Intent(this, HistoryActivity.class));
         }
-        if (v == btnJournal) {
-            //starting game activity
-            startActivity(new Intent(this, JournalActivity.class));
-        }
+//        if (v == btnJournal) {
+//            //starting game activity
+//            startActivity(new Intent(this, JournalActivity.class));
+//        }
         if (v == btnBeerGlass) {
             //starting sensor activity
-            DBService.startActionPutPassive(getApplicationContext(), 0, 0, 0);
+          //  DBService.startActionPutPassive(getApplicationContext(), 0, 0, 0);
         }
         if (v == btnEmergency) {
             new AlertDialog.Builder(this)
@@ -133,14 +132,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .show();
         }
 
-        // Create a disclaimer window using AlertDialog
-        AlertDialog dialog = (new AlertDialog.Builder(this))
-                .setTitle("ManDown Disclaimer")
-                .setMessage(mDisclaimerText)
-                .setPositiveButton("I understand", null)
-                .create();
-        dialog.show();
+//        // Create a disclaimer window using AlertDialog
+//        AlertDialog dialog = (new AlertDialog.Builder(this))
+//                .setTitle("ManDown Disclaimer")
+//                .setMessage(mDisclaimerText)
+//                .setPositiveButton("I understand", null)
+//                .create();
+//        dialog.show();
 
+    }
+
+    public void goJournal(View view){
+        Intent intent = new Intent(this, JournalActivity.class);
+        startActivity(intent);
     }
 
 }
