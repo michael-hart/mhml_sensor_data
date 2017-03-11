@@ -9,20 +9,37 @@ import android.hardware.SensorManager;
 import android.os.IBinder;
 import android.util.Log;
 
-public class SensorBroadcast extends Service implements SensorEventListener {
+import net.mandown.R;
 
-//    public float acc_x = 0.0f;
-//    public float acc_y = 0.0f;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class SensorBroadcast extends Service implements SensorEventListener {
 
     //Sensors
     private static SensorManager mSensorManager;
     private static Sensor mAccelerometer;
+
+    // Member variables
+    private int mPollRate, mPollPeriod;
+    private boolean mRunning = false;
+    private Lock mVarLock;
+
+    // Define constants for use in Service
+    public static final int DEFAULT_POLL_RATE_US = 100000; // 100ms
+    public static final int DEFAULT_POLL_PERIOD_S = 5; // 5s
+   // public static final int DEFAULT_POLL_INTERVAL_S = 600; // 10 minutes
+
+    private static List<SensorSample> accelSamples;
 
     // Constructor replacement method
     @Override
     public void onCreate() {
         super.onCreate();
         // Create member objects
+        mVarLock = new ReentrantLock();
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         Log.i("create", "CREATED");
@@ -32,7 +49,19 @@ public class SensorBroadcast extends Service implements SensorEventListener {
     public int onStartCommand(Intent intent, int flags, int startId) {
         //Log.i("SensorService", "Received start id " + startId + ": " + intent);
         //Log.i("started", "sensor STARTED");
-        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        mVarLock.lock();
+        mPollRate = intent.getIntExtra(getString(R.string.sensor_poll_rate),
+                DEFAULT_POLL_RATE_US);
+       // mPollInterval = intent.getIntExtra(getString(R.string.sensor_poll_interval),
+       //         DEFAULT_POLL_INTERVAL_S);
+        mPollPeriod = intent.getIntExtra(getString(R.string.sensor_poll_period),
+                DEFAULT_POLL_PERIOD_S);
+
+        // Create new objects
+        accelSamples = new ArrayList<SensorSample>((int)(mPollPeriod / mPollRate));
+
+        mVarLock.unlock();
+        mSensorManager.registerListener(this, mAccelerometer, mPollPeriod);
 
         return START_STICKY;
     }
@@ -48,9 +77,10 @@ public class SensorBroadcast extends Service implements SensorEventListener {
         mSensorManager.unregisterListener(this, mAccelerometer);
     }
 
-    private void publishResults(float x, float y, float z) {
+    private void publishResults(long time, float x, float y, float z) {
 
         Intent intent = new Intent("accel");
+        intent.putExtra("t", time);
         intent.putExtra("x", x);
         intent.putExtra("y", y);
         intent.putExtra("z", z);
@@ -69,7 +99,9 @@ public class SensorBroadcast extends Service implements SensorEventListener {
             return;
         }
 
-        publishResults(event.values[0], event.values[1], event.values[2]);
+        accelSamples.add(new SensorSample(event.timestamp, event.values[0], event.values[1], event.values[2]));
+       publishResults(event.timestamp, event.values[0], event.values[1], event.values[2]);
+
     }
 
     @Override
@@ -77,6 +109,13 @@ public class SensorBroadcast extends Service implements SensorEventListener {
 
     }
 
-
+//    public static List<SensorSample> getMeasuredValues() {
+//        pausesensing();
+//        return accelSamples;
+//    }
+//
+//    private void pausesensing() {
+//        mSensorManager.unregisterListener(this, mAccelerometer);
+//    }
 
 }
