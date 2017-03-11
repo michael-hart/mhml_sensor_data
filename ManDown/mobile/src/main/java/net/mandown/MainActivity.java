@@ -1,14 +1,19 @@
 package net.mandown;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.media.Image;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +31,8 @@ import net.mandown.R;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+
+    private static final int REQUEST_PHONE_CALL = 1;
 
     private final String mDisclaimerText =
             "This app is distributed for the collection of accelerometer, gyroscope, and " +
@@ -110,17 +117,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //            //starting game activity
 //            startActivity(new Intent(this, JournalActivity.class));
 //        }
-        if (v == btnBeerGlass) {
+     //   if (v == btnBeerGlass) {
             //starting sensor activity
           //  DBService.startActionPutPassive(getApplicationContext(), 0, 0, 0);
-        }
+     //   }
         if (v == btnEmergency) {
             new AlertDialog.Builder(this)
                     .setTitle("Contact Emergency Help")
                     .setMessage("Are you sure you want to send a distress call")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            // continue with delete
+                            // continue with action
+
+                            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "12345"));
+
+                            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CALL_PHONE},REQUEST_PHONE_CALL);
+                            }
+                            else
+                            {
+                                startActivity(intent);
+                            }
+
                         }
                     })
                     .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
