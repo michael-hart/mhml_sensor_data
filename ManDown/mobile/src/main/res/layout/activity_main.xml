@@ -162,9 +162,29 @@
         android:id="@+id/watchtext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/History"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="53dp"
+        android:text="TextView"
+        android:layout_alignBaseline="@+id/startwatchaccel"
+        android:layout_alignBottom="@+id/startwatchaccel"
+        android:layout_alignEnd="@+id/DrunkMan"
+        android:layout_marginEnd="16dp" />
+
+    <Button
+        android:id="@+id/startwatchaccel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/JoyStick"
+        android:layout_alignStart="@+id/OptionLevers"
+        android:layout_marginBottom="33dp"
+        android:text="START WATCH"
+        android:onClick="startwatchaccel" />
+
+    <TextView
+        android:id="@+id/watchsamplenum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/txtDbView"
+        android:layout_below="@+id/BeerGlass"
+        android:layout_marginTop="14dp"
         android:text="TextView" />
 >>>>>>> Added phone-watch connection code, but not working yet
 

@@ -22,12 +22,15 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataItem;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
 import net.mandown.db.DBService;
@@ -80,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String WINE_KEY = "net.mandown.key.wine";
     private static final String COCKTAIL_KEY = "net.mandown.key.cocktail";
     private static final String SHOT_KEY = "net.mandown.key.shot";
+    private static final String WATCH_KEY = "net.mandown.key.watch";
     private static final long CONNECTION_TIME_OUT_MS = 100;
     private TextView beerview;
 
@@ -223,6 +227,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.i("dis","Disconnected");
     }
 
+
+    private boolean watchbool = false;
+    //Tell watch to start measuring
+    public void startwatchaccel(View v){
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/watchaccel");
+        putDataMapReq.getDataMap().putBoolean(WATCH_KEY, watchbool);
+        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+        putDataReq.setUrgent();
+        PendingResult<DataApi.DataItemResult> pendingResult =
+                Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+        Log.d("watchaccel","TRIGGER WATCH!");
+        watchbool = !watchbool;
+    }
+
+    //In case of for user input from watch
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
         Log.i("data","data CHANGED!");
