@@ -176,6 +176,42 @@ public class DBService extends IntentService {
     }
 
 
+
+
+
+    public static void startPutActionWatchAccel(Context context, List<SensorSample> list,
+                                                SensorType type) {
+        Intent intent = new Intent(context, DBService.class);
+        // Split samples into separate lists
+        ArrayList<Long> timestamps = new ArrayList<>();
+        ArrayList<Float> x = new ArrayList<>();
+        ArrayList<Float> y = new ArrayList<>();
+        ArrayList<Float> z = new ArrayList<>();
+
+        for (SensorSample s : list) {
+            timestamps.add(s.mTimestamp);
+            x.add(s.mX);
+            y.add(s.mY);
+            z.add(s.mZ);
+        }
+
+        switch (type)
+        {
+            case ACCELEROMETER:
+                intent.setAction(context.getString(R.string.put_watch_accel));
+                intent.putExtra(context.getString(R.string.watch_timestamp_arr), timestamps);
+                intent.putExtra(context.getString(R.string.watch_x_arr), x);
+                intent.putExtra(context.getString(R.string.watch_y_arr), y);
+                intent.putExtra(context.getString(R.string.watch_z_arr), z);
+                most_rec_accel= list;
+                break;
+        }
+
+        context.startService(intent);
+    }
+
+
+
     public static ArrayList<Long> GetMostRecentReactionTime() {
 
     return most_rec_reaction;
@@ -227,7 +263,6 @@ public class DBService extends IntentService {
                 ArrayList<Float> z = (ArrayList<Float>)
                         intent.getSerializableExtra(getString(R.string.accel_z_arr));
                 handleActionPutAccelList(timestamps, x, y, z);
-                //mostRecentAccel(timestamps,x,y,z);
             } else if (getString(R.string.put_gyro_list).equals(action)) {
                 ArrayList<Long> timestamps = (ArrayList<Long>)
                         intent.getSerializableExtra(getString(R.string.gyro_timestamp_arr));
@@ -313,7 +348,16 @@ public class DBService extends IntentService {
 
 
     }
-
+    private void handleActionPutWatchList(ArrayList<Long> timestamps, ArrayList<Float> acc_x,
+                                          ArrayList<Float> acc_y, ArrayList<Float> acc_z)
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+        String format = dateFormat.format(new Date());
+        mRef.child("watch").child(format).child("timestamp").setValue(timestamps);
+        mRef.child("watch").child(format).child("x").setValue(acc_x);
+        mRef.child("watch").child(format).child("y").setValue(acc_y);
+        mRef.child("watch").child(format).child("z").setValue(acc_z);
+    }
 
 
 

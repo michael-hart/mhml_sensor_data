@@ -5,6 +5,7 @@
     <string name="put_gyro_list">net.mandown.db.put.gyro.list</string>
     <string name="put_magnet_list">net.mandown.db.put.magnet.list</string>
     <string name="put_whackabeer_score">net.mandown.db.put.whackabeer.score</string>
+    <string name="put_watch_accel">net.mandown.db.put.watch.accel</string>
 
 
 
@@ -35,6 +36,8 @@
     <string name="magnet_x_arr">magnet.x.arr</string>
     <string name="magnet_y_arr">magnet.y.arr</string>
     <string name="magnet_z_arr">magnet.z.arr</string>
+
+
 
     <!-- Data for put Watch Sensor accel for Wei -->
     <string name="watch_timestamp_arr">watch.timestamp.arr</string>
