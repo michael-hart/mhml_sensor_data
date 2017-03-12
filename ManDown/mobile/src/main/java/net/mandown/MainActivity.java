@@ -40,6 +40,11 @@ import net.mandown.journal.JournalActivity;
 import net.mandown.sensors.SensorService;
 
 import net.mandown.R;
+import net.mandown.sensors.SensorSample;
+import net.mandown.sensors.SensorService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
 		DataApi.DataListener,
@@ -240,6 +245,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         PendingResult<DataApi.DataItemResult> pendingResult =
                 Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
         Log.d("watchaccel","TRIGGER WATCH!");
+        //Start sensorservice here instead of constantly starting in background and make it last approx 11seconds
         watchbool = !watchbool;
     }
 
@@ -281,7 +287,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     ((TextView) findViewById(R.id.watchsamplenum)).setText(Integer.toString(watchTimeStamps.length) + ' ' + Integer.toString(watchAccelValues.length));
 
-                    
+                    List<SensorSample> watchCombinedData = new ArrayList<SensorSample>(watchTimeStamps.length);
+
+                    for (int i=0; i<watchTimeStamps.length; i++) {
+                        watchCombinedData.add(new SensorSample(watchTimeStamps[i], watchAccelValues[3*i], watchAccelValues[3*i+1], watchAccelValues[3*i+2]));
+                    }
+                    Log.d("datachanged", Integer.toString(watchCombinedData.size()));
+                    //Send watch data to database here
                 }
 
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
