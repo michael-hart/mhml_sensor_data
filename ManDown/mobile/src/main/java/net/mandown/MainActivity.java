@@ -61,7 +61,9 @@ public class MainActivity extends AppCompatActivity implements
     private static final String WINE_KEY = "net.mandown.key.wine";
     private static final String COCKTAIL_KEY = "net.mandown.key.cocktail";
     private static final String SHOT_KEY = "net.mandown.key.shot";
-    private static final String WATCH_KEY = "net.mandown.key.watch";
+    private static final String WATCH_RX_KEY = "net.mandown.key.watchrx";
+    private static final String WATCH_TX_FLOAT_KEY = "net.mandown.key.watchtxfloat";
+    private static final String WATCH_TX_LONG_KEY = "net.mandown.key.watchtxlong";
     private static final long CONNECTION_TIME_OUT_MS = 100;
     private TextView beerview;
 
@@ -142,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements
     //Tell watch to start measuring
     public void startwatchaccel(View v){
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/watchaccel");
-        putDataMapReq.getDataMap().putBoolean(WATCH_KEY, watchbool);
+        putDataMapReq.getDataMap().putBoolean(WATCH_RX_KEY, watchbool);
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
         putDataReq.setUrgent();
         PendingResult<DataApi.DataItemResult> pendingResult =
@@ -180,6 +182,16 @@ public class MainActivity extends AppCompatActivity implements
                     DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
                     ((TextView) findViewById(R.id.watchtext)).setText(dataMap.getString(SHOT_KEY));
                     dataMap.remove(SHOT_KEY);
+                }
+                else if (item.getUri().getPath().compareTo("/watchdata") == 0) {
+                    Log.d("datachanged", "GOT WATCH DATA");
+                    DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
+                    long[] watchTimeStamps = dataMap.getLongArray(WATCH_TX_LONG_KEY);
+                    float[] watchAccelValues = dataMap.getFloatArray(WATCH_TX_FLOAT_KEY);
+
+                    ((TextView) findViewById(R.id.watchsamplenum)).setText(Integer.toString(watchTimeStamps.length) + ' ' + Integer.toString(watchAccelValues.length));
+
+                    
                 }
 
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
