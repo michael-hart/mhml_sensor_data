@@ -20,7 +20,7 @@ public class RingOfFireMenuActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_ring_of_fire_menu);
 
         //setting the orientation to landscape
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         //getting the button
         buttonPlay = (ImageButton) findViewById(R.id.buttonPlay);

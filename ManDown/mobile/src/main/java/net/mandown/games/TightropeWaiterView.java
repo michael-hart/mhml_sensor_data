@@ -21,6 +21,40 @@ import java.util.ArrayList;
 /**
  * Created by Santiago on 2/26/2017.
  */
+class TRWPlate {
+    private Resources res;
+    private Bitmap bm;
+    private float radius;
+
+    public TRWPlate(){
+        radius=100;
+        bm=Bitmap.createBitmap(100,100, Bitmap.Config.ARGB_8888);
+    }
+
+    public TRWPlate(int r, Resources _res){
+        radius=r;
+        res=_res;
+        bm=Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.plate),r,r,false);
+    }
+
+    public void Update(float r){
+        radius-=r;
+        bm = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.plate),(int)radius,(int)radius,false);
+
+    }
+
+    public Bitmap getBm() {
+        return bm;
+    }
+
+    public int getR() {
+        return (int)radius;
+    }
+
+
+}
+
+
 class TRWDrink {
     private Bitmap bm;
     private int x;
@@ -39,7 +73,7 @@ class TRWDrink {
     }
 
     public void Update(int _x, int _y){
-        x+=_x;
+        x-=_x;
         y+=_y;
     }
 
@@ -77,12 +111,12 @@ public class TightropeWaiterView extends SurfaceView implements Runnable  {
 
     //private sensor data
     private TRWDrink drink;
+    private TRWPlate plate;
     private int zero_x;
     private int zero_y;
     private ArrayList<Float[]> sensordata;
 
     //gameplay variables
-    private int steps;
     private OutputStreamWriter file_out;
     private Callback observer;
 
@@ -101,18 +135,17 @@ public class TightropeWaiterView extends SurfaceView implements Runnable  {
         paint = new Paint();
         res = getResources();
 
-        int drink_width = 250*dm.widthPixels/1280;
+        int drink_width = 200*dm.widthPixels/1280;
         int drink_height = 150*dm.heightPixels/720;
 
         background_bm = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.background),dm.widthPixels,dm.heightPixels,false);
-        drink_bm = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.glass_beer),drink_width,drink_height,false);
-
-
+        drink_bm = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.tw_drink),drink_width,drink_height,false);
         ///NEED SENSOR DATA HERE!!!   AND IN UPDATE!!!!!
         zero_x = dm.widthPixels/2 - drink_width/2;
         zero_y = dm.heightPixels/2 - drink_height/2;
 
         drink= new TRWDrink(zero_x,zero_y,drink_bm);
+        plate= new TRWPlate(500,res);
 
         sensordata = new ArrayList<>();
 
@@ -140,13 +173,14 @@ public class TightropeWaiterView extends SurfaceView implements Runnable  {
     private void update() {
         //updating player position
         //player.update();
-        drink.Update(5,5);
+        drink.Update(0,0);
+        plate.Update(0.5f);
 
         sensordata.add(new Float[]{0.0f,0.0f});
 
         int dist = distance(drink.getX(),drink.getY());
 
-        if(dist>dm.widthPixels/2){
+        if(dist>plate.getR()/2){
             gameOver();
         }
     }
@@ -164,10 +198,15 @@ public class TightropeWaiterView extends SurfaceView implements Runnable  {
             canvas.drawBitmap(background_bm,0,0,paint);//.drawColor(Color.BLACK);
             //Drawing the player
             canvas.drawBitmap(
-                        drink.getBm(),
-                        drink.getX(),
-                        drink.getY(),
-                        paint);
+                    plate.getBm(),
+                    dm.widthPixels/2-plate.getR()/2,
+                    dm.heightPixels/2-plate.getR()/2,
+                    paint);
+            canvas.drawBitmap(
+                    drink.getBm(),
+                    drink.getX(),
+                    drink.getY(),
+                    paint);
 
             //Unlocking the canvas
             surfaceHolder.unlockCanvasAndPost(canvas);

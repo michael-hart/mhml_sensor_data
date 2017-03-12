@@ -20,7 +20,7 @@ public class WhoAmIMenuActivity extends AppCompatActivity implements View.OnClic
         setContentView(R.layout.activity_who_am_i_menu);
 
         //setting the orientation to landscape
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         //getting the button
         buttonPlay = (ImageButton) findViewById(R.id.buttonPlay);

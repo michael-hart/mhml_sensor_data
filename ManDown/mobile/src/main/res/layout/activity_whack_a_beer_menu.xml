@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_whack_a_beer_menu"
     android:layout_width="match_parent"
@@ -10,6 +11,15 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@drawable/background"
     tools:context="net.mandown.games.WhackABeerMenuActivity">
+
+    <TextView
+        android:id="@+id/Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textSize="50dp"
+        android:textColor="@color/white_opaque"
+        android:text="WHACK A BEER" />
 
     <ImageButton
         android:id="@+id/buttonPlay"
@@ -26,6 +36,109 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25dp"
+        android:textColor="@color/white_opaque"
+        android:text="Test your reaction time!"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/Title"
+        android:layout_alignEnd="@+id/buttonScore" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_below="@+id/desc"
+        android:layout_above="@id/buttonPlay"
+        android:layout_alignStart="@+id/Title">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="3">
+
+            <ImageView
+                android:id="@+id/beer"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="20dp"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/beer_glass" />
+
+            <ImageView
+                android:id="@+id/bomb"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/bomb" />
+
+            <ImageView
+                android:id="@+id/cocktail"
+                android:layout_width="100dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="10dp"
+                app:srcCompat="@drawable/cocktail_glass" />
+
+            <ImageView
+                android:id="@+id/empty"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/empty_glass" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/beertext"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginTop="30dp"
+                android:text="Beer glass:  100 points"
+                android:textColor="@color/white_opaque"
+                android:textSize="25dp"
+                android:layout_weight="0.40" />
+
+            <TextView
+                android:id="@+id/bombtext"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginTop="30dp"
+                android:textSize="25dp"
+                android:textColor="@color/white_opaque"
+                android:text="Bomb: instant loss"
+                android:layout_weight="0.40" />
+
+            <TextView
+                android:id="@+id/cocktailtext"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:textSize="25dp"
+                android:textColor="@color/white_opaque"
+                android:text="Cocktail:  500 points" />
+
+            <TextView
+                android:id="@+id/emptytext"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginTop="30dp"
+                android:textSize="25dp"
+                android:textColor="@color/white_opaque"
+                android:text="Empty glass: Lose 1 life" />
+        </LinearLayout>
+    </LinearLayout>
 
 
 </RelativeLayout>

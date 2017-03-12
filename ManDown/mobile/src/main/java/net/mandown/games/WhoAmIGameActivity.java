@@ -32,11 +32,7 @@ public class WhoAmIGameActivity extends AppCompatActivity implements WhoAmIView.
         gameWidgets.setGravity(Gravity.CENTER);
         gameWidgets.setOrientation(LinearLayout.HORIZONTAL);
 
-        TextView myText = new TextView(this);
-
-
-        //myText.setText("rIZ..i");
-        gameWidgets.addView(myText);
+        view.setOnClickListener(this);
 
         game.addView(gameWidgets);
         game.addView(view);
@@ -63,7 +59,8 @@ public class WhoAmIGameActivity extends AppCompatActivity implements WhoAmIView.
     //buttons from xml
     @Override
     public void onClick(View v) {
-
+        Log.d("tapped","tapped");
+        view.tapped();
     }
 
     public void gameOver(){
