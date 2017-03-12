@@ -59,6 +59,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "823710583580-il54kve3mb18lcde7k23c803gko3ebkg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "net.mandown",
+            "certificate_hash": "2ce77d01db9494ddf15616a3155c31ef9cbe3372"
+          }
+        },
+        {
           "client_id": "823710583580-6523l34qmkic9cq5j46r0sa6ih5qroi2.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

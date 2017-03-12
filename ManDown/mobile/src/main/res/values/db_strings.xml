@@ -7,6 +7,10 @@
     <string name="put_whackabeer_score">net.mandown.db.put.whackabeer.score</string>
     <string name="put_watch_accel">net.mandown.db.put.watch.accel</string>
 
+    <string name="put_walk_accel">net.mandown.db.put.walk.accel</string>
+    <string name="put_walk_gyro">net.mandown.db.put.walk.gyro</string>
+    <string name="put_walk_magnet">net.mandown.db.put.walk.magnet</string>
+
 
 
     <!-- RT is reaction time -->
@@ -29,17 +33,35 @@
     <string name="accel_y_arr">accel.y.arr</string>
     <string name="accel_z_arr">accel.z.arr</string>
 
+    <!-- Data for put walk accel -->
+    <string name="accel_timestamp_walk">accel.timestamp.walk</string>
+    <string name="accel_x_walk">accel.x.walk</string>
+    <string name="accel_y_walk">accel.y.walk</string>
+    <string name="accel_z_walk">accel.z.walk</string>
+
     <!-- Data for put gyro -->
     <string name="gyro_timestamp_arr">gyro.timestamp.arr</string>
     <string name="gyro_x_arr">gyro.x.arr</string>
     <string name="gyro_y_arr">gyro.y.arr</string>
     <string name="gyro_z_arr">gyro.z.arr</string>
 
+    <!-- Data for put walk gyro -->
+    <string name="gyro_timestamp_walk">gyro.timestamp.walk</string>
+    <string name="gyro_x_walk">gyro.x.walk</string>
+    <string name="gyro_y_walk">gyro.y.walk</string>
+    <string name="gyro_z_walk">gyro.z.walk</string>
+
     <!-- Data for put magnet -->
     <string name="magnet_timestamp_arr">magnet.timestamp.arr</string>
     <string name="magnet_x_arr">magnet.x.arr</string>
     <string name="magnet_y_arr">magnet.y.arr</string>
     <string name="magnet_z_arr">magnet.z.arr</string>
+
+    <!-- Data for put walk magnet -->
+    <string name="magnet_timestamp_walk">magnet.timestamp.walk</string>
+    <string name="magnet_x_walk">magnet.x.walk</string>
+    <string name="magnet_y_walk">magnet.y.walk</string>
+    <string name="magnet_z_walk">magnet.z.walk</string>
 
 
 
