@@ -170,7 +170,6 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
         int drink_width = 200*dm.widthPixels/1280;
         int drink_height = 150*dm.heightPixels/720;
 
-
         background_bm = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.background),dm.widthPixels,dm.heightPixels,false);
         drink_bm = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.tw_drink),drink_width,drink_height,false);
         ///NEED SENSOR DATA HERE!!!   AND IN UPDATE!!!!!
@@ -179,8 +178,6 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
 
         drink= new TRWDrink(zero_x,zero_y,drink_bm);
         plate= new TRWPlate(500,res);
-
-//        sensordata = new ArrayList<>();
 
         try {
             file_out = new OutputStreamWriter(

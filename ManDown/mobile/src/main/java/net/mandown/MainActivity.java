@@ -1,5 +1,6 @@
 package net.mandown;
 
+<<<<<<< HEAD
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ComponentName;
@@ -13,6 +14,12 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+=======
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.os.Handler;
+import android.support.v7.app.AlertDialog;
+>>>>>>> a352c2406c853d2c88dbdb640c3765524f4ea01a
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,6 +47,7 @@ import net.mandown.journal.JournalActivity;
 import net.mandown.sensors.SensorService;
 
 import net.mandown.R;
+
 import net.mandown.sensors.SensorSample;
 import net.mandown.sensors.SensorService;
 
@@ -73,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     };
-
 
     private ImageButton btnGamePlay;
     private ImageButton btnBeerGlass;
@@ -193,7 +200,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setPositiveButton("I understand", null)
                 .create();
         dialog.show();
-
     }
 	
 	public void goJournal(View view){
