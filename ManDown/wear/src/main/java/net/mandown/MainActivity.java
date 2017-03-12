@@ -63,7 +63,7 @@ public class MainActivity extends Activity implements
     private GoogleApiClient mGoogleApiClient;
 
     public static final int DEFAULT_POLL_RATE_US = 100000; // 100ms
-    public static final int DEFAULT_POLL_PERIOD_S = 5000000; // 5s
+    public static final int DEFAULT_POLL_PERIOD_US = 12000000; // 12s
     private List<Float> WatchAccelValues;
     private List<Long> WatchTimeValues;
     private Lock mVarLock;
@@ -187,9 +187,9 @@ public class MainActivity extends Activity implements
                     Log.d("datachanged", "SET BOOL TO STR");
                     mVarLock.lock();
                     long startTime = SystemClock.elapsedRealtime();
-                    WatchAccelValues = new ArrayList<Float>((int)(3*DEFAULT_POLL_PERIOD_S / DEFAULT_POLL_RATE_US));
-                    WatchTimeValues = new ArrayList<Long>((int)(DEFAULT_POLL_PERIOD_S / DEFAULT_POLL_RATE_US));
-                    long pollPeriod = DEFAULT_POLL_PERIOD_S / 1000;
+                    WatchAccelValues = new ArrayList<Float>((int)(3*DEFAULT_POLL_PERIOD_US / DEFAULT_POLL_RATE_US));
+                    WatchTimeValues = new ArrayList<Long>((int)(DEFAULT_POLL_PERIOD_US / DEFAULT_POLL_RATE_US));
+                    long pollPeriod = DEFAULT_POLL_PERIOD_US / 1000;
                     mVarLock.unlock();
                     Log.d("datachanged", Long.toString(startTime));
                     startService(intent);
