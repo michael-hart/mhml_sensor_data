@@ -37,9 +37,10 @@ import java.util.Map;
 import static java.security.AccessController.getContext;
 
 
-public class HistoryActivity extends AppCompatActivity implements View.OnClickListener, Runnable {
+public class HistoryActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ImageButton btnEmergency;
+    private ImageButton btnBeerGlass;
 
 //    private Thread beerThread = null;
     private Canvas canvas;
@@ -56,6 +57,16 @@ public class HistoryActivity extends AppCompatActivity implements View.OnClickLi
 
         paint = new Paint();
         paint.setColor(Color.parseColor("#da4747"));
+
+        btnEmergency = (ImageButton) findViewById(R.id.DrunkMan);
+        btnEmergency.setOnClickListener(this);
+
+
+        btnBeerGlass = (ImageButton) findViewById(R.id.BeerGlass);
+
+        update_drunk_level(2);
+
+    }
 
         //Trying to pull data from database
 
@@ -89,31 +100,17 @@ public class HistoryActivity extends AppCompatActivity implements View.OnClickLi
 
 
 
+    private void update_drunk_level(int d_lvl){
 
-//        beerThread = new Thread(this);
-//        beerThread.start();
+        int drunk_level = d_lvl;
 
-
-        //display metrics
-//        dm = new DisplayMetrics();
-//        ((Activity) getContext()).getWindowManager()
-//                .getDefaultDisplay()
-//                .getMetrics(dm);
-
-
-
-
-
-        //Canvas canvas = new Canvas(bg);
-
-
-      //  LinearLayout ll = (LinearLayout) findViewById(R.id.rect);
-     //   ll.setBackground(new BitmapDrawable(bg));
-
-        btnEmergency = (ImageButton) findViewById(R.id.DrunkMan);
-        btnEmergency.setOnClickListener(this);
-
-
+        if(drunk_level==0){
+            btnBeerGlass.setImageResource(R.drawable.empty_beer_glass);
+        }else if(drunk_level==1){
+            btnBeerGlass.setImageResource(R.drawable.glass_beer);
+        } else if(drunk_level==2){
+            btnBeerGlass.setImageResource(R.drawable.full_glass_beer);
+        }
     }
 
     @Override
@@ -138,32 +135,5 @@ public class HistoryActivity extends AppCompatActivity implements View.OnClickLi
         }
 
     }
-
-    public void draw() {
-        Bitmap empty_glass = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.empty_beer_glass),400,400,false);
-        Bitmap bg = Bitmap.createBitmap(480, 800, Bitmap.Config.ARGB_8888);
-
-        canvas = new Canvas(bg);
-
-        canvas.drawBitmap(empty_glass,0,0,paint);//.drawColor(Color.BLACK);
-
-        Log.d("image drawn:","yes");
-
-    }
-
-    @Override
-    public void run() {
-       //     update();
-            draw();
-         //   control();
-
-    }
-//    private void control() {
-//        try {
-//            beerThread.sleep(17);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
 }

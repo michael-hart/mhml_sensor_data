@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:textSize="25dp"
         android:textColor="@color/white_opaque"
-        android:text="Test your balance!\nWalk 10m in a straight line by touching your toes with your heel at each step. Do so while balancing the virtual drink on your phone"
+        android:text="Test your balance!\nWalk in a straight line by touching your toes with your heel at each step. Do so, while balancing the virtual drink on your phone. Be careful the cicular tray slowly gets smaller. You lose once the drink falls of the tray."
         android:layout_below="@+id/Title"
         android:layout_alignStart="@+id/buttonPlay" />
 

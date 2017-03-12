@@ -136,13 +136,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Post event to handler to begin DB updates
         mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
 
+        update_drunk_level(0);
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
 
+
         beerview = (TextView) findViewById(R.id.watchtext);
+    }
+
+    private void update_drunk_level(int d_lvl){
+
+        int drunk_level = d_lvl;
+
+        if(drunk_level==0){
+            btnBeerGlass.setImageResource(R.drawable.empty_beer_glass);
+        }else if(drunk_level==1){
+            btnBeerGlass.setImageResource(R.drawable.glass_beer);
+        } else if(drunk_level==2){
+            btnBeerGlass.setImageResource(R.drawable.full_glass_beer);
+        }
     }
 
     @Override
