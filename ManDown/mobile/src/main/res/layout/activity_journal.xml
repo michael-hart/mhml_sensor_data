@@ -34,13 +34,13 @@
 
     <ImageButton
         android:id="@+id/ShotUnit"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/shot3"
+        app:srcCompat="@drawable/shot"
         android:layout_alignBottom="@+id/WineUnit"
-        android:layout_alignEnd="@+id/DrunkMan" />
+        android:layout_alignEnd="@+id/Unit_input" />
 
     <ImageButton
         app:srcCompat="@drawable/options"
@@ -98,5 +98,23 @@
         android:hint="How many units did you consume?"
         android:inputType="numberDecimal"
         android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="none"
+        android:layout_marginTop="31dp"
+        android:layout_below="@+id/Unit_input"
+        android:layout_alignStart="@+id/Unit_input" />
+
+    <Button
+        android:id="@+id/Confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/display"
+        android:layout_centerHorizontal="true"
+        android:text="Confirm" />
 
 </RelativeLayout>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.mandown">
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:allowBackup="true"
@@ -23,7 +24,6 @@
         <activity android:name=".journal.JournalActivity" />
         <activity android:name=".history.HistoryActivity" />
 
-
         <service
             android:name=".db.DBService"
             android:exported="false" />
@@ -35,7 +35,6 @@
         <activity android:name=".games.WhoAmIMenuActivity" />
         <activity android:name=".games.RingOfFireGameActivity" />
         <activity android:name=".games.WhoAmIGameActivity" />
-
     </application>
 
 </manifest>

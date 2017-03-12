@@ -1,15 +1,19 @@
 package net.mandown;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.media.Image;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +31,8 @@ import net.mandown.R;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+
+    private static final int REQUEST_PHONE_CALL = 1;
 
     private final String mDisclaimerText =
             "This app is distributed for the collection of accelerometer, gyroscope, and " +
@@ -51,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ImageButton btnGamePlay;
     private ImageButton btnBeerGlass;
-    private ImageButton btnJournal;
+ //   private ImageButton btnJournal;
     private ImageButton btnHistory;
     private ImageButton btnOptions;
     private ImageButton btnEmergency;
@@ -68,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btnGamePlay = (ImageButton) findViewById(R.id.JoyStick);
         btnBeerGlass = (ImageButton) findViewById(R.id.BeerGlass);
-        btnJournal  = (ImageButton) findViewById(R.id.Journal);
+    //    btnJournal  = (ImageButton) findViewById(R.id.Journal);
         btnHistory  = (ImageButton) findViewById(R.id.History);
         btnOptions  = (ImageButton) findViewById(R.id.OptionLevers);
         btnEmergency= (ImageButton) findViewById(R.id.DrunkMan);
@@ -77,14 +83,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btnGamePlay.setOnClickListener(this);
         btnBeerGlass.setOnClickListener(this);
-        btnJournal.setOnClickListener(this);
+     //   btnJournal.setOnClickListener(this);
         btnHistory.setOnClickListener(this);
         btnOptions.setOnClickListener(this);
         btnEmergency.setOnClickListener(this);
 
 
         // Reset the database on initialisation
-        DBService.startActionResetDatabase(this);
+    //    DBService.startActionResetDatabase(this);
 
 
         // Start the sensor service to collect data
@@ -107,21 +113,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //starting game activity
             startActivity(new Intent(this, HistoryActivity.class));
         }
-        if (v == btnJournal) {
-            //starting game activity
-            startActivity(new Intent(this, JournalActivity.class));
-        }
-        if (v == btnBeerGlass) {
+//        if (v == btnJournal) {
+//            //starting game activity
+//            startActivity(new Intent(this, JournalActivity.class));
+//        }
+     //   if (v == btnBeerGlass) {
             //starting sensor activity
-            DBService.startActionPutPassive(getApplicationContext(), 0, 0, 0);
-        }
+          //  DBService.startActionPutPassive(getApplicationContext(), 0, 0, 0);
+     //   }
         if (v == btnEmergency) {
             new AlertDialog.Builder(this)
                     .setTitle("Contact Emergency Help")
                     .setMessage("Are you sure you want to send a distress call")
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            // continue with delete
+                            // continue with action
+
+                            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "12345"));
+
+                            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CALL_PHONE},REQUEST_PHONE_CALL);
+                            }
+                            else
+                            {
+                                startActivity(intent);
+                            }
+
                         }
                     })
                     .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -133,14 +150,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .show();
         }
 
-        // Create a disclaimer window using AlertDialog
-        AlertDialog dialog = (new AlertDialog.Builder(this))
-                .setTitle("ManDown Disclaimer")
-                .setMessage(mDisclaimerText)
-                .setPositiveButton("I understand", null)
-                .create();
-        dialog.show();
+//        // Create a disclaimer window using AlertDialog
+//        AlertDialog dialog = (new AlertDialog.Builder(this))
+//                .setTitle("ManDown Disclaimer")
+//                .setMessage(mDisclaimerText)
+//                .setPositiveButton("I understand", null)
+//                .create();
+//        dialog.show();
 
+    }
+
+    public void goJournal(View view){
+        Intent intent = new Intent(this, JournalActivity.class);
+        startActivity(intent);
     }
 
 }
