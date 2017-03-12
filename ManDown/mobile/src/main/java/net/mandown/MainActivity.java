@@ -49,7 +49,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
 		DataApi.DataListener,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener{{
+        GoogleApiClient.OnConnectionFailedListener{
 
     private static final int REQUEST_PHONE_CALL = 1;
 
@@ -129,7 +129,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Post event to handler to begin DB updates
         mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
 
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
 
+        beerview = (TextView) findViewById(R.id.watchtext);
     }
 
     @Override
@@ -188,13 +194,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .create();
         dialog.show();
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Wearable.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-
-        beerview = (TextView) findViewById(R.id.watchtext);
     }
 	
 	public void goJournal(View view){

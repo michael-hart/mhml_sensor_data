@@ -180,7 +180,7 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
         drink= new TRWDrink(zero_x,zero_y,drink_bm);
         plate= new TRWPlate(500,res);
 
-        sensordata = new ArrayList<>();
+//        sensordata = new ArrayList<>();
 
         try {
             file_out = new OutputStreamWriter(
