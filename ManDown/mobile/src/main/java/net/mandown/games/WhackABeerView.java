@@ -25,6 +25,7 @@ import net.mandown.ml.RealtimePrediction;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
 import java.util.HashMap;
 import java.util.Map;
@@ -325,6 +326,9 @@ public class  WhackABeerView extends SurfaceView implements WhackABeerDrinks.Cal
     public void gameOver(){
 
         DBService.startActionPutReactionTimes(getContext(), reaction_times);
+        //Log.d("hellooooo", String.valueOf(reaction_times));
+        //Log.d("Last reaction time is", String.valueOf(DBService.GetMostRecentReactionTime()));
+        //Log.d("Last Accel time is", String.valueOf(DBService.GetMostRecentAccel()));
         observer.gameOver();
     }
 

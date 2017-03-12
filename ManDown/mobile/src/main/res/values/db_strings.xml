@@ -6,6 +6,8 @@
     <string name="put_magnet_list">net.mandown.db.put.magnet.list</string>
     <string name="put_whackabeer_score">net.mandown.db.put.whackabeer.score</string>
 
+
+
     <!-- RT is reaction time -->
     <string name="put_whackabeer_rt">net.mandown.db.put.whackabeer.rt</string>
     <string name="rt_arr">rt.arr</string>

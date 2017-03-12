@@ -31,12 +31,16 @@ public class DBService extends IntentService {
     // Track latest instance with static variable to allow static calls
     public static DBService sInstance;
 
-    /*
-     * Create lists for most recent readings
-     */
-    private static ArrayList<Long> mRecentReaction;
-    private static List<SensorSample> mRecentAccel, mRecentGyro, mRecentMag, mRecentWearAccel;
+    /////////////////////
+    public static ArrayList<Long> most_rec_reaction = new ArrayList<Long>();
+    public static List<SensorSample> most_rec_accel= new ArrayList<SensorSample>();
+    public static List<SensorSample> most_rec_gyro= new ArrayList<SensorSample>();
+    public static List<SensorSample> most_rec_magn= new ArrayList<SensorSample>();
 
+
+
+
+    /////////////////////
 
     // Keep a reference to the database
     DatabaseReference mRef;
@@ -81,12 +85,16 @@ public class DBService extends IntentService {
             react_time[count++]=i;
         }
         */
+        if(!rtList.isEmpty()) {
+            most_rec_reaction = rtList;
+        }
 
 
         Intent intent = new Intent(context, DBService.class);
         intent.setAction(context.getString(R.string.put_whackabeer_rt));
         intent.putExtra(context.getString(R.string.rt_arr), rtList);
         context.startService(intent);
+
     }
 
 
@@ -144,7 +152,7 @@ public class DBService extends IntentService {
                 intent.putExtra(context.getString(R.string.accel_x_arr), x);
                 intent.putExtra(context.getString(R.string.accel_y_arr), y);
                 intent.putExtra(context.getString(R.string.accel_z_arr), z);
-                mRecentAccel = list;
+                most_rec_accel= list;
                 break;
             case GYROSCOPE:
                 intent.setAction(context.getString(R.string.put_gyro_list));
@@ -152,7 +160,7 @@ public class DBService extends IntentService {
                 intent.putExtra(context.getString(R.string.gyro_x_arr), x);
                 intent.putExtra(context.getString(R.string.gyro_y_arr), y);
                 intent.putExtra(context.getString(R.string.gyro_z_arr), z);
-                mRecentGyro = list;
+                most_rec_gyro=list;
                 break;
             case MAGNETOMETER:
                 intent.setAction(context.getString(R.string.put_magnet_list));
@@ -160,38 +168,7 @@ public class DBService extends IntentService {
                 intent.putExtra(context.getString(R.string.magnet_x_arr), x);
                 intent.putExtra(context.getString(R.string.magnet_y_arr), y);
                 intent.putExtra(context.getString(R.string.magnet_z_arr), z);
-                mRecentMag = list;
-                break;
-        }
-
-        context.startService(intent);
-    }
-
-    public static void startPutActionWatchAccel(Context context, List<SensorSample> list,
-                                                SensorType type) {
-        Intent intent = new Intent(context, DBService.class);
-        // Split samples into separate lists
-        ArrayList<Long> timestamps = new ArrayList<>();
-        ArrayList<Float> x = new ArrayList<>();
-        ArrayList<Float> y = new ArrayList<>();
-        ArrayList<Float> z = new ArrayList<>();
-
-        for (SensorSample s : list) {
-            timestamps.add(s.mTimestamp);
-            x.add(s.mX);
-            y.add(s.mY);
-            z.add(s.mZ);
-        }
-
-        switch (type)
-        {
-            case ACCELEROMETER:
-                intent.setAction(context.getString(R.string.put_watch_accel));
-                intent.putExtra(context.getString(R.string.watch_timestamp_arr), timestamps);
-                intent.putExtra(context.getString(R.string.watch_x_arr), x);
-                intent.putExtra(context.getString(R.string.watch_y_arr), y);
-                intent.putExtra(context.getString(R.string.watch_z_arr), z);
-                mRecentWearAccel = list;
+                most_rec_magn=list;
                 break;
         }
 
@@ -199,24 +176,25 @@ public class DBService extends IntentService {
     }
 
 
+    public static ArrayList<Long> GetMostRecentReactionTime() {
 
-    public static ArrayList<Long> getMostRecentReactionTime() {
-        return mRecentReaction;
-    }
-
-    public static List<SensorSample> getMostRecentAccel() {
-        return mRecentAccel;
-    }
-    public static List<SensorSample> getMostRecentMagn() {
-        return mRecentMag;
-    }
-    public static List<SensorSample> getMostRecentGyro() {
-        return mRecentGyro;
+    return most_rec_reaction;
     }
 
-    public static List<SensorSample> getMostRecentWatchAccel() {
-        return mRecentWearAccel;
+    public static List<SensorSample> GetMostRecentAccel() {
+
+        return most_rec_accel;
     }
+    public static List<SensorSample> GetMostRecentMagn() {
+
+        return most_rec_magn;
+    }
+    public static List<SensorSample> GetMostRecentGyro() {
+
+        return most_rec_gyro;
+    }
+
+
 
     /**
      * Overrides method to handle the intent, analysing the intent action and calling the
@@ -249,6 +227,7 @@ public class DBService extends IntentService {
                 ArrayList<Float> z = (ArrayList<Float>)
                         intent.getSerializableExtra(getString(R.string.accel_z_arr));
                 handleActionPutAccelList(timestamps, x, y, z);
+                //mostRecentAccel(timestamps,x,y,z);
             } else if (getString(R.string.put_gyro_list).equals(action)) {
                 ArrayList<Long> timestamps = (ArrayList<Long>)
                         intent.getSerializableExtra(getString(R.string.gyro_timestamp_arr));
@@ -283,11 +262,13 @@ public class DBService extends IntentService {
         }
     }
 
+
+
+
+
     private void handleActionPutReactionTimes(ArrayList<Long> rt) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         String format = dateFormat.format(new Date());
-
-
 
 
         //ArrayList<Long> listTimes = new ArrayList<Long>();
@@ -320,15 +301,6 @@ public class DBService extends IntentService {
 
 
 
-
-
-
-
-
-
-
-
-
     private void handleActionPutSensorGamedata(ArrayList<SensorSample> sn) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         String format = dateFormat.format(new Date());
@@ -336,12 +308,11 @@ public class DBService extends IntentService {
         //for (int i = 0; i < times.length; i++) {
         //    listTimes.add(times[i]);
         //}
+
         mRef.child("SensorGame").child(format).setValue(sn);
 
 
     }
-
-
 
 
 
