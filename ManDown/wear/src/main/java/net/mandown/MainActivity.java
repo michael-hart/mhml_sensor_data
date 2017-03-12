@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.annotation.IntegerRes;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.view.View;
@@ -32,10 +33,11 @@ import net.mandown.sensors.SensorSample;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static net.mandown.sensors.SensorBroadcast.getMeasuredValues;
 
 public class MainActivity extends Activity implements
         DataApi.DataListener,
@@ -54,14 +56,18 @@ public class MainActivity extends Activity implements
     private static final String WINE_KEY = "net.mandown.key.wine";
     private static final String COCKTAIL_KEY = "net.mandown.key.cocktail";
     private static final String SHOT_KEY = "net.mandown.key.shot";
-    private static final String WATCH_KEY = "net.mandown.key.watch";
+    private static final String WATCH_RX_KEY = "net.mandown.key.watchrx";
+    private static final String WATCH_TX_FLOAT_KEY = "net.mandown.key.watchtxfloat";
+    private static final String WATCH_TX_LONG_KEY = "net.mandown.key.watchtxlong";
 
     private GoogleApiClient mGoogleApiClient;
 
     public static final int DEFAULT_POLL_RATE_US = 100000; // 100ms
-    public static final int DEFAULT_POLL_PERIOD_S = 5; // 5s
-    private List<SensorSample> WatchAccelValues;
+    public static final int DEFAULT_POLL_PERIOD_S = 5000000; // 5s
+    private List<Float> WatchAccelValues;
+    private List<Long> WatchTimeValues;
     private Lock mVarLock;
+    private int count = 0;
 
 
     @Override
@@ -97,7 +103,7 @@ public class MainActivity extends Activity implements
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            //Log.i("broadreceived",Float.toString(acc_x));
+            Log.d("broadreceived",Integer.toString(++count));
             Bundle bundle = intent.getExtras();
             if (bundle != null) {
 //                acc_x = bundle.getFloat("x");
@@ -105,7 +111,14 @@ public class MainActivity extends Activity implements
 //                acc_z = bundle.getFloat("z");
 
                 //((TextView) findViewById(R.id.acc_reading)).setText(Float.toString(acc_x) + ' ' + Float.toString(acc_y) + ' ' + Float.toString(acc_z));
-                WatchAccelValues.add(new SensorSample(bundle.getLong("t"), bundle.getFloat("x"), bundle.getFloat("y"), bundle.getFloat("z")));
+
+                //Assumption here is since poll is APPROX 10ms or 100Hz (which is still much too fast, body motion up to 20Hz => 40Hz polling enough)
+                //Therefore 10ms is a long enough time that the broadcast is not flooded and values can be recorded and stored before the next sensor sample
+                WatchTimeValues.add(bundle.getLong("t")); //Get Timestamp
+                //Get x, y, z values
+                WatchAccelValues.add(bundle.getFloat("x"));
+                WatchAccelValues.add(bundle.getFloat("y"));
+                WatchAccelValues.add(bundle.getFloat("z"));
             }
         }
     };
@@ -169,29 +182,40 @@ public class MainActivity extends Activity implements
                 DataItem item = event.getDataItem();
                 if (item.getUri().getPath().compareTo("/watchaccel") == 0) {
                     DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
-                    ((TextView) findViewById(R.id.phonetrigger)).setText(Boolean.toString(dataMap.getBoolean(WATCH_KEY)));
+                    ((TextView) findViewById(R.id.phonetrigger)).setText(Boolean.toString(dataMap.getBoolean(WATCH_RX_KEY)));
 
+                    Log.d("datachanged", "SET BOOL TO STR");
                     mVarLock.lock();
                     long startTime = SystemClock.elapsedRealtime();
-                    WatchAccelValues = new ArrayList<SensorSample>((int)(DEFAULT_POLL_PERIOD_S / DEFAULT_POLL_RATE_US));
+                    WatchAccelValues = new ArrayList<Float>((int)(3*DEFAULT_POLL_PERIOD_S / DEFAULT_POLL_RATE_US));
+                    WatchTimeValues = new ArrayList<Long>((int)(DEFAULT_POLL_PERIOD_S / DEFAULT_POLL_RATE_US));
+                    long pollPeriod = DEFAULT_POLL_PERIOD_S / 1000;
                     mVarLock.unlock();
-
+                    Log.d("datachanged", Long.toString(startTime));
                     startService(intent);
+                    Log.d("datachanged", "STARTED BACKGROUND SVC");
                     this.registerReceiver(br, new IntentFilter("accel"));
+                    Log.d("datachanged", "REGISTERED RECEIVER");
 
                     // Repeatedly wait until our work is done
-                    while (SystemClock.elapsedRealtime() - startTime < DEFAULT_POLL_PERIOD_S) {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException ie) {
-                            Log.e("SensorDataCollector", "Interrupted while waiting for execution: "
-                                    + ie.toString());
-                        }
-                    }
-
-                    stopService(intent);
-
-                    ((TextView) findViewById(R.id.phonetrigger)).setText(WatchAccelValues.size());
+//                    while (SystemClock.elapsedRealtime() - startTime < pollPeriod) {
+//                        try {
+//                            wait(100);
+//                            Log.d("datachanged", "SLEEPING");
+//                        } catch (InterruptedException ie) {
+//                            Log.e("SensorDataCollector", "Interrupted while waiting for execution: "
+//                                    + ie.toString());
+//                        }
+//                    }
+                    Timer timer1 = new Timer();
+                    timer1.schedule(new stopTask(), pollPeriod);
+//                    Log.d("datachanged", "STOPPED SLEEP");
+//                    stopService(intent);
+//                    Log.d("datachanged", "STOPPED SERVICE");
+//                    sendmeasresults();
+//                    Log.d("datachanged", "SENT RESULTS");
+//                    ((TextView) findViewById(R.id.phonetrigger)).setText(Integer.toString(WatchTimeValues.size())+ ' ' + Integer.toString(WatchAccelValues.size()));
+//                    Log.d("datachanged", "FINISHED FUNCTION");
                 }
 
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
@@ -292,24 +316,62 @@ public class MainActivity extends Activity implements
         }
     }
 
-    //TO-DO SORT THIS OUT
-    //REMOVE ALL CUSTOM DATA STRUCTURES AND REVERT TO ARRAY OF FLOATS AND ARRAY OF LONG
-    //CAST BACK TO SENSORSAMPLE TYPE ON THE PHONE ONCE PRIMITIVES ARE SENT
-    public void drankshot(View v) {
+    private void sendmeasresults() {
+        float[] floatArr = new float[WatchAccelValues.size()];
+        long[] longArr = new long[WatchTimeValues.size()];
+        int i = 0;
+        //Convert java object types to primitives
+        for (Float f : WatchAccelValues) {
+            floatArr[i++] = (f != null ? f : Float.NaN); //Ensure that Float is not pointing to Null before passing in
+        }
+        i = 0; //Reset counter
+        for (Long l : WatchTimeValues) {
+            longArr[i++] = (l != null ? l : 0); //Ensure that Long is not pointing to Null before passing in, time epoch should never be 0 so it's safe
+        }
+
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/watchdata");
-        putDataMapReq.getDataMap().putString(WATCH_KEY, shottext);
+        putDataMapReq.getDataMap().putFloatArray(WATCH_TX_FLOAT_KEY, floatArr);
+        putDataMapReq.getDataMap().putLongArray(WATCH_TX_LONG_KEY, longArr);
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
         putDataReq.setUrgent();
         PendingResult<DataApi.DataItemResult> pendingResult =
                 Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
-        Log.d("shot","SENT SHOT!");
-        if (shottext == "shot")
-        {
-            shottext = "notshot";
-        }
-        else
-        {
-            shottext = "shot";
+        Log.d("sendmeas","SENT ACCEL RESULTS!");
+//        ((TextView) findViewById(R.id.phonetrigger)).setText(Integer.toString(WatchTimeValues.size())+ ' ' + Integer.toString(WatchAccelValues.size()));
+    }
+
+//    private float[] floatListtoArr() {
+//        float[] floatArr = new float[WatchAccelValues.size()];
+//        int i = 0;
+//
+//        for (Float f : WatchAccelValues) {
+//            floatArr[i++] = (f != null ? f : Float.NaN); //Ensure that Float is not pointing to Null before passing in
+//        }
+//
+//        return floatArr;
+//    }
+//
+//    private long[] longListtoArr() {
+//        long[] longArr = new long[WatchTimeValues.size()];
+//        int i = 0;
+//
+//        for (Long l : WatchTimeValues) {
+//            longArr[i++] = (l != null ? l : 0); //Ensure that Long is not pointing to Null before passing in, time epoch should never be 0 so it's safe
+//        }
+//
+//        return longArr;
+//    }
+
+    class stopTask extends TimerTask {
+        @Override
+        public void run() {
+            Log.d("datachanged", "STOPPED SLEEP");
+            stopService(intent);
+            Log.d("datachanged", "STOPPED SERVICE");
+            unregisterReceiver(br);
+            Log.d("datachanged", "STOPPED BROADCAST");
+            sendmeasresults();
+            Log.d("datachanged", "FINISHED FUNCTION");
         }
     }
 }
