@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -21,9 +22,17 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import net.mandown.R;
+import net.mandown.db.DBService;
 import net.mandown.games.GameMenuActivity;
 import android.view.SurfaceView;
+import android.widget.TextView;
 
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Map;
 
 import static java.security.AccessController.getContext;
 
@@ -52,11 +61,43 @@ public class HistoryActivity extends AppCompatActivity implements View.OnClickLi
         btnEmergency = (ImageButton) findViewById(R.id.DrunkMan);
         btnEmergency.setOnClickListener(this);
 
+
         btnBeerGlass = (ImageButton) findViewById(R.id.BeerGlass);
 
         update_drunk_level(2);
 
     }
+
+        //Trying to pull data from database
+
+//        //////reading from firebase
+//        DatabaseReference mRef2= mRef.child("drunken");
+//        // Read from the database
+//        mRef2.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                // This method is called once with the initial value and again
+//                // whenever data at this location is updated.
+//                Map<String,Long> value = (Map)dataSnapshot.getValue();
+//                Log.d("Value is: " , String.valueOf(value.entrySet()));
+
+
+        //update text
+
+        // Set up a new handler to update the home textview with number of DB entries every 100ms
+        private final Handler mDbUpdateHandler = new Handler();
+        private Runnable mUpdateDBTxt = new Runnable() {
+            @Override
+            public void run() {
+                if (DBService.sInstance != null) {
+                    TextView txtDbInfo = (TextView) findViewById(R.id.txtDbView);
+                    txtDbInfo.setText(String.format("%d accel data readings",
+                            DBService.sInstance.getNumAccelReadings()));
+                    mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
+                }
+            }
+        };
+
 
 
     private void update_drunk_level(int d_lvl){

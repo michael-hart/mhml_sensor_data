@@ -1,7 +1,10 @@
 package net.mandown.games;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,6 +18,10 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import net.mandown.R;
+import net.mandown.db.DBService;
+import net.mandown.sensors.SensorBroadcastService;
+import net.mandown.sensors.SensorSample;
+import net.mandown.sensors.SensorType;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -95,7 +102,8 @@ class TRWDrink {
 
 }
 
-public class TightropeWaiterView extends SurfaceView implements Runnable  {
+
+public class TightropeWaiterView extends SurfaceView implements Runnable {
 
     volatile boolean playing;
     private Thread gameThread = null;
@@ -117,12 +125,36 @@ public class TightropeWaiterView extends SurfaceView implements Runnable  {
     private TRWPlate plate;
     private int zero_x;
     private int zero_y;
-    private ArrayList<Float[]> sensordata;
+    private ArrayList<SensorSample> mSensorData;
 
     //gameplay variables
     private OutputStreamWriter file_out;
     private Callback observer;
     private long start_timer;
+
+    //accel values
+    private long mAccTS = 0;
+    private float mAccX = 0.0f;
+    private float mAccY = 0.0f;
+    private float mAccZ = 0.0f;
+
+    private BroadcastReceiver br = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            long ts;
+            float x, y, z;
+            ts = intent.getLongExtra("ts", -1);
+            x = intent.getFloatExtra("x", -1);
+            y = intent.getFloatExtra("y", -1);
+            z = intent.getFloatExtra("z", -1);
+
+            if (ts > -1) {
+                updateAccValues(ts, x, y, z);
+            }
+        }
+    };
+
 
     public TightropeWaiterView(Callback _observer, Context context) {
         super(context);
@@ -151,37 +183,61 @@ public class TightropeWaiterView extends SurfaceView implements Runnable  {
         drink= new TRWDrink(zero_x,zero_y,drink_bm);
         plate= new TRWPlate(1000,res);
 
-        sensordata = new ArrayList<>();
+        mSensorData= new ArrayList<>();
+        // sensordata = new ArrayList<>();
 
         start_timer = SystemClock.elapsedRealtime();
 
         try {
-            file_out = new OutputStreamWriter(context.openFileOutput("reaction.txt", Context.MODE_PRIVATE));
+            file_out = new OutputStreamWriter(
+                    context.openFileOutput("reaction.txt", Context.MODE_PRIVATE));
         }
         catch (IOException e) {
             Log.e("Exception", "File write failed: " + e.toString());
         }
+    }
 
-
+    //Function to allow accel service to update accelerometer readings
+    public void updateAccValues(long ts, float x, float y, float z) {
+        mAccTS = ts;
+        mAccX = x;
+        mAccY = y;
+        mAccZ = z;
+        mSensorData.add(new SensorSample(ts, x, y, z));
     }
 
     @Override
     public void run() {
+        // Clear sensor data array list
+        mSensorData = new ArrayList<>();
+
+        Context context = getContext();
+
+        //Start accelerometer service
+        Intent intent = new Intent(getContext(), SensorBroadcastService.class);
+        context.startService(intent);
+        context.registerReceiver(br, new IntentFilter(context.getString(R.string.accel_broadcast)));
+
         while (playing) {
             update();
             draw();
             control();
         }
+
+        context.stopService(intent);
+        context.unregisterReceiver(br);
+        // Insert sensor values into database
+        DBService.startActionPutSensorList(context, mSensorData, SensorType.ACCELEROMETER);
     }
 
 
     private void update() {
         //updating player position
         //player.update();
-        drink.Update(0,0);
-        plate.Update(0.5f);
+        drink.Update(Math.round(mAccX *(-20)),Math.round(mAccY *20));
+		plate.Update(0.5f);
 
-        sensordata.add(new Float[]{0.0f,0.0f});
+        //mSensorData.add(new SensorSample(mAccTS, mAccX, mAccY, mAccZ));
 
         int dist = distance(drink.getX(),drink.getY());
 
@@ -260,7 +316,6 @@ public class TightropeWaiterView extends SurfaceView implements Runnable  {
             Log.e("Exception", "File write failed: " + e.toString());
         }
         observer.gameOver();
-
     }
 
     interface Callback {

@@ -14,8 +14,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import net.mandown.R;
+import net.mandown.db.DBService;
 
-public class TightropeWaiterGameActivity extends AppCompatActivity implements TightropeWaiterView.Callback, View.OnClickListener{
+public class TightropeWaiterGameActivity extends AppCompatActivity
+        implements TightropeWaiterView.Callback, View.OnClickListener {
 
     //declaring gameview
     private TightropeWaiterView view;
@@ -45,8 +47,6 @@ public class TightropeWaiterGameActivity extends AppCompatActivity implements Ti
 
         game.addView(gameWidgets);
         game.addView(view);
-
-
 
         setContentView(game);
     }
@@ -90,7 +90,7 @@ public class TightropeWaiterGameActivity extends AppCompatActivity implements Ti
         gameWidgets.addView(l);
     }
 
-    public void gameOver(){
+    public void gameOver() {
         finish();
     }
 

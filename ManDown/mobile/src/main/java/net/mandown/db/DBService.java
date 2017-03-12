@@ -204,8 +204,6 @@ public class DBService extends IntentService {
         mRef.child("accelerometer").child(format).child("x").setValue(x);
         mRef.child("accelerometer").child(format).child("y").setValue(y);
         mRef.child("accelerometer").child(format).child("z").setValue(z);
-
-
     }
 
     private void handleActionPutGyroList(long[] timestamp, float[] gyr_x, float[] gyr_y,
