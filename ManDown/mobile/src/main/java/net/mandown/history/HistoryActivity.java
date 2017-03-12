@@ -48,14 +48,11 @@ import java.util.Map;
 import static java.security.AccessController.getContext;
 
 
-public class HistoryActivity extends AppCompatActivity implements View.OnClickListener {
+public class HistoryActivity extends AppCompatActivity  {
 
-    private ImageButton btnEmergency;
     private ImageButton btnBeerGlass;
 
 //    private Thread beerThread = null;
-    private Canvas canvas;
-    private Paint paint;
 
     private Toolbar toolbar;
     private static final int REQUEST_PHONE_CALL = 1;
@@ -78,30 +75,7 @@ public class HistoryActivity extends AppCompatActivity implements View.OnClickLi
         //setting the orientation to landscape
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        paint = new Paint();
-        paint.setColor(Color.parseColor("#da4747"));
 
-        btnEmergency = (ImageButton) findViewById(R.id.DrunkMan);
-        btnEmergency.setOnClickListener(this);
-//        beerThread = new Thread(this);
-//        beerThread.start();
-
-
-        //display metrics
-//        dm = new DisplayMetrics();
-//        ((Activity) getContext()).getWindowManager()
-//                .getDefaultDisplay()
-//                .getMetrics(dm);
-
-
-
-
-
-        //Canvas canvas = new Canvas(bg);
-
-
-      //  LinearLayout ll = (LinearLayout) findViewById(R.id.rect);
-     //   ll.setBackground(new BitmapDrawable(bg));
 
 
         toolbar = (Toolbar) findViewById(R.id.tool_bar_history);
@@ -183,7 +157,9 @@ public class HistoryActivity extends AppCompatActivity implements View.OnClickLi
                         .create();
                 dialog.show();
                 return true;
+            case R.id.action_menu3:
 
+                return true;
             case R.id.emergency:
                 new AlertDialog.Builder(this)
                         .setTitle("Contact Emergency Help")
@@ -221,10 +197,5 @@ public class HistoryActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    @Override
-    public void onClick(View v) {
-
-
-    }
 
 }

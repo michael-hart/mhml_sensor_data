@@ -11,6 +11,20 @@
     android:paddingTop="0dp"
     tools:context="net.mandown.history.HistoryActivity">
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="Intoxication Level"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="24sp"
+        android:typeface="monospace"
+        android:layout_below="@+id/tool_bar_history"
+        android:layout_alignEnd="@+id/editText"
+        android:layout_marginTop="10dp" />
+
     <include
         android:id="@+id/tool_bar_history"
         android:layout_height="wrap_content"
@@ -19,24 +33,25 @@
         ></include>
 
 
-
     <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="101dp"
+        android:id="@+id/BeerGlass"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="42dp"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/empty_beer_glass"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/tool_bar_history"
+        android:layout_alignEnd="@+id/editText"
+        android:layout_marginEnd="8dp" />
 
     <Button
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Button"
-        android:layout_above="@+id/imageButton"
-        android:layout_alignEnd="@+id/imageButton" />
+        android:layout_above="@+id/BeerGlass"
+        android:layout_alignEnd="@+id/BeerGlass" />
 
     <EditText
         android:id="@+id/editText"
@@ -46,8 +61,9 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Name"
-        android:layout_below="@+id/imageButton"
-        android:layout_alignParentStart="true" />
+        android:layout_below="@+id/BeerGlass"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="58dp" />
 
 
 
@@ -55,7 +71,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/editText"
-        android:layout_alignStart="@+id/OptionLevers"
         android:layout_marginTop="32dp">
 
         <TableRow

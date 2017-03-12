@@ -12,6 +12,75 @@
     tools:context="net.mandown.journal.JournalActivity">
 
 
+    <TextView
+        android:id="@+id/textView18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="2 Units"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="24sp"
+        android:typeface="monospace"
+        android:layout_alignBaseline="@+id/textView16"
+        android:layout_alignBottom="@+id/textView16"
+        android:layout_alignEnd="@+id/BeerUnit" />
+
+    <TextView
+        android:id="@+id/textView17"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/display"
+        android:layout_below="@+id/tool_bar_journal"
+        android:layout_marginTop="10dp"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="Intoxication Level"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="24sp"
+        android:typeface="monospace" />
+
+    <TextView
+        android:id="@+id/textView20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="7dp"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="Or click drink options"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp"
+        android:typeface="monospace"
+        android:layout_above="@+id/WineUnit"
+        android:layout_alignEnd="@+id/Unit_input" />
+
+    <TextView
+        android:id="@+id/textView16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="1.5 Units"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="24sp"
+        android:typeface="monospace"
+        android:layout_below="@+id/WineUnit"
+        android:layout_alignStart="@+id/Confirm" />
+
+    <TextView
+        android:id="@+id/textView19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ShotUnit"
+        android:layout_marginStart="23dp"
+        android:layout_toEndOf="@+id/textView16"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="1 Unit"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="24sp"
+        android:typeface="monospace" />
+
     <include
         android:id="@+id/tool_bar_journal"
         android:layout_height="wrap_content"
@@ -27,18 +96,20 @@
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/wine"
         android:layout_alignTop="@+id/BeerUnit"
-        android:layout_alignEnd="@+id/Confirm" />
+        android:layout_alignStart="@+id/BeerGlass"
+        android:layout_marginStart="32dp" />
 
     <ImageButton
         android:id="@+id/BeerUnit"
         android:layout_width="75dp"
         android:layout_height="75dp"
-        android:layout_marginBottom="36dp"
+        android:layout_marginBottom="34dp"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/beerforunit2"
         android:layout_alignParentBottom="true"
-        android:layout_toStartOf="@+id/BeerGlass" />
+        android:layout_toStartOf="@+id/BeerGlass"
+        android:layout_marginEnd="12dp" />
 
     <ImageButton
         android:id="@+id/ShotUnit"
@@ -47,33 +118,33 @@
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/shot"
+        android:layout_marginEnd="40dp"
         android:layout_alignBottom="@+id/WineUnit"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="37dp" />
+        android:layout_alignParentEnd="true" />
 
 
     <ImageButton
         android:id="@+id/BeerGlass"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="9dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="34dp"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/glass_beer"
         android:layout_below="@+id/tool_bar_journal"
-        android:layout_centerHorizontal="true" />
+        android:layout_toStartOf="@+id/ShotUnit" />
 
     <EditText
         android:id="@+id/Unit_input"
         android:layout_width="230dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="25dp"
         android:ems="10"
         android:hint="How many units did you consume?"
         android:inputType="numberDecimal"
         android:textSize="14sp"
         android:layout_below="@+id/BeerGlass"
-        android:layout_alignEnd="@+id/display" />
+        android:layout_alignStart="@+id/display" />
 
     <EditText
         android:id="@+id/display"
@@ -81,18 +152,17 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="none"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/Unit_input"
-        android:layout_alignEnd="@+id/ShotUnit"
-        android:layout_marginEnd="15dp" />
+        android:layout_above="@+id/WineUnit"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="46dp" />
 
     <Button
         android:id="@+id/Confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Confirm"
-        android:layout_below="@+id/display"
-        android:layout_alignEnd="@+id/BeerGlass"
+        android:layout_below="@+id/Unit_input"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp" />
 
 </RelativeLayout>

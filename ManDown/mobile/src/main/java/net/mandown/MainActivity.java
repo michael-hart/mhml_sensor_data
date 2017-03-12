@@ -21,6 +21,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -69,20 +70,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             "and store it online. The app does not accept responsibility for inaccurate readings " +
             "or results for intoxication levels.\n\nIf you wish to opt out, please uninstall " +
             "the application.";
-
+    private Toolbar toolbar;
     // Set up a new handler to update the home textview with number of DB entries every 100ms
-    private final Handler mDbUpdateHandler = new Handler();
-    private Runnable mUpdateDBTxt = new Runnable() {
-        @Override
-        public void run() {
-            if (DBService.sInstance != null) {
-                TextView txtDbInfo = (TextView) findViewById(R.id.txtDbView);
-                txtDbInfo.setText(String.format("%d accel data readings",
-                        DBService.sInstance.getNumAccelReadings()));
-                mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
-            }
-        }
-    };
+//    private final Handler mDbUpdateHandler = new Handler();
+//    private Runnable mUpdateDBTxt = new Runnable() {
+//        @Override
+//        public void run() {
+//            if (DBService.sInstance != null) {
+//                TextView txtDbInfo = (TextView) findViewById(R.id.txtDbView);
+//                txtDbInfo.setText(String.format("%d accel data readings",
+//                        DBService.sInstance.getNumAccelReadings()));
+//                mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
+//            }
+//        }
+//    };
 
     private ImageButton btnGamePlay;
     private ImageButton btnBeerGlass;
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-    private Toolbar toolbar;
+
     //Communication variables
     private GoogleApiClient mGoogleApiClient;
     private static final String BEER_KEY = "net.mandown.key.beer";
@@ -123,22 +124,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .setMessage(mDisclaimerText)
                     .setPositiveButton("I understand", null)
                     .create();
-            dialog.show();        }
+            dialog.show();
+        }
 
         btnGamePlay = (ImageButton) findViewById(R.id.JoyStick);
         btnBeerGlass = (ImageButton) findViewById(R.id.BeerGlass);
-    //    btnJournal  = (ImageButton) findViewById(R.id.Journal);
-        btnHistory  = (ImageButton) findViewById(R.id.History);
+        //    btnJournal  = (ImageButton) findViewById(R.id.Journal);
+        btnHistory = (ImageButton) findViewById(R.id.History);
 
         //adding a click listener
 
         btnGamePlay.setOnClickListener(this);
         btnBeerGlass.setOnClickListener(this);
-     //   btnJournal.setOnClickListener(this);
+        //   btnJournal.setOnClickListener(this);
         btnHistory.setOnClickListener(this);
 
         // Reset the database on initialisation
-    //    DBService.startActionResetDatabase(this);
+        //    DBService.startActionResetDatabase(this);
 
         // Start the sensor service to collect data
         if (this != null) {
@@ -149,6 +151,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         update_drunk_level(0);
 
+                mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+
+
+        beerview = (TextView) findViewById(R.id.watchtext);
     }
 
     private boolean isFirstTime()
@@ -162,14 +172,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             editor.commit();
         }
         return !ranBefore;
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Wearable.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
 
 
-        beerview = (TextView) findViewById(R.id.watchtext);
     }
 
     private void update_drunk_level(int d_lvl){
@@ -207,7 +211,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .create();
         dialog.show();
                 return true;
-
+            case R.id.action_menu3:
+                startwatchaccel();
+                return true;
             case R.id.emergency:
                 new AlertDialog.Builder(this)
                         .setTitle("Contact Emergency Help")
@@ -309,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private boolean watchbool = false;
     //Tell watch to start measuring
-    public void startwatchaccel(View v){
+    public void startwatchaccel(){
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/watchaccel");
         putDataMapReq.getDataMap().putBoolean(WATCH_RX_KEY, watchbool);
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();

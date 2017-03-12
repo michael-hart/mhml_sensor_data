@@ -55,14 +55,87 @@
         android:layout_marginStart="8dp" />
 
     <ImageButton
-        app:srcCompat="@drawable/glass_beer"
         android:id="@+id/BeerGlass"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:scaleType="fitCenter"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="105dp"
         android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/glass_beer"
         android:layout_below="@+id/tool_bar"
-        android:layout_alignStart="@+id/History"
-        android:layout_marginTop="75dp" />
+        android:layout_alignEnd="@+id/textView2"
+        android:layout_marginEnd="11dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="Intoxication Level"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="24sp"
+        android:typeface="monospace"
+        android:layout_marginBottom="19dp"
+        android:layout_above="@+id/watchsamplenum"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="Games"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="24sp"
+        android:typeface="monospace"
+        android:layout_alignBaseline="@+id/textView4"
+        android:layout_alignBottom="@+id/textView4"
+        android:layout_alignEnd="@+id/JoyStick"
+        android:layout_marginEnd="15dp" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="History"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="24sp"
+        android:typeface="monospace"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView4"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="Journal"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="24sp"
+        android:typeface="monospace"
+        android:layout_alignTop="@+id/textView4"
+        android:layout_alignStart="@+id/Journal" />
+
+    <TextView
+        android:id="@+id/watchtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:layout_below="@+id/watchsamplenum"
+        android:layout_alignStart="@+id/watchsamplenum"
+        android:layout_marginTop="30dp" />
+
+    <TextView
+        android:id="@+id/watchsamplenum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="TextView"
+        android:layout_alignTop="@+id/BeerGlass"
+        android:layout_toStartOf="@+id/textView2" />
 
 </RelativeLayout>
