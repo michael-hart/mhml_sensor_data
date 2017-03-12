@@ -99,6 +99,30 @@ public class DBService extends IntentService {
 
 
 
+
+    public static void startActionPutML(Context context, String MLvalues) {
+
+        /*
+        long[] react_time = new long[rtList.size()];
+        int count=0;
+        for (long i: react_time){
+            react_time[count++]=i;
+        }
+        */
+        //if(!rtList.isEmpty()) {
+        //   most_rec_reaction = rtList;
+        //}
+
+
+        Intent intent = new Intent(context, DBService.class);
+        intent.setAction(context.getString(R.string.put_ml_values));
+        intent.putExtra(context.getString(R.string.classif), MLvalues);
+        context.startService(intent);
+
+    }
+
+
+
     ////////////////////////////
 
     public static void startActionPutSensorGamedata(Context context, ArrayList<SensorSample> stList) {
@@ -249,7 +273,12 @@ public class DBService extends IntentService {
                 ArrayList<Long> reactionTimes = (ArrayList<Long>)
                         intent.getSerializableExtra(getString(R.string.rt_arr));
                 handleActionPutReactionTimes(reactionTimes);
-            }  else if (getString(R.string.put_tightropewaiter_sn).equals(action)) {
+            } else if (getString(R.string.put_ml_values).equals(action)) {
+                //ArrayList<Long> reactionTimes = (ArrayList<Long>)
+                String MLValues= (new String());
+                        intent.getSerializableExtra(getString(R.string.classif));
+                handleActionPutMLValues(MLValues);
+            } else if (getString(R.string.put_tightropewaiter_sn).equals(action)) {
                 ArrayList<SensorSample> SensorGameData = (ArrayList<SensorSample>)
                         intent.getSerializableExtra(getString(R.string.sensor_arr));
                 handleActionPutSensorGamedata(SensorGameData);
@@ -298,7 +327,18 @@ public class DBService extends IntentService {
     }
 
 
+    private void handleActionPutMLValues(String ml) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+        String format = dateFormat.format(new Date());
+        //List<Float[]> listTimes = new ArrayList<Long>();
+        //for (int i = 0; i < times.length; i++) {
+        //    listTimes.add(times[i]);
+        //}
 
+        mRef.child("Drunkness").child(format).setValue(ml);
+
+
+    }
 
 
     private void handleActionPutReactionTimes(ArrayList<Long> rt) {
