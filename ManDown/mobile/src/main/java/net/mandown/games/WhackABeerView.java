@@ -25,7 +25,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class WhackABeerView extends SurfaceView implements WhackABeerDrinks.Callback, Runnable {
+public class  WhackABeerView extends SurfaceView implements WhackABeerDrinks.Callback, Runnable {
 
     volatile boolean playing;
     private Thread gameThread = null;

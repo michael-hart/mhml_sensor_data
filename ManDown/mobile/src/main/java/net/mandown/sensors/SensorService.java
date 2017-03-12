@@ -99,6 +99,7 @@ public class SensorService extends Service {
             mVarLock.lock();
             mScheduleTimer.cancel();
             mTimerIsCancelled = true;
+            mScheduleTimer = new Timer();
             mVarLock.unlock();
         }
     }

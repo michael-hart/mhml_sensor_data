@@ -94,8 +94,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         // Start the sensor service to collect data
-        startService(new Intent(this, SensorService.class));
-
+        if (this != null) {
+            startService(new Intent(this, SensorService.class));
+        }
         // Post event to handler to begin DB updates
         mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
 
