@@ -25,6 +25,12 @@ import net.mandown.games.GameMenuActivity;
 import android.view.SurfaceView;
 
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Map;
+
 import static java.security.AccessController.getContext;
 
 
@@ -47,6 +53,19 @@ public class HistoryActivity extends AppCompatActivity implements View.OnClickLi
 
         paint = new Paint();
         paint.setColor(Color.parseColor("#da4747"));
+
+        //Trying to pull data from database
+
+//        //////reading from firebase
+//        DatabaseReference mRef2= mRef.child("drunken");
+//        // Read from the database
+//        mRef2.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                // This method is called once with the initial value and again
+//                // whenever data at this location is updated.
+//                Map<String,Long> value = (Map)dataSnapshot.getValue();
+//                Log.d("Value is: " , String.valueOf(value.entrySet()));
 
 //        beerThread = new Thread(this);
 //        beerThread.start();
