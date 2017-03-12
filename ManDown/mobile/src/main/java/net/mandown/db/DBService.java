@@ -6,8 +6,11 @@ import android.content.Context;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import net.mandown.R;
 import net.mandown.sensors.SensorSample;
@@ -15,24 +18,32 @@ import net.mandown.sensors.SensorType;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
- * a service on a separate handler thread. TODO Implement separate thread for service work.
+ * a service on a separate handler thread.
  */
 public class DBService extends IntentService {
 
     // Track latest instance with static variable to allow static calls
     public static DBService sInstance;
 
+    /////////////////////
+    public static ArrayList<Long> most_rec_reaction = new ArrayList<Long>();
+    public static List<SensorSample> most_rec_accel= new ArrayList<SensorSample>();
+    public static List<SensorSample> most_rec_gyro= new ArrayList<SensorSample>();
+    public static List<SensorSample> most_rec_magn= new ArrayList<SensorSample>();
+    public static List<SensorSample> most_rec_watch_accel= new ArrayList<SensorSample>();
+
+
+
+    /////////////////////
+
     // Keep a reference to the database
     DatabaseReference mRef;
-
-    // User reference
-    private String mAndroidId;
 
     public DBService() {
         super("DBService");
@@ -47,10 +58,11 @@ public class DBService extends IntentService {
         }
 
         // Get unique Android ID
-        mAndroidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        String androidId = Settings.Secure.getString(getContentResolver(),
+                Settings.Secure.ANDROID_ID);
 
         // Instantiate reference to database
-        mRef = (FirebaseDatabase.getInstance()).getReference("Users").child(mAndroidId);
+        mRef = (FirebaseDatabase.getInstance()).getReference("Users").child(androidId);
 
     }
 
@@ -64,18 +76,75 @@ public class DBService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionPutReactionTimes(Context context, List<Long> rtList) {
-        Intent intent = new Intent(context, DBService.class);
-        long[] reactionTimes = new long[rtList.size()];
-        int count = 0;
-        for (Long i : rtList) {
-            reactionTimes[count++] = i;
+    public static void startActionPutReactionTimes(Context context, ArrayList<Long> rtList) {
+
+        /*
+        long[] react_time = new long[rtList.size()];
+        int count=0;
+        for (long i: react_time){
+            react_time[count++]=i;
+        }
+        */
+        if(!rtList.isEmpty()) {
+            most_rec_reaction = rtList;
         }
 
+
+        Intent intent = new Intent(context, DBService.class);
         intent.setAction(context.getString(R.string.put_whackabeer_rt));
-        intent.putExtra(context.getString(R.string.rt_arr), reactionTimes);
+        intent.putExtra(context.getString(R.string.rt_arr), rtList);
         context.startService(intent);
+
     }
+
+
+
+
+    public static void startActionPutML(Context context, String MLvalues) {
+
+        /*
+        long[] react_time = new long[rtList.size()];
+        int count=0;
+        for (long i: react_time){
+            react_time[count++]=i;
+        }
+        */
+        //if(!rtList.isEmpty()) {
+        //   most_rec_reaction = rtList;
+        //}
+
+
+        Intent intent = new Intent(context, DBService.class);
+        intent.setAction(context.getString(R.string.put_ml_values));
+        intent.putExtra(context.getString(R.string.classif), MLvalues);
+        context.startService(intent);
+
+    }
+
+
+
+    ////////////////////////////
+
+    public static void startActionPutSensorGamedata(Context context, ArrayList<SensorSample> stList) {
+        Intent intent = new Intent(context, DBService.class);
+        //float[] sensor_games = new float[4*stList.size()];
+        //int count = 0;
+        //for (Float[] i : stList) {
+        //   for(Float j : i) {
+        //        sensor_games[count++] = i[j];
+        //    }
+        //}
+
+
+        intent.setAction("net.mandown.db.put.tightropewaiter.sn");
+        intent.putExtra("sensor.arr",stList);
+        context.startService(intent);
+
+    }
+
+    //////////////////////////////////////////
+
+
 
     /**
      * Starts this service to perform action Put Sensor List with the given parameters. If
@@ -86,19 +155,17 @@ public class DBService extends IntentService {
     public static void startActionPutSensorList(Context context, List<SensorSample> list,
                                                 SensorType type) {
         Intent intent = new Intent(context, DBService.class);
-        // Split accelerometer samples into arrays
-        long[] timestamps = new long[list.size()];
-        float[] x = new float[list.size()];
-        float[] y = new float[list.size()];
-        float[] z = new float[list.size()];
+        // Split samples into separate lists
+        ArrayList<Long> timestamps = new ArrayList<>();
+        ArrayList<Float> x = new ArrayList<>();
+        ArrayList<Float> y = new ArrayList<>();
+        ArrayList<Float> z = new ArrayList<>();
 
-        int i = 0;
-        for (SensorSample ss : list) {
-            timestamps[i] = ss.mTimestamp;
-            x[i] = ss.mX;
-            y[i] = ss.mY;
-            z[i] = ss.mZ;
-            i++;
+        for (SensorSample s : list) {
+            timestamps.add(s.mTimestamp);
+            x.add(s.mX);
+            y.add(s.mY);
+            z.add(s.mZ);
         }
 
         switch (type)
@@ -109,6 +176,7 @@ public class DBService extends IntentService {
                 intent.putExtra(context.getString(R.string.accel_x_arr), x);
                 intent.putExtra(context.getString(R.string.accel_y_arr), y);
                 intent.putExtra(context.getString(R.string.accel_z_arr), z);
+                most_rec_accel= list;
                 break;
             case GYROSCOPE:
                 intent.setAction(context.getString(R.string.put_gyro_list));
@@ -116,6 +184,7 @@ public class DBService extends IntentService {
                 intent.putExtra(context.getString(R.string.gyro_x_arr), x);
                 intent.putExtra(context.getString(R.string.gyro_y_arr), y);
                 intent.putExtra(context.getString(R.string.gyro_z_arr), z);
+                most_rec_gyro=list;
                 break;
             case MAGNETOMETER:
                 intent.setAction(context.getString(R.string.put_magnet_list));
@@ -123,11 +192,75 @@ public class DBService extends IntentService {
                 intent.putExtra(context.getString(R.string.magnet_x_arr), x);
                 intent.putExtra(context.getString(R.string.magnet_y_arr), y);
                 intent.putExtra(context.getString(R.string.magnet_z_arr), z);
+                most_rec_magn=list;
                 break;
         }
 
         context.startService(intent);
     }
+
+
+
+
+
+    public static void startPutActionWatchAccel(Context context, List<SensorSample> list,
+                                                SensorType type) {
+        Intent intent = new Intent(context, DBService.class);
+        // Split samples into separate lists
+        ArrayList<Long> timestamps = new ArrayList<>();
+        ArrayList<Float> x = new ArrayList<>();
+        ArrayList<Float> y = new ArrayList<>();
+        ArrayList<Float> z = new ArrayList<>();
+
+        for (SensorSample s : list) {
+            timestamps.add(s.mTimestamp);
+            x.add(s.mX);
+            y.add(s.mY);
+            z.add(s.mZ);
+        }
+
+        switch (type)
+        {
+            case ACCELEROMETER:
+                intent.setAction(context.getString(R.string.put_watch_accel));
+                intent.putExtra(context.getString(R.string.watch_timestamp_arr), timestamps);
+                intent.putExtra(context.getString(R.string.watch_x_arr), x);
+                intent.putExtra(context.getString(R.string.watch_y_arr), y);
+                intent.putExtra(context.getString(R.string.watch_z_arr), z);
+                most_rec_watch_accel= list;
+                break;
+        }
+
+        context.startService(intent);
+    }
+
+
+
+    public static ArrayList<Long> GetMostRecentReactionTime() {
+
+    return most_rec_reaction;
+    }
+
+    public static List<SensorSample> GetMostRecentAccel() {
+
+        return most_rec_accel;
+    }
+    public static List<SensorSample> GetMostRecentMagn() {
+
+        return most_rec_magn;
+    }
+    public static List<SensorSample> GetMostRecentGyro() {
+
+        return most_rec_gyro;
+    }
+
+    public static List<SensorSample> GetMostRecentWatchAccel() {
+
+        return most_rec_watch_accel;
+    }
+
+
+
 
     /**
      * Overrides method to handle the intent, analysing the intent action and calling the
@@ -143,118 +276,168 @@ public class DBService extends IntentService {
             if (getString(R.string.put_whackabeer_score).equals(action)) {
                 // TODO handle put whack-a-beer score
             } else if (getString(R.string.put_whackabeer_rt).equals(action)) {
-                long[] reactionTimes = intent.getLongArrayExtra(getString(R.string.rt_arr));
+                ArrayList<Long> reactionTimes = (ArrayList<Long>)
+                        intent.getSerializableExtra(getString(R.string.rt_arr));
                 handleActionPutReactionTimes(reactionTimes);
+            } else if (getString(R.string.put_ml_values).equals(action)) {
+                //ArrayList<Long> reactionTimes = (ArrayList<Long>)
+                String MLValues= (new String());
+                        intent.getSerializableExtra(getString(R.string.classif));
+                handleActionPutMLValues(MLValues);
+            } else if (getString(R.string.put_tightropewaiter_sn).equals(action)) {
+                ArrayList<SensorSample> SensorGameData = (ArrayList<SensorSample>)
+                        intent.getSerializableExtra(getString(R.string.sensor_arr));
+                handleActionPutSensorGamedata(SensorGameData);
             } else if (getString(R.string.put_accel_list).equals(action)) {
-                long[] timestamps =
-                        intent.getLongArrayExtra(getString(R.string.accel_timestamp_arr));
-                float[] x = intent.getFloatArrayExtra(getString(R.string.accel_x_arr));
-                float[] y = intent.getFloatArrayExtra(getString(R.string.accel_y_arr));
-                float[] z = intent.getFloatArrayExtra(getString(R.string.accel_z_arr));
+                ArrayList<Long> timestamps = (ArrayList<Long>)
+                        intent.getSerializableExtra(getString(R.string.accel_timestamp_arr));
+                ArrayList<Float> x = (ArrayList<Float>)
+                        intent.getSerializableExtra(getString(R.string.accel_x_arr));
+                ArrayList<Float> y = (ArrayList<Float>)
+                        intent.getSerializableExtra(getString(R.string.accel_y_arr));
+                ArrayList<Float> z = (ArrayList<Float>)
+                        intent.getSerializableExtra(getString(R.string.accel_z_arr));
                 handleActionPutAccelList(timestamps, x, y, z);
             } else if (getString(R.string.put_gyro_list).equals(action)) {
-                long[] timestamps =
-                        intent.getLongArrayExtra(getString(R.string.gyro_timestamp_arr));
-                float[] x = intent.getFloatArrayExtra(getString(R.string.gyro_x_arr));
-                float[] y = intent.getFloatArrayExtra(getString(R.string.gyro_y_arr));
-                float[] z = intent.getFloatArrayExtra(getString(R.string.gyro_z_arr));
+                ArrayList<Long> timestamps = (ArrayList<Long>)
+                        intent.getSerializableExtra(getString(R.string.gyro_timestamp_arr));
+                ArrayList<Float> x = (ArrayList<Float>)
+                        intent.getSerializableExtra(getString(R.string.gyro_x_arr));
+                ArrayList<Float> y = (ArrayList<Float>)
+                        intent.getSerializableExtra(getString(R.string.gyro_y_arr));
+                ArrayList<Float> z = (ArrayList<Float>)
+                        intent.getSerializableExtra(getString(R.string.gyro_z_arr));
                 handleActionPutGyroList(timestamps, x, y, z);
             } else if (getString(R.string.put_magnet_list).equals(action)) {
-                long[] timestamps =
-                        intent.getLongArrayExtra(getString(R.string.magnet_timestamp_arr));
-                float[] x = intent.getFloatArrayExtra(getString(R.string.magnet_x_arr));
-                float[] y = intent.getFloatArrayExtra(getString(R.string.magnet_y_arr));
-                float[] z = intent.getFloatArrayExtra(getString(R.string.magnet_z_arr));
+                ArrayList<Long> timestamps = (ArrayList<Long>)
+                        intent.getSerializableExtra(getString(R.string.magnet_timestamp_arr));
+                ArrayList<Float> x = (ArrayList<Float>)
+                        intent.getSerializableExtra(getString(R.string.magnet_x_arr));
+                ArrayList<Float> y = (ArrayList<Float>)
+                        intent.getSerializableExtra(getString(R.string.magnet_y_arr));
+                ArrayList<Float> z = (ArrayList<Float>)
+                        intent.getSerializableExtra(getString(R.string.magnet_z_arr));
                 handleActionPutMagnetList(timestamps, x, y, z);
+            } else if (getString(R.string.put_watch_accel).equals(action)) {
+                ArrayList<Long> timestamps = (ArrayList<Long>)
+                        intent.getSerializableExtra(getString(R.string.watch_timestamp_arr));
+                ArrayList<Float> x = (ArrayList<Float>)
+                        intent.getSerializableExtra(getString(R.string.watch_x_arr));
+                ArrayList<Float> y = (ArrayList<Float>)
+                        intent.getSerializableExtra(getString(R.string.watch_y_arr));
+                ArrayList<Float> z = (ArrayList<Float>)
+                        intent.getSerializableExtra(getString(R.string.watch_z_arr));
+                handleActionPutWatchList(timestamps, x, y, z);
             }
         }
     }
 
-    private void handleActionPutReactionTimes(long[] times) {
+
+    private void handleActionPutMLValues(String ml) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         String format = dateFormat.format(new Date());
-        List<Long> listTimes = new ArrayList<Long>();
-        for (int i = 0; i < times.length; i++) {
-            listTimes.add(times[i]);
-        }
-        mRef.child("reaction").child(format).setValue(listTimes);
+        //List<Float[]> listTimes = new ArrayList<Long>();
+        //for (int i = 0; i < times.length; i++) {
+        //    listTimes.add(times[i]);
+        //}
+
+        mRef.child("Drunkness").child(format).setValue(ml);
+
+
     }
 
-    private void handleActionPutAccelList(long[] timestamp, float[] acc_x, float[] acc_y,
-                                          float[] acc_z)
-    {
-        // TODO change timestamp to real time string
 
-        // Convert all the parameters to lists
-        List<Long> stamps = new ArrayList<Long>();
-        List<Float> x = new ArrayList<Float>();
-        List<Float> y = new ArrayList<Float>();
-        List<Float> z = new ArrayList<Float>();
-
-        for (int i = 0; i < timestamp.length; i++) {
-            stamps.add(timestamp[i]);
-            x.add(acc_x[i]);
-            y.add(acc_y[i]);
-            z.add(acc_z[i]);
-        }
-
+    private void handleActionPutReactionTimes(ArrayList<Long> rt) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         String format = dateFormat.format(new Date());
-        mRef.child("accelerometer").child(format).child("timestamp").setValue(stamps);
-        mRef.child("accelerometer").child(format).child("x").setValue(x);
-        mRef.child("accelerometer").child(format).child("y").setValue(y);
-        mRef.child("accelerometer").child(format).child("z").setValue(z);
+
+
+        //ArrayList<Long> listTimes = new ArrayList<Long>();
+        //for (int i = 0; i < times.length; i++) {
+        //    listTimes.add(times[i]);
+        //}
+        mRef.child("reaction").child(format).setValue(rt);
+
+        //////reading from firebase
+        DatabaseReference mRef2= mRef.child("reaction");
+        // Read from the database
+        mRef2.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                Map<String,Long> value = (Map)dataSnapshot.getValue();
+                Log.d("Value is: " , String.valueOf(value.entrySet()));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("Failed to read value.", error.toException());
+            }
+        });
+        ///////////////////
     }
 
-    private void handleActionPutGyroList(long[] timestamp, float[] gyr_x, float[] gyr_y,
-                                         float[] gyr_z)
-    {
-        // TODO change timestamp to real time string
 
-        // Convert all the parameters to lists
-        List<Long> stamps = new ArrayList<Long>();
-        List<Float> x = new ArrayList<Float>();
-        List<Float> y = new ArrayList<Float>();
-        List<Float> z = new ArrayList<Float>();
 
-        for (int i = 0; i < timestamp.length; i++) {
-            stamps.add(timestamp[i]);
-            x.add(gyr_x[i]);
-            y.add(gyr_y[i]);
-            z.add(gyr_z[i]);
-        }
 
+    private void handleActionPutSensorGamedata(ArrayList<SensorSample> sn) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         String format = dateFormat.format(new Date());
-        mRef.child("gyro").child(format).child("timestamp").setValue(stamps);
-        mRef.child("gyro").child(format).child("x").setValue(x);
-        mRef.child("gyro").child(format).child("y").setValue(y);
+        //List<Float[]> listTimes = new ArrayList<Long>();
+        //for (int i = 0; i < times.length; i++) {
+        //    listTimes.add(times[i]);
+        //}
+
+        mRef.child("SensorGame").child(format).setValue(sn);
+
+
+    }
+    private void handleActionPutWatchList(ArrayList<Long> timestamps, ArrayList<Float> acc_x,
+                                          ArrayList<Float> acc_y, ArrayList<Float> acc_z)
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+        String format = dateFormat.format(new Date());
+        mRef.child("watch").child(format).child("timestamp").setValue(timestamps);
+        mRef.child("watch").child(format).child("x").setValue(acc_x);
+        mRef.child("watch").child(format).child("y").setValue(acc_y);
+        mRef.child("watch").child(format).child("z").setValue(acc_z);
     }
 
-    private void handleActionPutMagnetList(long[] timestamp, float[] mag_x, float[] mag_y,
-                                           float[] mag_z)
+
+
+    private void handleActionPutAccelList(ArrayList<Long> timestamps, ArrayList<Float> acc_x,
+                                          ArrayList<Float> acc_y, ArrayList<Float> acc_z)
     {
-        // TODO change timestamp to real time string
-
-        // Convert all the parameters to lists
-        List<Long> stamps = new ArrayList<Long>();
-        List<Float> x = new ArrayList<Float>();
-        List<Float> y = new ArrayList<Float>();
-        List<Float> z = new ArrayList<Float>();
-
-        for (int i = 0; i < timestamp.length; i++) {
-            stamps.add(timestamp[i]);
-            x.add(mag_x[i]);
-            y.add(mag_y[i]);
-            z.add(mag_z[i]);
-        }
-
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         String format = dateFormat.format(new Date());
-        mRef.child("magnetometer").child(format).child("timestamp").setValue(stamps);
-        mRef.child("magnetometer").child(format).child("x").setValue(x);
-        mRef.child("magnetometer").child(format).child("y").setValue(y);
-        mRef.child("magnetometer").child(format).child("z").setValue(z);
+        mRef.child("accelerometer").child(format).child("timestamp").setValue(timestamps);
+        mRef.child("accelerometer").child(format).child("x").setValue(acc_x);
+        mRef.child("accelerometer").child(format).child("y").setValue(acc_y);
+        mRef.child("accelerometer").child(format).child("z").setValue(acc_z);
+    }
+
+    private void handleActionPutGyroList(ArrayList<Long> timestamps, ArrayList<Float> gyr_x,
+                                         ArrayList<Float> gyr_y, ArrayList<Float> gyr_z)
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+        String format = dateFormat.format(new Date());
+        mRef.child("accelerometer").child(format).child("timestamp").setValue(timestamps);
+        mRef.child("accelerometer").child(format).child("x").setValue(gyr_x);
+        mRef.child("accelerometer").child(format).child("y").setValue(gyr_y);
+        mRef.child("accelerometer").child(format).child("z").setValue(gyr_z);
+    }
+
+    private void handleActionPutMagnetList(ArrayList<Long> timestamps, ArrayList<Float> mag_x,
+                                           ArrayList<Float> mag_y, ArrayList<Float> mag_z)
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+        String format = dateFormat.format(new Date());
+        mRef.child("accelerometer").child(format).child("timestamp").setValue(timestamps);
+        mRef.child("accelerometer").child(format).child("x").setValue(mag_x);
+        mRef.child("accelerometer").child(format).child("y").setValue(mag_y);
+        mRef.child("accelerometer").child(format).child("z").setValue(mag_z);
     }
 
     /**

@@ -74,18 +74,18 @@ public class HistoryActivity extends AppCompatActivity implements View.OnClickLi
         //update text
 
         // Set up a new handler to update the home textview with number of DB entries every 100ms
-        private final Handler mDbUpdateHandler = new Handler();
-        private Runnable mUpdateDBTxt = new Runnable() {
-            @Override
-            public void run() {
-                if (DBService.sInstance != null) {
-                    TextView txtDbInfo = (TextView) findViewById(R.id.txtDbView);
-                    txtDbInfo.setText(String.format("%d accel data readings",
-                            DBService.sInstance.getNumAccelReadings()));
-                    mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
-                }
-            }
-        };
+//        private final Handler mDbUpdateHandler = new Handler();
+//        private Runnable mUpdateDBTxt = new Runnable() {
+//            @Override
+//            public void run() {
+//                if (DBService.sInstance != null) {
+//                    TextView txtDbInfo = (TextView) findViewById(R.id.txtDbView);
+//                    txtDbInfo.setText(String.format("%d accel data readings",
+//                            DBService.sInstance.getNumAccelReadings()));
+//                    mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
+//                }
+//            }
+//        };
 
 
 
