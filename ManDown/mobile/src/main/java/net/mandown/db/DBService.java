@@ -36,7 +36,7 @@ public class DBService extends IntentService {
     public static List<SensorSample> most_rec_accel= new ArrayList<SensorSample>();
     public static List<SensorSample> most_rec_gyro= new ArrayList<SensorSample>();
     public static List<SensorSample> most_rec_magn= new ArrayList<SensorSample>();
-
+    public static List<SensorSample> most_rec_watch_accel= new ArrayList<SensorSample>();
 
 
 
@@ -227,7 +227,7 @@ public class DBService extends IntentService {
                 intent.putExtra(context.getString(R.string.watch_x_arr), x);
                 intent.putExtra(context.getString(R.string.watch_y_arr), y);
                 intent.putExtra(context.getString(R.string.watch_z_arr), z);
-                most_rec_accel= list;
+                most_rec_watch_accel= list;
                 break;
         }
 
@@ -253,6 +253,12 @@ public class DBService extends IntentService {
 
         return most_rec_gyro;
     }
+
+    public static List<SensorSample> GetMostRecentWatchAccel() {
+
+        return most_rec_watch_accel;
+    }
+
 
 
 
