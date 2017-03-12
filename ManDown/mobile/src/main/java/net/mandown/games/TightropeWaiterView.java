@@ -6,7 +6,9 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.SystemClock;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -17,6 +19,7 @@ import net.mandown.R;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Santiago on 2/26/2017.
@@ -119,6 +122,7 @@ public class TightropeWaiterView extends SurfaceView implements Runnable  {
     //gameplay variables
     private OutputStreamWriter file_out;
     private Callback observer;
+    private long start_timer;
 
     public TightropeWaiterView(Callback _observer, Context context) {
         super(context);
@@ -145,10 +149,11 @@ public class TightropeWaiterView extends SurfaceView implements Runnable  {
         zero_y = dm.heightPixels/2 - drink_height/2;
 
         drink= new TRWDrink(zero_x,zero_y,drink_bm);
-        plate= new TRWPlate(500,res);
+        plate= new TRWPlate(1000,res);
 
         sensordata = new ArrayList<>();
 
+        start_timer = SystemClock.elapsedRealtime();
 
         try {
             file_out = new OutputStreamWriter(context.openFileOutput("reaction.txt", Context.MODE_PRIVATE));
@@ -186,7 +191,7 @@ public class TightropeWaiterView extends SurfaceView implements Runnable  {
     }
 
     private int distance (int x, int y){
-        return (int)Math.sqrt(Math.pow(x-zero_x,2)+Math.pow(y-zero_y,2));
+        return (int)Math.sqrt(Math.pow(x-zero_x,2)+Math.pow(y-zero_y+10,2));
     }
 
     private void draw() {
@@ -197,6 +202,17 @@ public class TightropeWaiterView extends SurfaceView implements Runnable  {
             //drawing a background
             canvas.drawBitmap(background_bm,0,0,paint);//.drawColor(Color.BLACK);
             //Drawing the player
+            paint.setColor(Color.WHITE);
+            paint.setTextSize(canvas.getWidth()/10);
+
+            long time = SystemClock.elapsedRealtime()-start_timer;
+            String time_str= String.format("%02d:%02d",
+                    TimeUnit.MILLISECONDS.toMinutes(time),
+                    TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time))
+            );
+            canvas.drawText(time_str,canvas.getWidth()/2-130,canvas.getHeight() *1/ 8,paint);
+
+
             canvas.drawBitmap(
                     plate.getBm(),
                     dm.widthPixels/2-plate.getR()/2,
