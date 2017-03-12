@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="android_wear_capabilities">
+        <item>beer_received</item>
+        <item>wine_received</item>
+        <item>cocktail_received</item>
+        <item>shot_received</item>
+    </string-array>
+</resources>

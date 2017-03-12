@@ -8,7 +8,7 @@
     tools:deviceIds="wear_round">
 
     <ImageButton
-        android:src="@drawable/wine_glass"
+        android:src="@drawable/wine_small"
         android:id="@+id/Wine"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
@@ -19,7 +19,8 @@
         android:layout_height="50dp"
         android:layout_width="50dp"
         android:layout_alignTop="@+id/Cocktail"
-        android:layout_toEndOf="@+id/Shot" />
+        android:layout_toEndOf="@+id/Shot"
+        android:onClick="drankwine" />
 
     <ImageButton
         android:src="@drawable/cocktail_glass"
@@ -29,7 +30,8 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="drankcocktail" />
 
     <ImageButton
         android:src="@drawable/beer_glass"
@@ -39,7 +41,8 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_centerVertical="true"
-        android:layout_toStartOf="@+id/Cocktail" />
+        android:layout_toStartOf="@+id/Cocktail"
+        android:onClick="drankbeer" />
 
     <ImageButton
         android:src="@drawable/shot_glass"
@@ -52,6 +55,23 @@
         android:scaleType="fitCenter"
         android:layout_gravity="center"
         android:layout_below="@+id/Wine"
+        android:layout_centerHorizontal="true"
+        android:onClick="drankshot"/>
+
+    <TextView
+        android:id="@+id/acc_reading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:layout_above="@+id/Cocktail"
+        android:layout_alignStart="@+id/Beer" />
+
+    <TextView
+        android:id="@+id/phonetrigger"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nothing to do"
+        android:layout_below="@+id/Shot"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

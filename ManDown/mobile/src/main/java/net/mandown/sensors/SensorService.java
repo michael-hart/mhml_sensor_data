@@ -1,8 +1,6 @@
 package net.mandown.sensors;
 
-import android.app.AlarmManager;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -99,6 +97,7 @@ public class SensorService extends Service {
             mVarLock.lock();
             mScheduleTimer.cancel();
             mTimerIsCancelled = true;
+            mScheduleTimer = new Timer();
             mVarLock.unlock();
         }
     }

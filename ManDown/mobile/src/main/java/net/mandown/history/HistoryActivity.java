@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -32,16 +33,25 @@ import android.widget.LinearLayout;
 
 import net.mandown.MainActivity;
 import net.mandown.R;
+import net.mandown.db.DBService;
 import net.mandown.games.GameMenuActivity;
 import android.view.SurfaceView;
+import android.widget.TextView;
 
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Map;
 
 import static java.security.AccessController.getContext;
 
 
-public class HistoryActivity extends AppCompatActivity implements View.OnClickListener, Runnable {
+public class HistoryActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ImageButton btnEmergency;
+    private ImageButton btnBeerGlass;
 
 //    private Thread beerThread = null;
     private Canvas canvas;
@@ -71,6 +81,8 @@ public class HistoryActivity extends AppCompatActivity implements View.OnClickLi
         paint = new Paint();
         paint.setColor(Color.parseColor("#da4747"));
 
+        btnEmergency = (ImageButton) findViewById(R.id.DrunkMan);
+        btnEmergency.setOnClickListener(this);
 //        beerThread = new Thread(this);
 //        beerThread.start();
 
@@ -97,6 +109,55 @@ public class HistoryActivity extends AppCompatActivity implements View.OnClickLi
         getSupportActionBar().setTitle("History");
 
 
+        btnBeerGlass = (ImageButton) findViewById(R.id.BeerGlass);
+
+        update_drunk_level(2);
+
+    }
+
+        //Trying to pull data from database
+
+//        //////reading from firebase
+//        DatabaseReference mRef2= mRef.child("drunken");
+//        // Read from the database
+//        mRef2.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                // This method is called once with the initial value and again
+//                // whenever data at this location is updated.
+//                Map<String,Long> value = (Map)dataSnapshot.getValue();
+//                Log.d("Value is: " , String.valueOf(value.entrySet()));
+
+
+        //update text
+
+        // Set up a new handler to update the home textview with number of DB entries every 100ms
+//        private final Handler mDbUpdateHandler = new Handler();
+//        private Runnable mUpdateDBTxt = new Runnable() {
+//            @Override
+//            public void run() {
+//                if (DBService.sInstance != null) {
+//                    TextView txtDbInfo = (TextView) findViewById(R.id.txtDbView);
+//                    txtDbInfo.setText(String.format("%d accel data readings",
+//                            DBService.sInstance.getNumAccelReadings()));
+//                    mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
+//                }
+//            }
+//        };
+
+
+
+    private void update_drunk_level(int d_lvl){
+
+        int drunk_level = d_lvl;
+
+        if(drunk_level==0){
+            btnBeerGlass.setImageResource(R.drawable.empty_beer_glass);
+        }else if(drunk_level==1){
+            btnBeerGlass.setImageResource(R.drawable.glass_beer);
+        } else if(drunk_level==2){
+            btnBeerGlass.setImageResource(R.drawable.full_glass_beer);
+        }
     }
 
 
@@ -165,32 +226,5 @@ public class HistoryActivity extends AppCompatActivity implements View.OnClickLi
 
 
     }
-
-    public void draw() {
-        Bitmap empty_glass = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.empty_beer_glass),400,400,false);
-        Bitmap bg = Bitmap.createBitmap(480, 800, Bitmap.Config.ARGB_8888);
-
-        canvas = new Canvas(bg);
-
-        canvas.drawBitmap(empty_glass,0,0,paint);//.drawColor(Color.BLACK);
-
-        Log.d("image drawn:","yes");
-
-    }
-
-    @Override
-    public void run() {
-       //     update();
-            draw();
-         //   control();
-
-    }
-//    private void control() {
-//        try {
-//            beerThread.sleep(17);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
 }

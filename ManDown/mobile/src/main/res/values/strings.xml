@@ -7,4 +7,5 @@
     <string name="action_settings">DUMMY\nCONTENT</string>
     <string name="menu1">Turn Off Sensor Readings</string>
     <string name="menu2">Help</string>
+    <string name="accel_broadcast">net.mandown.sensor.broadcast_accel</string>
 </resources>

@@ -12,6 +12,12 @@ import android.net.Uri;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.os.Handler;
+//import android.support.v7.app.AlertDialog;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +26,20 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.support.v7.app.ActionBarActivity;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.DataEvent;
+import com.google.android.gms.wearable.DataEventBuffer;
+import com.google.android.gms.wearable.DataItem;
+import com.google.android.gms.wearable.DataMap;
+import com.google.android.gms.wearable.DataMapItem;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
+import com.google.android.gms.wearable.Wearable;
+
 import net.mandown.db.DBService;
 import net.mandown.games.GameMenuActivity;
 import net.mandown.history.HistoryActivity;
@@ -29,8 +49,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import net.mandown.sensors.SensorSample;
+import net.mandown.sensors.SensorService;
+import net.mandown.sensors.SensorType;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,
+		DataApi.DataListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener{
 
     private static final int REQUEST_PHONE_CALL = 1;
 
@@ -43,17 +72,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // Set up a new handler to update the home textview with number of DB entries every 100ms
     private final Handler mDbUpdateHandler = new Handler();
-//    private Runnable mUpdateDBTxt = new Runnable() {
-//        @Override
-//        public void run() {
-//            if (DBService.sInstance != null) {
-//                TextView txtDbInfo = (TextView) findViewById(R.id.txtDbView);
-//                txtDbInfo.setText(String.format("%d accel data readings",
-//                        DBService.sInstance.getNumAccelReadings()));
-//                mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
-//            }
-//        }
-//    };
+    private Runnable mUpdateDBTxt = new Runnable() {
+        @Override
+        public void run() {
+            if (DBService.sInstance != null) {
+                TextView txtDbInfo = (TextView) findViewById(R.id.txtDbView);
+                txtDbInfo.setText(String.format("%d accel data readings",
+                        DBService.sInstance.getNumAccelReadings()));
+                mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
+            }
+        }
+    };
 
     private ImageButton btnGamePlay;
     private ImageButton btnBeerGlass;
@@ -63,6 +92,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private Toolbar toolbar;
+    //Communication variables
+    private GoogleApiClient mGoogleApiClient;
+    private static final String BEER_KEY = "net.mandown.key.beer";
+    private static final String WINE_KEY = "net.mandown.key.wine";
+    private static final String COCKTAIL_KEY = "net.mandown.key.cocktail";
+    private static final String SHOT_KEY = "net.mandown.key.shot";
+    private static final String WATCH_RX_KEY = "net.mandown.key.watchrx";
+    private static final String WATCH_TX_FLOAT_KEY = "net.mandown.key.watchtxfloat";
+    private static final String WATCH_TX_LONG_KEY = "net.mandown.key.watchtxlong";
+    private static final long CONNECTION_TIME_OUT_MS = 100;
+    private TextView beerview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,17 +137,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      //   btnJournal.setOnClickListener(this);
         btnHistory.setOnClickListener(this);
 
-
         // Reset the database on initialisation
     //    DBService.startActionResetDatabase(this);
 
-
         // Start the sensor service to collect data
-        startService(new Intent(this, SensorService.class));
-
+        if (this != null) {
+            startService(new Intent(this, SensorService.class));
+        }
         // Post event to handler to begin DB updates
         //mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
 
+        update_drunk_level(0);
 
     }
 
@@ -122,6 +162,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             editor.commit();
         }
         return !ranBefore;
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+
+
+        beerview = (TextView) findViewById(R.id.watchtext);
+    }
+
+    private void update_drunk_level(int d_lvl){
+
+        int drunk_level = d_lvl;
+
+        if(drunk_level==0){
+            btnBeerGlass.setImageResource(R.drawable.empty_beer_glass);
+        }else if(drunk_level==1){
+            btnBeerGlass.setImageResource(R.drawable.glass_beer);
+        } else if(drunk_level==2){
+            btnBeerGlass.setImageResource(R.drawable.full_glass_beer);
+        }
     }
 
     @Override
@@ -211,7 +272,107 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void goJournal(View view){
         Intent intent = new Intent(this, JournalActivity.class);
         startActivity(intent);
+	}
+
+    //Communications code below
+    @Override
+    public void onConnected(Bundle bundle) {
+        Wearable.DataApi.addListener(mGoogleApiClient, this);
+        Log.i("listener Connected","Mobile Connected!");
     }
 
+    @Override
+    public void onConnectionSuspended(int cause){
+        Log.d("Connection suspended", "onConnectionSuspended: " + cause);
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        Log.d("connect failed", "onConnectionFailed: " + result);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mGoogleApiClient.connect();
+        Log.i("RConnected","ResumeConnected!");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Wearable.DataApi.removeListener(mGoogleApiClient, this);
+        mGoogleApiClient.disconnect();
+        Log.i("dis","Disconnected");
+    }
+
+
+    private boolean watchbool = false;
+    //Tell watch to start measuring
+    public void startwatchaccel(View v){
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/watchaccel");
+        putDataMapReq.getDataMap().putBoolean(WATCH_RX_KEY, watchbool);
+        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+        putDataReq.setUrgent();
+        PendingResult<DataApi.DataItemResult> pendingResult =
+                Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+        Log.d("watchaccel","TRIGGER WATCH!");
+        //Start sensorservice here instead of constantly starting in background and make it last approx 11seconds
+        watchbool = !watchbool;
+    }
+
+    //In case of for user input from watch
+    @Override
+    public void onDataChanged(DataEventBuffer dataEvents) {
+        Log.i("data","data CHANGED!");
+        for (DataEvent event : dataEvents) {
+            if (event.getType() == DataEvent.TYPE_CHANGED) {
+                // DataItem changed
+                DataItem item = event.getDataItem();
+                if (item.getUri().getPath().compareTo("/beer") == 0) {
+                    DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
+                    ((TextView) findViewById(R.id.watchtext)).setText(dataMap.getString(BEER_KEY));
+                    //dataMap.remove(BEER_KEY); //Delete item so the next write is a "new" entry to trigger onDataChanged
+                    dataMap.putString(BEER_KEY, "unknown");
+                }
+                else if (item.getUri().getPath().compareTo("/wine") == 0) {
+                    DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
+                    ((TextView) findViewById(R.id.watchtext)).setText(dataMap.getString(WINE_KEY));
+                    //dataMap.remove(WINE_KEY);
+                    dataMap.putString(WINE_KEY, "unknown");
+                }
+                else if (item.getUri().getPath().compareTo("/cocktail") == 0) {
+                    DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
+                    ((TextView) findViewById(R.id.watchtext)).setText(dataMap.getString(COCKTAIL_KEY));
+                    dataMap.remove(COCKTAIL_KEY);
+                }
+                else if (item.getUri().getPath().compareTo("/shot") == 0) {
+                    DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
+                    ((TextView) findViewById(R.id.watchtext)).setText(dataMap.getString(SHOT_KEY));
+                    dataMap.remove(SHOT_KEY);
+                }
+                else if (item.getUri().getPath().compareTo("/watchdata") == 0) {
+                    Log.d("datachanged", "GOT WATCH DATA");
+                    DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
+                    long[] watchTimeStamps = dataMap.getLongArray(WATCH_TX_LONG_KEY);
+                    float[] watchAccelValues = dataMap.getFloatArray(WATCH_TX_FLOAT_KEY);
+
+                    ((TextView) findViewById(R.id.watchsamplenum)).setText(Integer.toString(watchTimeStamps.length) + ' ' + Integer.toString(watchAccelValues.length));
+
+                    List<SensorSample> watchCombinedData = new ArrayList<SensorSample>(watchTimeStamps.length);
+
+                    for (int i=0; i<watchTimeStamps.length; i++) {
+                        watchCombinedData.add(new SensorSample(watchTimeStamps[i], watchAccelValues[3*i], watchAccelValues[3*i+1], watchAccelValues[3*i+2]));
+                    }
+                    Log.d("datachanged", Integer.toString(watchCombinedData.size()));
+                    //Send watch data to database here
+                    DBService.startPutActionWatchAccel(getApplicationContext(), watchCombinedData, SensorType.ACCELEROMETER);
+                }
+
+            } else if (event.getType() == DataEvent.TYPE_DELETED) {
+                // DataItem deleted
+            }
+        }
+    }
 }
 

@@ -10,14 +10,4 @@
     tools:context="net.mandown.MainActivity"
     tools:deviceIds="wear">
 
-    <ImageButton
-        android:src="@drawable/cocktail_glass"
-        android:id="@+id/Cocktail"
-        android:background="@android:color/transparent"
-        android:scaleType="fitCenter"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignTop="@+id/Beer"
-        android:layout_centerHorizontal="true" />
-
 </android.support.wearable.view.WatchViewStub>
