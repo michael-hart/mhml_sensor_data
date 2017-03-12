@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -21,8 +22,10 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import net.mandown.R;
+import net.mandown.db.DBService;
 import net.mandown.games.GameMenuActivity;
 import android.view.SurfaceView;
+import android.widget.TextView;
 
 
 import com.google.firebase.database.DataSnapshot;
@@ -66,6 +69,26 @@ public class HistoryActivity extends AppCompatActivity implements View.OnClickLi
 //                // whenever data at this location is updated.
 //                Map<String,Long> value = (Map)dataSnapshot.getValue();
 //                Log.d("Value is: " , String.valueOf(value.entrySet()));
+
+
+        //update text
+
+        // Set up a new handler to update the home textview with number of DB entries every 100ms
+        private final Handler mDbUpdateHandler = new Handler();
+        private Runnable mUpdateDBTxt = new Runnable() {
+            @Override
+            public void run() {
+                if (DBService.sInstance != null) {
+                    TextView txtDbInfo = (TextView) findViewById(R.id.txtDbView);
+                    txtDbInfo.setText(String.format("%d accel data readings",
+                            DBService.sInstance.getNumAccelReadings()));
+                    mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
+                }
+            }
+        };
+
+
+
 
 //        beerThread = new Thread(this);
 //        beerThread.start();
