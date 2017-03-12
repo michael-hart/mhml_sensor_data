@@ -5,43 +5,31 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp"
     tools:context="net.mandown.MainActivity">
+
+    <include
+        android:id="@+id/tool_bar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        layout="@layout/tool_bar"
+        ></include>
 
     <ImageButton
         android:id="@+id/Journal"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/History"
         android:layout_marginLeft="127dp"
         android:background="@android:color/transparent"
         android:onClick="goJournal"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/writing" />
-
-    <ImageButton
-        app:srcCompat="@drawable/options"
-        android:id="@+id/OptionLevers"
-        android:scaleType="fitCenter"
-        android:background="@android:color/transparent"
-        android:layout_marginLeft="127dp"
-        android:layout_width="25dp"
-        android:layout_height="50dp"
-        android:layout_alignParentTop="true"
-        android:layout_toStartOf="@+id/textView" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ManDown"
-        android:id="@+id/textView"
-        android:layout_alignParentTop="true"
-        android:layout_toStartOf="@+id/Journal"
-        android:layout_marginTop="15dp" />
+        app:srcCompat="@drawable/writing"
+        android:layout_alignTop="@+id/History"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="9dp" />
 
     <ImageButton
         app:srcCompat="@drawable/trend_chart"
@@ -63,79 +51,61 @@
         android:background="@android:color/transparent"
         android:layout_marginBottom="51dp"
         android:layout_alignParentBottom="true"
-        android:layout_toStartOf="@+id/Journal" />
-
-    <ImageButton
-        android:id="@+id/DrunkMan"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@android:color/transparent"
-        android:scaleType="fitCenter"
-        app:srcCompat="@drawable/drunk_clipart005"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="8dp" />
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="8dp" />
 
     <ImageButton
         android:id="@+id/BeerGlass"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="105dp"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/glass_beer"
-        android:layout_below="@+id/textView2"
-        android:layout_toEndOf="@+id/JoyStick" />
-
-    <TextView
-        android:text="DBInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="19dp"
-        android:id="@+id/txtDbView"
-        android:layout_below="@+id/OptionLevers"
-        android:layout_toEndOf="@+id/OptionLevers"
-        android:layout_marginStart="9dp" />
+        android:layout_below="@+id/tool_bar"
+        android:layout_alignEnd="@+id/textView2"
+        android:layout_marginEnd="11dp" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txtDbView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="38dp"
         android:fontFamily="sans-serif-smallcaps"
         android:text="Intoxication Level"
         android:textAllCaps="false"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="24sp"
-        android:typeface="monospace" />
+        android:typeface="monospace"
+        android:layout_marginBottom="19dp"
+        android:layout_above="@+id/watchsamplenum"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/JoyStick"
-        android:layout_alignStart="@+id/OptionLevers"
-        android:layout_marginBottom="11dp"
         android:fontFamily="sans-serif-smallcaps"
         android:text="Games"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="24sp"
-        android:typeface="monospace" />
+        android:typeface="monospace"
+        android:layout_alignBaseline="@+id/textView4"
+        android:layout_alignBottom="@+id/textView4"
+        android:layout_alignEnd="@+id/JoyStick"
+        android:layout_marginEnd="15dp" />
 
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/textView3"
-        android:layout_alignBottom="@+id/textView3"
-        android:layout_centerHorizontal="true"
         android:fontFamily="sans-serif-smallcaps"
         android:text="History"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="24sp"
-        android:typeface="monospace" />
+        android:typeface="monospace"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp" />
 
     <TextView
         android:id="@+id/textView5"
@@ -151,40 +121,21 @@
         android:layout_alignStart="@+id/Journal" />
 
     <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/OptionLevers"
-        android:text="Emergency" />
-
-    <TextView
         android:id="@+id/watchtext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
-        android:layout_alignBaseline="@+id/startwatchaccel"
-        android:layout_alignBottom="@+id/startwatchaccel"
-        android:layout_alignEnd="@+id/DrunkMan"
-        android:layout_marginEnd="16dp" />
-
-    <Button
-        android:id="@+id/startwatchaccel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/JoyStick"
-        android:layout_alignStart="@+id/OptionLevers"
-        android:layout_marginBottom="33dp"
-        android:text="START WATCH"
-        android:onClick="startwatchaccel" />
+        android:layout_below="@+id/watchsamplenum"
+        android:layout_alignStart="@+id/watchsamplenum"
+        android:layout_marginTop="30dp" />
 
     <TextView
         android:id="@+id/watchsamplenum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/txtDbView"
-        android:layout_below="@+id/BeerGlass"
-        android:layout_marginTop="14dp"
-        android:text="TextView" />
+        android:layout_marginTop="30dp"
+        android:text="TextView"
+        android:layout_alignTop="@+id/BeerGlass"
+        android:layout_toStartOf="@+id/textView2" />
 
 </RelativeLayout>
