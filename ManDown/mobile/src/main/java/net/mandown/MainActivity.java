@@ -2,8 +2,11 @@ package net.mandown;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -105,6 +108,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String WATCH_TX_LONG_KEY = "net.mandown.key.watchtxlong";
     private static final long CONNECTION_TIME_OUT_MS = 100;
     private TextView beerview;
+
+    private BroadcastReceiver mIntoxReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            float intoxLevel = intent.getFloatExtra("ml", -1);
+            if (intoxLevel >= 0) {
+                update_drunk_level(Math.round(intoxLevel));
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -294,6 +307,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         mGoogleApiClient.connect();
+        registerReceiver(mIntoxReceiver, new IntentFilter(getString(R.string.intox_broadcast)));
         Log.i("RConnected","ResumeConnected!");
     }
 
@@ -301,6 +315,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onPause() {
         super.onPause();
         Wearable.DataApi.removeListener(mGoogleApiClient, this);
+        unregisterReceiver(mIntoxReceiver);
         mGoogleApiClient.disconnect();
         Log.i("dis","Disconnected");
     }
