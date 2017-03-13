@@ -215,7 +215,8 @@ public class IntoxicationService extends Service {
                             Float[] result = {Float.parseFloat(intox), conf};
                             intoxLevels.add(result);
                         } catch (PredictionException pe) {
-                            Log.e("IntoxicationService", "Error in ML connection: " + pe.getStackTrace());
+                            Log.e("IntoxicationService", "Error in ML connection: " +
+                                    pe.getStackTrace());
                         }
                     }
                 }
@@ -253,6 +254,9 @@ public class IntoxicationService extends Service {
             mVarLock.lock();
             mIntoxicationLevel = finalIntox;
             mVarLock.unlock();
+
+            // Insert new value into database
+            DBService.startActionPutML(getApplicationContext(), Float.toString(finalIntox));
 
             // TODO broadcast a notification to the user if above a certain level
 
