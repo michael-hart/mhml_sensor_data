@@ -8,6 +8,10 @@ merged branch, and MAJOR is a change signalling a release.
 
 Each change will list Added, Changed, and Fixed.
 
+## 0.10.0 - 2017-03-13
+### Added
+- Service for walking data collection
+
 ## 0.9.0 - 2017-03-13
 ### Added
 - Additional database methods for getting walking data
