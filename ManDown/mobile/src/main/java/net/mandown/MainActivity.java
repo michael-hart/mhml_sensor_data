@@ -51,6 +51,7 @@ import android.view.MenuItem;
 
 import net.mandown.sensors.SensorSample;
 import net.mandown.sensors.SensorType;
+import net.mandown.sensors.WalkSensorService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -221,6 +222,7 @@ public class MainActivity extends AppCompatActivity implements DataApi.DataListe
                 dialog.show();
                 return true;
             case R.id.action_menu3:
+                startService(new Intent(this, WalkSensorService.class));
                 startWatchAccel();
                 return true;
             case R.id.emergency:
