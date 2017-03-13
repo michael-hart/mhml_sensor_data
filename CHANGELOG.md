@@ -8,6 +8,21 @@ merged branch, and MAJOR is a change signalling a release.
 
 Each change will list Added, Changed, and Fixed.
 
+## 0.9.0 - 2017-03-13
+### Added
+- Additional database methods for getting walking data
+- Additional database method for storing game-specific accelerometer data
+
+## 0.8.0 - 2017-03-13
+### Added
+- Additional database methods for storing walking data
+
+## 0.7.0 - 2017-03-13
+### Added
+- Calls to get intoxication level from machine learning
+- Updates to beer glass with intoxication level
+- Notifications if the user is too intoxicated
+
 ## 0.6.0 - 2017-03-09
 ### Changed
 - Modified SensorService to schedule tasks using a timer instead of AlarmManager

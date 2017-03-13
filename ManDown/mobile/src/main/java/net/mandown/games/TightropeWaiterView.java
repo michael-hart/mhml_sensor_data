@@ -155,7 +155,6 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
         }
     };
 
-
     public TightropeWaiterView(Callback _observer, Context context) {
         super(context);
         observer=_observer;
@@ -174,19 +173,18 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
         int drink_width = 200*dm.widthPixels/1280;
         int drink_height = 150*dm.heightPixels/720;
 
-        background_bm = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.background),dm.widthPixels,dm.heightPixels,false);
-        drink_bm = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.tw_drink),drink_width,drink_height,false);
+        background_bm = Bitmap.createScaledBitmap(
+                BitmapFactory.decodeResource(res, R.drawable.background),
+                dm.widthPixels, dm.heightPixels, false);
+        drink_bm = Bitmap.createScaledBitmap(
+                BitmapFactory.decodeResource(res, R.drawable.glass_beer),
+                drink_width, drink_height, false);
+
         ///NEED SENSOR DATA HERE!!!   AND IN UPDATE!!!!!
         zero_x = dm.widthPixels/2 - drink_width/2;
         zero_y = dm.heightPixels/2 - drink_height/2;
 
-        drink= new TRWDrink(zero_x,zero_y,drink_bm);
-        plate= new TRWPlate(1000,res);
-
-        mSensorData= new ArrayList<>();
-        // sensordata = new ArrayList<>();
-
-        start_timer = SystemClock.elapsedRealtime();
+        drink = new TRWDrink(zero_x,zero_y,drink_bm);
 
         try {
             file_out = new OutputStreamWriter(
@@ -226,6 +224,7 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
 
         context.stopService(intent);
         context.unregisterReceiver(br);
+
         // Insert sensor values into database
         DBService.startActionPutSensorList(context, mSensorData, SensorType.ACCELEROMETER);
     }
@@ -235,9 +234,8 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
         //updating player position
         //player.update();
         drink.Update(Math.round(mAccX *(-20)),Math.round(mAccY *20));
-		plate.Update(0.5f);
 
-        //mSensorData.add(new SensorSample(mAccTS, mAccX, mAccY, mAccZ));
+        mSensorData.add(new SensorSample(mAccTS, mAccX, mAccY, mAccZ));
 
         int dist = distance(drink.getX(),drink.getY());
 
@@ -308,13 +306,7 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
     }
 
     public void gameOver(){
-        try {
-            OutputStreamWriter outputStreamWriter = file_out;
-            outputStreamWriter.close();
-        }
-        catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
-        }
+        //DBService.startActionPutSensorGameData(getContext(), mSensorData);
         observer.gameOver();
     }
 

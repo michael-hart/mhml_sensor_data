@@ -4,6 +4,9 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/turkey"
@@ -42,21 +45,18 @@
         <service
             android:name=".sensors.SensorService"
             android:exported="false" />
-
         <service
             android:name=".sensors.SensorBroadcastService"
             android:exported="false" />
-
-        <!--<service android:name=".comms.WearListenerService">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />-->
-            <!--</intent-filter>-->
-        <!--</service>-->
-
         <activity android:name=".games.RingOfFireMenuActivity" />
         <activity android:name=".games.WhoAmIMenuActivity" />
         <activity android:name=".games.RingOfFireGameActivity" />
         <activity android:name=".games.WhoAmIGameActivity" />
+
+        <service
+            android:name=".db.IntoxicationService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

@@ -19,11 +19,17 @@ import android.os.Handler;
 
 import net.mandown.R;
 import net.mandown.db.DBService;
+import net.mandown.ml.PredictionException;
+import net.mandown.ml.RealtimePrediction;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class  WhackABeerView extends SurfaceView implements WhackABeerDrinks.Callback, Runnable {
 
