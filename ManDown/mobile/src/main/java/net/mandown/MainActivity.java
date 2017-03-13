@@ -130,34 +130,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btnGamePlay = (ImageButton) findViewById(R.id.JoyStick);
         btnBeerGlass = (ImageButton) findViewById(R.id.BeerGlass);
-        //    btnJournal  = (ImageButton) findViewById(R.id.Journal);
         btnHistory = (ImageButton) findViewById(R.id.History);
 
-        //adding a click listener
-
+        // Add all click listeners
         btnGamePlay.setOnClickListener(this);
         btnBeerGlass.setOnClickListener(this);
-        //   btnJournal.setOnClickListener(this);
         btnHistory.setOnClickListener(this);
 
-        // Reset the database on initialisation
-        //    DBService.startActionResetDatabase(this);
-        
         // Start the sensor service to collect data
-        if (this != null) {
+        if (getApplicationContext() != null) {
             startService(new Intent(this, SensorService.class));
+            startService(new Intent(this, IntoxicationService.class));
         }
-        // Post event to handler to begin DB updates
-        //mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
 
         update_drunk_level(0);
 
-                mGoogleApiClient = new GoogleApiClient.Builder(this)
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
-
 
         beerview = (TextView) findViewById(R.id.watchtext);
     }
