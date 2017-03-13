@@ -4,14 +4,11 @@
     <string name="put_accel_list">net.mandown.db.put.accel.list</string>
     <string name="put_gyro_list">net.mandown.db.put.gyro.list</string>
     <string name="put_magnet_list">net.mandown.db.put.magnet.list</string>
-    <string name="put_whackabeer_score">net.mandown.db.put.whackabeer.score</string>
     <string name="put_watch_accel">net.mandown.db.put.watch.accel</string>
 
     <string name="put_walk_accel">net.mandown.db.put.walk.accel</string>
     <string name="put_walk_gyro">net.mandown.db.put.walk.gyro</string>
     <string name="put_walk_magnet">net.mandown.db.put.walk.magnet</string>
-
-
 
     <!-- RT is reaction time -->
     <string name="put_whackabeer_rt">net.mandown.db.put.whackabeer.rt</string>
@@ -21,11 +18,9 @@
     <string name="put_ml_values">net.mandown.db.put.ml.values</string>
     <string name="classif">classif</string>
 
-
     <!-- Sensor game data for TightropeWaiterView -->
     <string name="put_tightropewaiter_sn">net.mandown.db.put.tightropewaiter.sn</string>
     <string name="sensor_arr">sensor.arr</string>
-
 
     <!-- Data for put accel -->
     <string name="accel_timestamp_arr">accel.timestamp.arr</string>
@@ -63,9 +58,7 @@
     <string name="magnet_y_walk">magnet.y.walk</string>
     <string name="magnet_z_walk">magnet.z.walk</string>
 
-
-
-    <!-- Data for put Watch Sensor accel for Wei -->
+    <!-- Data for put Watch Sensor accel -->
     <string name="watch_timestamp_arr">watch.timestamp.arr</string>
     <string name="watch_x_arr">watch.x.arr</string>
     <string name="watch_y_arr">watch.y.arr</string>

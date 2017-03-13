@@ -250,9 +250,7 @@ public class DBService extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
 
-            if (getString(R.string.put_whackabeer_score).equals(action)) {
-                // TODO handle put whack-a-beer score
-            } else if (getString(R.string.put_whackabeer_rt).equals(action)) {
+            if (getString(R.string.put_whackabeer_rt).equals(action)) {
                 ArrayList<Long> reactionTimes = (ArrayList<Long>)
                         intent.getSerializableExtra(getString(R.string.rt_arr));
                 handleActionPutReactionTimes(reactionTimes);
