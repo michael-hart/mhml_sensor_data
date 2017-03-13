@@ -27,6 +27,7 @@ public class IntoxicationService extends Service {
     // Constant definitions
     private static final int INTOX_CHECK_PERIOD_S = 10; // 10 minutes
     private static final float DRUNK_LEVEL = 2.0f; // Class 2 drunk or higher is too drunk
+    private static final int DIFF_SAMPLES = 5; // 5 samples between each diff
 
     // Member variables
     private Timer mScheduleTimer;
@@ -197,9 +198,12 @@ public class IntoxicationService extends Service {
                         xyz[2] = "mz";
                         break;
                 }
-                for (int j = 5; j < current.size(); j++) {
+                if (current.size() < DIFF_SAMPLES) {
+                    continue;
+                }
+                for (int j = DIFF_SAMPLES; j < current.size(); j++) {
                     SensorSample recent = current.get(j);
-                    SensorSample previous = current.get(j-5);
+                    SensorSample previous = current.get(j-DIFF_SAMPLES);
 
                     // If recent isn't null, we found a sample of the correct age
                     if (recent != null) {
