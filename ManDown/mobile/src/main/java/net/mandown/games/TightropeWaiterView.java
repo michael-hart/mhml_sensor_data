@@ -155,32 +155,6 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
         }
     };
 
-
-    //accel values
-    private long mAccTS = 0;
-    private float mAccX = 0.0f;
-    private float mAccY = 0.0f;
-    private float mAccZ = 0.0f;
-
-    private BroadcastReceiver br = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            long ts;
-            float x, y, z;
-
-            ts = intent.getLongExtra("ts", -1);
-            x = intent.getFloatExtra("x", -1);
-            y = intent.getFloatExtra("y", -1);
-            z = intent.getFloatExtra("z", -1);
-
-            if (ts > -1) {
-                updateAccValues(ts, x, y, z);
-            }
-        }
-    };
-
-
     public TightropeWaiterView(Callback _observer, Context context) {
         super(context);
         observer=_observer;

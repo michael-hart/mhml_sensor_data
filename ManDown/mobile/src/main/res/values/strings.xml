@@ -4,4 +4,8 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="accel_broadcast">net.mandown.sensor.broadcast_accel</string>
+    <string name="menu1">Turn Off Sensor Readings</string>
+    <string name="menu2">Help</string>
+    <string name="menu3">Turn-on Wear Sensor Readings</string>
+    <string name="intox_broadcast">net.mandown.ml.intox_broadcast</string>
 </resources>
