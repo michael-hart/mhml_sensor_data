@@ -110,6 +110,7 @@ public class IntoxicationService extends Service {
         if (!mTimerIsCancelled) {
             mVarLock.lock();
             mScheduleTimer.cancel();
+            mScheduleTimer = new Timer();
             mTimerIsCancelled = true;
             mVarLock.unlock();
         }
@@ -157,8 +158,6 @@ public class IntoxicationService extends Service {
                 Log.e("IntoxicationService", "Error in ML connection: " + pe.getStackTrace());
                 return;
             }
-
-            if (predictor == null) return;
 
             // Initialise to prevent errors during loop
             List<SensorSample> current = new ArrayList<>();
