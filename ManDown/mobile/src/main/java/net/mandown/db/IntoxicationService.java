@@ -104,6 +104,14 @@ public class IntoxicationService extends Service {
         rescheduleIntoxChecker();
     }
 
+    public float getIntoxLevel() {
+        return mIntoxicationLevel;
+    }
+    
+    public float getLastTimestamp() {
+        return mLastTimestamp;
+    }
+
 
     /*
      * Service tasks
