@@ -25,6 +25,9 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".CallSOS" />
+        <activity android:name=".InputDrinks" />
+
         <service android:name=".sensors.SensorBroadcast" />
 
     </application>

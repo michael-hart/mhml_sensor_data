@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.wearable.view.BoxInsetLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:layout_width="match_parent"
+android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignTop="@+id/tv_question"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="10dp"
+        app:layout_box="all">
+
+        <TextView
+            android:id="@+id/tv_question"
+            android:layout_width="127dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="center_horizontal|top"
+            android:paddingBottom="15sp"
+            android:paddingTop="5sp"
+            android:text="Call 999?"
+            android:textSize="30sp" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5sp">
+
+            <android.support.wearable.view.CircledImageView
+                android:id="@+id/btn_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|bottom"
+                android:keepScreenOn="false"
+                android:onClick="denySOS"
+                app:circle_color="#AFAFAF"
+                app:circle_radius="25dp"
+                app:circle_radius_pressed="30dp" />
+
+            <android.support.wearable.view.CircledImageView
+                android:id="@+id/btn_ok"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|bottom"
+                android:onClick="confirmSOS"
+                app:circle_color="#0EB695"
+                app:circle_radius="25dp"
+                app:circle_radius_pressed="30dp" />
+
+            <ImageView
+                android:id="@+id/yes"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="right|center"
+                android:layout_marginRight="11dp"
+                android:src="@drawable/tick" />
+
+            <ImageView
+                android:id="@+id/no"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="left|center"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/cross"
+                android:textSize="27sp" />
+        </FrameLayout>
+    </LinearLayout>
+</android.support.wearable.view.BoxInsetLayout>
