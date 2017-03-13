@@ -324,11 +324,7 @@ public class  WhackABeerView extends SurfaceView implements WhackABeerDrinks.Cal
     }
 
     public void gameOver(){
-
         DBService.startActionPutReactionTimes(getContext(), reaction_times);
-        //Log.d("hellooooo", String.valueOf(reaction_times));
-        //Log.d("Last reaction time is", String.valueOf(DBService.GetMostRecentReactionTime()));
-        //Log.d("Last Accel time is", String.valueOf(DBService.GetMostRecentAccel()));
         observer.gameOver();
     }
 
