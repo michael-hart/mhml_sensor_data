@@ -175,7 +175,7 @@ public class MainActivity extends Activity implements
     //Listen for start signal
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
-        Log.i("data","data CHANGED!");
+        //Log.i("data","data CHANGED!");
         for (DataEvent event : dataEvents) {
             if (event.getType() == DataEvent.TYPE_CHANGED) {
                 // DataItem changed
@@ -184,18 +184,18 @@ public class MainActivity extends Activity implements
                     DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
                     ((TextView) findViewById(R.id.phonetrigger)).setText(Boolean.toString(dataMap.getBoolean(WATCH_RX_KEY)));
 
-                    Log.d("datachanged", "SET BOOL TO STR");
+                    //Log.d("datachanged", "SET BOOL TO STR");
                     mVarLock.lock();
                     long startTime = SystemClock.elapsedRealtime();
                     WatchAccelValues = new ArrayList<Float>((int)(3*DEFAULT_POLL_PERIOD_US / DEFAULT_POLL_RATE_US));
                     WatchTimeValues = new ArrayList<Long>((int)(DEFAULT_POLL_PERIOD_US / DEFAULT_POLL_RATE_US));
                     long pollPeriod = DEFAULT_POLL_PERIOD_US / 1000;
                     mVarLock.unlock();
-                    Log.d("datachanged", Long.toString(startTime));
+                    //Log.d("datachanged", Long.toString(startTime));
                     startService(intent);
-                    Log.d("datachanged", "STARTED BACKGROUND SVC");
+                    //Log.d("datachanged", "STARTED BACKGROUND SVC");
                     this.registerReceiver(br, new IntentFilter("accel"));
-                    Log.d("datachanged", "REGISTERED RECEIVER");
+                    //Log.d("datachanged", "REGISTERED RECEIVER");
 
                     // Repeatedly wait until our work is done
 //                    while (SystemClock.elapsedRealtime() - startTime < pollPeriod) {
@@ -224,6 +224,11 @@ public class MainActivity extends Activity implements
         }
     }
 
+    //SOS button
+    public void callSOS(View v) {
+        startActivity(new Intent(this, CallSOS.class));
+    }
+///////////////////////////////////////////////////////////////////
     private String beertext = "beer";
     private String winetext = "wine";
     private String cocktailtext = "cocktail";
@@ -336,7 +341,7 @@ public class MainActivity extends Activity implements
         putDataReq.setUrgent();
         PendingResult<DataApi.DataItemResult> pendingResult =
                 Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
-        Log.d("sendmeas","SENT ACCEL RESULTS!");
+        //Log.d("sendmeas","SENT ACCEL RESULTS!");
 //        ((TextView) findViewById(R.id.phonetrigger)).setText(Integer.toString(WatchTimeValues.size())+ ' ' + Integer.toString(WatchAccelValues.size()));
     }
 
@@ -365,13 +370,13 @@ public class MainActivity extends Activity implements
     class stopTask extends TimerTask {
         @Override
         public void run() {
-            Log.d("datachanged", "STOPPED SLEEP");
+            //Log.d("datachanged", "STOPPED SLEEP");
             stopService(intent);
-            Log.d("datachanged", "STOPPED SERVICE");
+            //Log.d("datachanged", "STOPPED SERVICE");
             unregisterReceiver(br);
-            Log.d("datachanged", "STOPPED BROADCAST");
+            //Log.d("datachanged", "STOPPED BROADCAST");
             sendmeasresults();
-            Log.d("datachanged", "FINISHED FUNCTION");
+           // Log.d("datachanged", "FINISHED FUNCTION");
         }
     }
 }

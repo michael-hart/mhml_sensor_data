@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
@@ -69,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements DataApi.DataListe
     private static final String WATCH_RX_KEY = "net.mandown.key.watchrx";
     private static final String WATCH_TX_FLOAT_KEY = "net.mandown.key.watchtxfloat";
     private static final String WATCH_TX_LONG_KEY = "net.mandown.key.watchtxlong";
+    private static final String WATCH_SOS_KEY = "net.mandown.key.SOS";
     private static final long CONNECTION_TIME_OUT_MS = 100;
 
 
@@ -337,8 +339,8 @@ public class MainActivity extends AppCompatActivity implements DataApi.DataListe
                     ((TextView) findViewById(R.id.watchtext)).setText(dataMap.getString(SHOT_KEY));
                     dataMap.remove(SHOT_KEY);
                 }
-                else if (item.getUri().getPath().compareTo("/watchdata") == 0) {
-                    Log.d("datachanged", "GOT WATCH DATA");
+                else if (item.getUri().getPath().compareTo("/watchdata") == 0) { //Watch reported back accel readings
+                    //Log.d("datachanged", "GOT WATCH DATA");
                     DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
                     long[] watchTimeStamps = dataMap.getLongArray(WATCH_TX_LONG_KEY);
                     float[] watchAccelValues = dataMap.getFloatArray(WATCH_TX_FLOAT_KEY);
@@ -350,9 +352,34 @@ public class MainActivity extends AppCompatActivity implements DataApi.DataListe
                     for (int i=0; i<watchTimeStamps.length; i++) {
                         watchCombinedData.add(new SensorSample(watchTimeStamps[i], watchAccelValues[3*i], watchAccelValues[3*i+1], watchAccelValues[3*i+2]));
                     }
-                    Log.d("datachanged", Integer.toString(watchCombinedData.size()));
+                    //Log.d("datachanged", Integer.toString(watchCombinedData.size()));
                     //Send watch data to database here
                     DBService.startPutActionWatchAccel(getApplicationContext(), watchCombinedData, SensorType.ACCELEROMETER);
+                }
+                else if (item.getUri().getPath().compareTo("/SOS") == 0) {
+                    DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
+                    long sosTime = dataMap.getLong(WATCH_SOS_KEY);
+                    Log.d("soswatch", Long.toString(sosTime));
+                    Log.d("soswatch", Long.toString(System.currentTimeMillis()));
+                    //Just to be absolutely sure this was not triggered erroneously,
+                    //if time which SOS was sent was less than 15 seconds ago (to generously account for transmission delay), treat as real SOS
+                    if (System.currentTimeMillis() - sosTime <= 15000) {
+                        Log.d("soswatch", "Times are OK");
+                        Intent intent = new Intent(Intent.ACTION_CALL,
+                                Uri.parse("tel:" + "SOS")); //supposed to be 999 but for testing purposes this is used in place
+
+                        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                                Manifest.permission.CALL_PHONE) !=
+                                PackageManager.PERMISSION_GRANTED) {
+                            Log.d("soswatch", "CHECK PASSED");
+                            ActivityCompat.requestPermissions(MainActivity.this,
+                                    new String[]{Manifest.permission.CALL_PHONE},
+                                    REQUEST_PHONE_CALL);
+                        } else {
+                            Log.d("soswatch", "CHECK FAILED");
+                            startActivity(intent);
+                        }
+                    }
                 }
 
             } else if (event.getType() == DataEvent.TYPE_DELETED) {

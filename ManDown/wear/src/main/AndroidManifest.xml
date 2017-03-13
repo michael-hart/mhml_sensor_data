@@ -25,6 +25,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".CallSOS" />
+
         <service android:name=".sensors.SensorBroadcast" />
 
     </application>
