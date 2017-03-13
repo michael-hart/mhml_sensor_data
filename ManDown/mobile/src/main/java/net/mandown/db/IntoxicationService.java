@@ -6,6 +6,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import net.mandown.R;
 import net.mandown.ml.PredictionException;
 import net.mandown.ml.RealtimePrediction;
 import net.mandown.sensors.SensorSample;
@@ -251,14 +252,22 @@ public class IntoxicationService extends Service {
             }
             finalIntox = finalIntox / intoxWeights;
 
+            // Record data in member variables
             mVarLock.lock();
             mIntoxicationLevel = finalIntox;
+            mLastTimestamp = System.currentTimeMillis();
             mVarLock.unlock();
 
             // Insert new value into database
             DBService.startActionPutML(getApplicationContext(), Float.toString(finalIntox));
 
-            // TODO broadcast a notification to the user if above a certain level
+            // Send a broadcast to any other listener in the system
+            Intent intent = new Intent(getString(R.string.intox_broadcast));
+            intent.putExtra("ml", finalIntox);
+            intent.putExtra("ts", mLastTimestamp);
+            sendBroadcast(intent);
+
+                    
 
         }
     }
