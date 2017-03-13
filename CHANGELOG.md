@@ -8,6 +8,10 @@ merged branch, and MAJOR is a change signalling a release.
 
 Each change will list Added, Changed, and Fixed.
 
+## 0.8.0 - 2017-03-13
+### Added
+- Additional database methods for storing walking data
+
 ## 0.7.0 - 2017-03-13
 ### Added
 - Calls to get intoxication level from machine learning
