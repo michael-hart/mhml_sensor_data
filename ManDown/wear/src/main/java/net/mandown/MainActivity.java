@@ -12,6 +12,7 @@ import android.support.annotation.IntegerRes;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -52,13 +53,10 @@ public class MainActivity extends Activity implements
 
     //For watch-phone communication
     private static final long CONNECTION_TIME_OUT_MS = 100;
-    private static final String BEER_KEY = "net.mandown.key.beer";
-    private static final String WINE_KEY = "net.mandown.key.wine";
-    private static final String COCKTAIL_KEY = "net.mandown.key.cocktail";
-    private static final String SHOT_KEY = "net.mandown.key.shot";
     private static final String WATCH_RX_KEY = "net.mandown.key.watchrx";
     private static final String WATCH_TX_FLOAT_KEY = "net.mandown.key.watchtxfloat";
     private static final String WATCH_TX_LONG_KEY = "net.mandown.key.watchtxlong";
+    private static final String INTOX_KEY = "net.mandown.key.intox";
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -69,6 +67,7 @@ public class MainActivity extends Activity implements
     private Lock mVarLock;
     private int count = 0;
 
+    private ImageButton btnBeerGlass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +80,7 @@ public class MainActivity extends Activity implements
                 mVarLock = new ReentrantLock();
                 mTextView = (TextView) stub.findViewById(R.id.text);
                 axview = (TextView) stub.findViewById(R.id.acc_reading);
+                btnBeerGlass = (ImageButton) stub.findViewById(R.id.drinkindicator);
             }
         });
 
@@ -197,25 +197,13 @@ public class MainActivity extends Activity implements
                     this.registerReceiver(br, new IntentFilter("accel"));
                     //Log.d("datachanged", "REGISTERED RECEIVER");
 
-                    // Repeatedly wait until our work is done
-//                    while (SystemClock.elapsedRealtime() - startTime < pollPeriod) {
-//                        try {
-//                            wait(100);
-//                            Log.d("datachanged", "SLEEPING");
-//                        } catch (InterruptedException ie) {
-//                            Log.e("SensorDataCollector", "Interrupted while waiting for execution: "
-//                                    + ie.toString());
-//                        }
-//                    }
                     Timer timer1 = new Timer();
                     timer1.schedule(new stopTask(), pollPeriod);
-//                    Log.d("datachanged", "STOPPED SLEEP");
-//                    stopService(intent);
-//                    Log.d("datachanged", "STOPPED SERVICE");
-//                    sendmeasresults();
-//                    Log.d("datachanged", "SENT RESULTS");
-//                    ((TextView) findViewById(R.id.phonetrigger)).setText(Integer.toString(WatchTimeValues.size())+ ' ' + Integer.toString(WatchAccelValues.size()));
-//                    Log.d("datachanged", "FINISHED FUNCTION");
+                }/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                else if (item.getUri().getPath().compareTo("/intoxication") == 0) {
+                    DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
+                    int drunk_level = dataMap.getInt(INTOX_KEY);
+                    update_drunk_level(drunk_level);
                 }
 
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
@@ -224,101 +212,27 @@ public class MainActivity extends Activity implements
         }
     }
 
+    private void update_drunk_level(int drunk_level) {
+        if (drunk_level == 0) {
+            btnBeerGlass.setImageResource(R.drawable.empty_beer_glass);
+            axview.setText("Sober");
+        } else if (drunk_level == 1) {
+            btnBeerGlass.setImageResource(R.drawable.glass_beer);
+            axview.setText("Tipsy");
+        } else if (drunk_level == 2) {
+            btnBeerGlass.setImageResource(R.drawable.full_glass_beer);
+            axview.setText("Drunk!");
+        }
+    }
+
     //SOS button
     public void callSOS(View v) {
         startActivity(new Intent(this, CallSOS.class));
     }
-///////////////////////////////////////////////////////////////////
-    private String beertext = "beer";
-    private String winetext = "wine";
-    private String cocktailtext = "cocktail";
-    private String shottext = "shot";
 
-    //Send message
-    public void drankbeer(View v) {
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/beer");
-        putDataMapReq.getDataMap().putString(BEER_KEY, beertext);
-        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-        putDataReq.setUrgent();
-        PendingResult<DataApi.DataItemResult> pendingResult =
-                Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
-        Log.d("beer","SENT BEER!");
-        if (beertext == "beer")
-        {
-            beertext = "notbeer";
-        }
-        else
-        {
-            beertext = "beer";
-        }
-    }
-
-//    private void msgBeer(View v) {
-//        Wearable.MessageApi.sendMessage(googleApiClient, transcriptionNodeId,
-//                VOICE_TRANSCRIPTION_MESSAGE_PATH, voiceData).setResultCallback(
-//                new ResultCallback() {
-//                    @Override
-//                    public void onResult(SendMessageResult sendMessageResult) {
-//                        if (!sendMessageResult.getStatus().isSuccess()) {
-//                            // Failed to send message
-//                        }
-//                    }
-//                }
-//        );
-//    }
-
-    public void drankwine(View v) {
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/wine");
-        putDataMapReq.getDataMap().putString(WINE_KEY, winetext);
-        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-        putDataReq.setUrgent();
-        PendingResult<DataApi.DataItemResult> pendingResult =
-                Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
-        Log.d("wine","SENT WINE!");
-        if (winetext == "wine")
-        {
-            winetext = "notwine";
-        }
-        else
-        {
-            winetext = "wine";
-        }
-    }
-
-    public void drankcocktail(View v) {
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/cocktail");
-        putDataMapReq.getDataMap().putString(COCKTAIL_KEY, cocktailtext);
-        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-        putDataReq.setUrgent();
-        PendingResult<DataApi.DataItemResult> pendingResult =
-                Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
-        Log.d("cocktail","SENT COCKTAIL!");
-        if (cocktailtext == "cocktail")
-        {
-            cocktailtext = "notcocktail";
-        }
-        else
-        {
-            cocktailtext = "cocktail";
-        }
-    }
-
-    public void drankshot(View v) {
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/shot");
-        putDataMapReq.getDataMap().putString(SHOT_KEY, shottext);
-        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
-        putDataReq.setUrgent();
-        PendingResult<DataApi.DataItemResult> pendingResult =
-                Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
-        Log.d("shot","SENT SHOT!");
-        if (shottext == "shot")
-        {
-            shottext = "notshot";
-        }
-        else
-        {
-            shottext = "shot";
-        }
+    //Drinks button
+    public void inputDrink(View v) {
+        startActivity(new Intent(this, InputDrinks.class));
     }
 
     private void sendmeasresults() {

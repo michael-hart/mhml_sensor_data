@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements DataApi.DataListe
     private static final String WATCH_TX_FLOAT_KEY = "net.mandown.key.watchtxfloat";
     private static final String WATCH_TX_LONG_KEY = "net.mandown.key.watchtxlong";
     private static final String WATCH_SOS_KEY = "net.mandown.key.SOS";
+    private static final String INTOX_KEY = "net.mandown.key.intox";
     private static final long CONNECTION_TIME_OUT_MS = 100;
 
 
@@ -199,6 +200,9 @@ public class MainActivity extends AppCompatActivity implements DataApi.DataListe
             btnBeerGlass.setImageResource(R.drawable.full_glass_beer);
             txtBeer.setText("Drunk!");
         }
+
+        //Update watch with intoxication data
+        sendIntoxData(drunk_level);
     }
 
     @Override
@@ -296,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements DataApi.DataListe
 
     private boolean watchbool = false;
     //Tell watch to start measuring
-    public void startWatchAccel(){
+    private void startWatchAccel(){
         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/watchaccel");
         putDataMapReq.getDataMap().putBoolean(WATCH_RX_KEY, watchbool);
         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
@@ -309,7 +313,18 @@ public class MainActivity extends AppCompatActivity implements DataApi.DataListe
         watchbool = !watchbool;
     }
 
-    //In case of for user input from watch
+    //Send updated intoxication data to watch
+    private void sendIntoxData(int drunk_level){
+        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/intoxication");
+        putDataMapReq.getDataMap().putInt(INTOX_KEY, drunk_level);
+        PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
+        putDataReq.setUrgent();
+        PendingResult<DataApi.DataItemResult> pendingResult =
+                Wearable.DataApi.putDataItem(mGoogleApiClient, putDataReq);
+        Log.d("intoxwatch", "SENT INTOXICATION DATA");
+    }
+
+    //In case of user input from watch
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
         Log.i("data","data CHANGED!");

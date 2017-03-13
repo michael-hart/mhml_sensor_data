@@ -7,83 +7,58 @@
     tools:context="net.mandown.MainActivity"
     tools:deviceIds="wear_round">
 
-    <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@android:color/transparent"
-        android:onClick="drankbeer"
-        android:scaleType="fitCenter"
-        android:src="@drawable/beer_glass"
-        android:layout_centerVertical="true"
-        android:layout_toStartOf="@+id/Sos" />
+
 
     <ImageButton
-        android:src="@drawable/wine_small"
-        android:id="@+id/Wine"
-        android:background="@android:color/transparent"
-        android:scaleType="fitCenter"
-        android:adjustViewBounds="false"
-        android:cropToPadding="true"
-        android:padding="0dp"
-        android:elevation="0dp"
-        android:layout_height="50dp"
-        android:layout_width="50dp"
-        android:onClick="drankwine"
-        android:layout_alignTop="@+id/imageButton"
-        android:layout_toEndOf="@+id/Sos" />
+    android:id="@+id/Sos"
+    android:layout_width="70dp"
+    android:layout_height="70dp"
+    android:background="@android:color/transparent"
+    android:onClick="callSOS"
+    android:scaleType="fitCenter"
+    android:src="@drawable/drunk_sos"
+        android:layout_above="@+id/phonetrigger"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="30dp" />
 
     <ImageButton
-        android:src="@drawable/cocktail_glass"
-        android:id="@+id/Cocktail"
-        android:background="@android:color/transparent"
-        android:scaleType="fitCenter"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:onClick="drankcocktail"
-        android:layout_above="@+id/Sos"
-        android:layout_alignStart="@+id/Shot" />
-
-    <ImageButton
-        android:id="@+id/Sos"
+        android:id="@+id/drinkindicator"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:background="@android:color/transparent"
-        android:onClick="callSOS"
         android:scaleType="fitCenter"
-        android:src="@drawable/drunk_sos"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
-
-    <ImageButton
-        android:src="@drawable/shot_glass"
-        android:id="@+id/Shot"
-        android:background="@android:color/transparent"
-        android:adjustViewBounds="false"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:cropToPadding="true"
-        android:scaleType="fitCenter"
-        android:layout_gravity="center"
-        android:onClick="drankshot"
-        android:layout_below="@+id/Sos"
-        android:layout_centerHorizontal="true" />
+        android:src="@drawable/empty_beer_glass"
+        android:layout_above="@+id/acc_reading"
+        android:layout_alignStart="@+id/acc_reading"
+        android:layout_alignEnd="@+id/acc_reading" />
 
     <TextView
         android:id="@+id/acc_reading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="18dp"
-        android:text="Yellow SOS" />
+        android:text="Yellow SOS"
+        android:layout_above="@+id/Sos"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/phonetrigger"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/Shot"
+        android:text="Drink Consumed?"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="Drink Consumed?" />
+        android:layout_marginBottom="18dp" />
+
+    <ImageButton
+        android:id="@+id/enterdrinks"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="@android:color/transparent"
+        android:onClick="inputDrink"
+        android:scaleType="fitCenter"
+        android:src="@drawable/writing"
+        android:layout_marginStart="17dp"
+        android:layout_below="@+id/acc_reading"
+        android:layout_toEndOf="@+id/Sos" />
 
 </RelativeLayout>
