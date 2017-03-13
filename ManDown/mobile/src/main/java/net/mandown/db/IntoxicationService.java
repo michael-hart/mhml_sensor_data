@@ -10,6 +10,7 @@ import net.mandown.ml.PredictionException;
 import net.mandown.ml.RealtimePrediction;
 import net.mandown.sensors.SensorSample;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ public class IntoxicationService extends Service {
 
     // Constant definitions
     private static final int INTOX_CHECK_PERIOD_S = 600; // 10 minutes
+    private static final float DRUNK_LEVEL = 2.0f; // Class 2 drunk or higher is too drunk
 
     // Member variables
     private Timer mScheduleTimer;
@@ -137,43 +139,120 @@ public class IntoxicationService extends Service {
         private RealtimePrediction predictor;
         @Override
         public void run() {
-            // If the last timestamp is 0, get the current timestamp as the most recent and exit
-            if (mLastTimestamp == 0) {
-                mVarLock.lock();
-                mLastTimestamp = System.currentTimeMillis();
-                mIntoxicationLevel = 0f;
-                mVarLock.unlock();
-                return;
-            }
 
             // Grab the recent data to get a prediction from
-            List<SensorSample> accel = DBService.getAccelDataSince(mLastTimestamp);
-            List<SensorSample> gyro = DBService.getGyroDataSince(mLastTimestamp);
-            List<SensorSample> magnet = DBService.getMagnetDataSince(mLastTimestamp);
-            List<Integer> reactions = DBService.getReactionTimesSince(mLastTimestamp);
+            List<SensorSample> accel = DBService.GetMostRecentAccel();
+            List<SensorSample> gyro = DBService.GetMostRecentGyro();
+            List<SensorSample> magnet = DBService.GetMostRecentMagn();
+            List<Long> reactions = DBService.GetMostRecentReactionTime();
 
-            // Package the samples into a Map
-            Map<String, String> classifySamples = new HashMap<String, String>();
-            // TODO package times into map
+            List<Float[]> intoxLevels = new ArrayList<>();
 
-            String resultLabel;
-            float resultScore = 0f;
-
-            // Create and connect the predictor
+            // Create the predictor object
+            RealtimePrediction predictor;
             try {
                 predictor = new RealtimePrediction();
                 predictor.connect();
-                // Create a prediction from samples
-                predictor.predict(classifySamples);
-                resultLabel = predictor.getPredictedLabel();
-                resultScore = predictor.getPredictedScore(resultLabel);
             } catch (PredictionException pe) {
-                Log.e("IntoxicationService", "Error in prediction: " pe.getStackTrace());
+                Log.e("IntoxicationService", "Error in ML connection: " + pe.getStackTrace());
                 return;
             }
 
+            if (predictor == null) return;
+
+            // Initialise to prevent errors during loop
+            List<SensorSample> current = new ArrayList<>();
+
+            // Check three sensor arrays with readings
+            for (int i = 0; i < 3; i++) {
+                String[] xyz = {"", "", ""};
+                switch(i) {
+                    case 0:
+                        current = accel;
+                        xyz[0] = "ax";
+                        xyz[1] = "ay";
+                        xyz[2] = "az";
+                        break;
+                    case 1:
+                        current = gyro;
+                        xyz[0] = "gx";
+                        xyz[1] = "gy";
+                        xyz[2] = "gz";
+                        break;
+                    case 2:
+                        current = magnet;
+                        xyz[0] = "mx";
+                        xyz[1] = "my";
+                        xyz[2] = "mz";
+                        break;
+                }
+                for (SensorSample ss : current) {
+                    SensorSample recent = null;
+                    for (SensorSample dSs : accel) {
+                        // Check the timestamp difference
+                        long dTS = ss.mTimestamp - dSs.mTimestamp;
+                        // If the sample is too recent, we are too far in the last, so quit
+                        if (dTS < 950) {
+                            break;
+                        }
+                        // If the sample is 1s older, +/- 50ms, use as a sample
+                        if ((dTS < 1050) && (dTS >= 950)) {
+                            recent = dSs;
+                            break;
+                        }
+                    }
+
+                    // If recent isn't null, we found a sample of the correct age
+                    if (recent != null) {
+                        Map<String, String> classifySamples = new HashMap<String, String>();
+                        classifySamples.put(xyz[0], Float.toString(ss.mX - recent.mX));
+                        classifySamples.put(xyz[1], Float.toString(ss.mY - recent.mY));
+                        classifySamples.put(xyz[2], Float.toString(ss.mZ - recent.mZ));
+
+                        try {
+                            predictor.predict(classifySamples);
+                            String intox = predictor.getPredictedLabel();
+                            float conf = predictor.getPredictedScore(intox);
+                            Float[] result = {Float.parseFloat(intox), conf};
+                            intoxLevels.add(result);
+                        } catch (PredictionException pe) {
+                            Log.e("IntoxicationService", "Error in ML connection: " + pe.getStackTrace());
+                        }
+                    }
+                }
+            }
+
+            for (Long l : reactions) {
+                Map<String, String> classifySamples = new HashMap<>();
+                classifySamples.put("rt", Double.toString(l));
+
+                try {
+                    predictor.predict(classifySamples);
+                    String intox = predictor.getPredictedLabel();
+                    float conf = predictor.getPredictedScore(intox);
+                    Float[] result = {Float.parseFloat(intox), conf};
+                    intoxLevels.add(result);
+                } catch (PredictionException pe) {
+                    Log.e("IntoxicationService", "Error in ML connection: " + pe.getStackTrace());
+                }
+            }
+
+            // Based on the results just obtained, calculate a final weight mean
+            if (intoxLevels.size() == 0) {
+                Log.w("IntoxicationService", "No results during intoxication check!");
+                return;
+            }
+
+            float finalIntox = 0f;
+            float intoxWeights = 0f;
+            for (Float[] result : intoxLevels) {
+                finalIntox += result[0] * result[1];
+                intoxWeights += result[1];
+            }
+            finalIntox = finalIntox / intoxWeights;
+
             mVarLock.lock();
-            mIntoxicationLevel = resultScore;
+            mIntoxicationLevel = finalIntox;
             mVarLock.unlock();
 
             // TODO broadcast a notification to the user if above a certain level
