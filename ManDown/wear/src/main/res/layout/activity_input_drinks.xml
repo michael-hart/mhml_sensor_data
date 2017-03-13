@@ -11,8 +11,7 @@
         android:scaleType="fitCenter"
         android:src="@drawable/beer_glass"
         android:layout_centerVertical="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="33dp" />
+        android:layout_toStartOf="@+id/Cocktail" />
 
     <ImageButton
         android:src="@drawable/wine_small"
