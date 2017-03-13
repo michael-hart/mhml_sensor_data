@@ -68,6 +68,7 @@ public class IntoxicationService extends Service {
         // Create member objects
         mScheduleTimer = new Timer();
         mVarLock = new ReentrantLock();
+
     }
 
     @Override
@@ -107,7 +108,7 @@ public class IntoxicationService extends Service {
     public float getIntoxLevel() {
         return mIntoxicationLevel;
     }
-    
+
     public float getLastTimestamp() {
         return mLastTimestamp;
     }
@@ -284,6 +285,7 @@ public class IntoxicationService extends Service {
                     .setContentTitle("ManDown Intoxication Alert")
                     .setContentText("ManDown has detected that you are too intoxicated. " +
                                     "Please take a break for your own safety!")
+                    .setSmallIcon(R.drawable.beer_glass)
                     .build();
             nm.notify(1, notif);
 
