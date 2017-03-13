@@ -25,7 +25,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class IntoxicationService extends Service {
 
     // Constant definitions
-    private static final int INTOX_CHECK_PERIOD_S = 600; // 10 minutes
+    private static final int INTOX_CHECK_PERIOD_S = 10; // 10 minutes
     private static final float DRUNK_LEVEL = 2.0f; // Class 2 drunk or higher is too drunk
 
     // Member variables
@@ -197,28 +197,16 @@ public class IntoxicationService extends Service {
                         xyz[2] = "mz";
                         break;
                 }
-                for (SensorSample ss : current) {
-                    SensorSample recent = null;
-                    for (SensorSample dSs : accel) {
-                        // Check the timestamp difference
-                        long dTS = ss.mTimestamp - dSs.mTimestamp;
-                        // If the sample is too recent, we are too far in the last, so quit
-                        if (dTS < 950) {
-                            break;
-                        }
-                        // If the sample is 1s older, +/- 50ms, use as a sample
-                        if ((dTS < 1050) && (dTS >= 950)) {
-                            recent = dSs;
-                            break;
-                        }
-                    }
+                for (int j = 5; j < current.size(); j++) {
+                    SensorSample recent = current.get(j);
+                    SensorSample previous = current.get(j-5);
 
                     // If recent isn't null, we found a sample of the correct age
                     if (recent != null) {
                         Map<String, String> classifySamples = new HashMap<String, String>();
-                        classifySamples.put(xyz[0], Float.toString(ss.mX - recent.mX));
-                        classifySamples.put(xyz[1], Float.toString(ss.mY - recent.mY));
-                        classifySamples.put(xyz[2], Float.toString(ss.mZ - recent.mZ));
+                        classifySamples.put(xyz[0], Float.toString(recent.mX - previous.mX));
+                        classifySamples.put(xyz[1], Float.toString(recent.mY - previous.mY));
+                        classifySamples.put(xyz[2], Float.toString(recent.mZ - previous.mZ));
 
                         try {
                             predictor.predict(classifySamples);
@@ -279,17 +267,18 @@ public class IntoxicationService extends Service {
             sendBroadcast(intent);
 
             // Create a notification if too drunk
-            NotificationManager nm = (NotificationManager) getSystemService(
-                    Service.NOTIFICATION_SERVICE);
-            Notification notif = (new Notification.Builder(getApplicationContext()))
-                    .setContentTitle("ManDown Intoxication Alert")
-                    .setContentText("ManDown has detected that you are too intoxicated. " +
-                                    "Please take a break for your own safety!")
-                    .setSmallIcon(R.drawable.beer_glass)
-                    .build();
-            nm.notify(1, notif);
+            if (finalIntox > DRUNK_LEVEL) {
+                NotificationManager nm = (NotificationManager) getSystemService(
+                        Service.NOTIFICATION_SERVICE);
+                Notification notif = (new Notification.Builder(getApplicationContext()))
+                        .setContentTitle("ManDown Intoxication Alert")
+                        .setContentText("ManDown has detected that you are too intoxicated. " +
+                                "Please take a break for your own safety!")
+                        .setSmallIcon(R.drawable.beer_glass)
+                        .build();
+                nm.notify(1, notif);
+            }
 
         }
     }
-
 }
