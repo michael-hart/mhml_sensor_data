@@ -306,7 +306,7 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
     }
 
     public void gameOver(){
-        //DBService.startActionPutSensorGamedata(getContext(), mSensorData);
+        //DBService.startActionPutSensorGameData(getContext(), mSensorData);
         observer.gameOver();
     }
 
