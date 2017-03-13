@@ -12,6 +12,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -155,8 +156,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startService(new Intent(this, SensorService.class));
             startService(new Intent(this, IntoxicationService.class));
         }
-
-        update_drunk_level(0);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
@@ -307,7 +306,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         mGoogleApiClient.connect();
+        // Register the broadcast receiver again
         registerReceiver(mIntoxReceiver, new IntentFilter(getString(R.string.intox_broadcast)));
+
+        // Check for any intoxication level already there
+        if (IntoxicationService.sInstance != null) {
+            if (IntoxicationService.sInstance.getLastTimestamp() > 0) {
+                update_drunk_level(Math.round(IntoxicationService.sInstance.getIntoxLevel()));
+            }
+        } else {
+            update_drunk_level(0);
+        }
+
         Log.i("RConnected","ResumeConnected!");
     }
 

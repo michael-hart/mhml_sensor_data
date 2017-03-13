@@ -25,7 +25,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class IntoxicationService extends Service {
 
     // Constant definitions
-    private static final int INTOX_CHECK_PERIOD_S = 10; // 10 minutes
+    private static final int INTOX_CHECK_PERIOD_S = 600; // 10 minutes
     private static final float DRUNK_LEVEL = 1.5f; // Class 2 drunk or higher is too drunk
     private static final int DIFF_SAMPLES = 5; // 5 samples between each diff
 
@@ -41,13 +41,14 @@ public class IntoxicationService extends Service {
 
     // Binder for allowing activities to bind to service
     private final IBinder mBinder = new IntoxBinder();
+    public static IntoxicationService sInstance;
 
 
     /**
      * Class used for client Binder. Use threads with locks for safe multi-threaded access.
      */
     public class IntoxBinder extends Binder {
-        IntoxicationService getService() {
+        public IntoxicationService getService() {
             return IntoxicationService.this;
         }
     }
@@ -69,6 +70,7 @@ public class IntoxicationService extends Service {
         // Create member objects
         mScheduleTimer = new Timer();
         mVarLock = new ReentrantLock();
+        sInstance = this;
     }
 
     @Override
