@@ -1,5 +1,7 @@
 package net.mandown.db;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
@@ -267,7 +269,15 @@ public class IntoxicationService extends Service {
             intent.putExtra("ts", mLastTimestamp);
             sendBroadcast(intent);
 
-                    
+            // Create a notification if too drunk
+            NotificationManager nm = (NotificationManager) getSystemService(
+                    Service.NOTIFICATION_SERVICE);
+            Notification notif = (new Notification.Builder(getApplicationContext()))
+                    .setContentTitle("ManDown Intoxication Alert")
+                    .setContentText("ManDown has detected that you are too intoxicated. " +
+                                    "Please take a break for your own safety!")
+                    .build();
+            nm.notify(1, notif);
 
         }
     }
