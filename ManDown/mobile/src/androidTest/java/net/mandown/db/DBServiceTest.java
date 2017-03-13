@@ -11,17 +11,13 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- * Created by Michael on 07/03/2017.
+ * Unit tests for database service
  */
 public class DBServiceTest {
-    @Before
-    public void setUp() throws Exception {
-
-    }
 
     @Test
     public void startActionPutReactionTimes() throws Exception {
-        List<Long> myList = new ArrayList<Long>();
+        ArrayList<Long> myList = new ArrayList<Long>();
         myList.add(100l);
         myList.add(200l);
         myList.add(300l);

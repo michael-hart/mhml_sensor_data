@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- DB Service Strings -->
-    <string name="get_intoxication">net.mandown.db.get.intoxication</string>
     <string name="put_accel_list">net.mandown.db.put.accel.list</string>
     <string name="put_gyro_list">net.mandown.db.put.gyro.list</string>
     <string name="put_magnet_list">net.mandown.db.put.magnet.list</string>
@@ -12,15 +11,12 @@
     <string name="put_whackabeer_rt">net.mandown.db.put.whackabeer.rt</string>
     <string name="rt_arr">rt.arr</string>
 
-    <!-- RT is MAchine learning -->
+    <!-- RT is Machine learning -->
     <string name="put_ml_values">net.mandown.db.put.ml.values</string>
     <string name="classif">classif</string>
 
-
     <!-- Sensor game data for TightropeWaiterView -->
-    <string name="put_tightropewaiter_sn">net.mandown.db.put.tightropewaiter.sn</string>
     <string name="sensor_arr">sensor.arr</string>
-
 
     <!-- Data for put accel -->
     <string name="accel_timestamp_arr">accel.timestamp.arr</string>
@@ -39,8 +35,6 @@
     <string name="magnet_x_arr">magnet.x.arr</string>
     <string name="magnet_y_arr">magnet.y.arr</string>
     <string name="magnet_z_arr">magnet.z.arr</string>
-
-
 
     <!-- Data for put Watch Sensor accel for Wei -->
     <string name="watch_timestamp_arr">watch.timestamp.arr</string>

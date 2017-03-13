@@ -156,10 +156,10 @@ public class IntoxicationService extends Service {
         public void run() {
 
             // Grab the recent data to get a prediction from
-            List<SensorSample> accel = DBService.GetMostRecentAccel();
-            List<SensorSample> gyro = DBService.GetMostRecentGyro();
-            List<SensorSample> magnet = DBService.GetMostRecentMagn();
-            List<Long> reactions = DBService.GetMostRecentReactionTime();
+            List<SensorSample> accel = DBService.getMostRecentAccel();
+            List<SensorSample> gyro = DBService.getMostRecentGyro();
+            List<SensorSample> magnet = DBService.getMostRecentMagn();
+            List<Long> reactions = DBService.getMostRecentReactionTime();
 
             List<Float[]> intoxLevels = new ArrayList<>();
 
