@@ -8,6 +8,11 @@ merged branch, and MAJOR is a change signalling a release.
 
 Each change will list Added, Changed, and Fixed.
 
+## 0.9.0 - 2017-03-13
+### Added
+- Additional database methods for getting walking data
+- Additional database method for storing game-specific accelerometer data
+
 ## 0.8.0 - 2017-03-13
 ### Added
 - Additional database methods for storing walking data
