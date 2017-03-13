@@ -78,11 +78,48 @@ public class DBService extends IntentService {
 
     }
 
+
+    //function to put machine learning result to Firebase
     public static void startActionPutML(Context context, String MLvalues) {
         Intent intent = new Intent(context, DBService.class);
         intent.setAction(context.getString(R.string.put_ml_values));
         intent.putExtra(context.getString(R.string.classif), MLvalues);
         context.startService(intent);
+    }
+
+    //Can be used for TightropeWaiter if sensor dara needs to be placed in another colummn (Sensor Game) in Firebase
+    public static void startActionPutSensorGamedata(Context context, List<SensorSample> list,
+                                                    SensorType type) {
+        Intent intent = new Intent(context, DBService.class);
+
+        intent.setAction("net.mandown.db.put.tightropewaiter.sn");
+
+        ArrayList<Long> timestamps = new ArrayList<>();
+        ArrayList<Float> x = new ArrayList<>();
+        ArrayList<Float> y = new ArrayList<>();
+        ArrayList<Float> z = new ArrayList<>();
+
+        for (SensorSample s : list) {
+            timestamps.add(s.mTimestamp);
+            x.add(s.mX);
+            y.add(s.mY);
+            z.add(s.mZ);
+        }
+
+        switch (type)
+        {
+            case ACCELEROMETER:
+                intent.setAction("net.mandown.db.put.tightropewaiter.sn");
+                intent.putExtra(context.getString(R.string.accel_timestamp_game), timestamps);
+                intent.putExtra(context.getString(R.string.accel_x_game), x);
+                intent.putExtra(context.getString(R.string.accel_y_game), y);
+                intent.putExtra(context.getString(R.string.accel_z_game), z);
+
+                break;
+        }
+
+        context.startService(intent);
+
     }
 
     /**
@@ -329,10 +366,33 @@ public class DBService extends IntentService {
                 ArrayList<Float> z = (ArrayList<Float>)
                         intent.getSerializableExtra(getString(R.string.watch_z_arr));
                 handleActionPutWatchList(timestamps, x, y, z);
+            } else if (getString(R.string.put_tightropewaiter_sn).equals(action)) {
+                ArrayList<Long> timestamps = (ArrayList<Long>)
+                        intent.getSerializableExtra(getString(R.string.accel_timestamp_game));
+                ArrayList<Float> x = (ArrayList<Float>)
+                        intent.getSerializableExtra(getString(R.string.accel_x_game));
+                ArrayList<Float> y = (ArrayList<Float>)
+                        intent.getSerializableExtra(getString(R.string.accel_y_game));
+                ArrayList<Float> z = (ArrayList<Float>)
+                        intent.getSerializableExtra(getString(R.string.accel_z_game));
+                handleActionPutSensorGamedata(timestamps, x, y, z);
+
             }
         }
     }
 
+
+
+    private void handleActionPutSensorGamedata(ArrayList<Long> timestamps, ArrayList<Float> acc_x,
+                                               ArrayList<Float> acc_y, ArrayList<Float> acc_z) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+        String format = dateFormat.format(new Date());
+        mRef.child("Sensorgame").child(format).child("timestamp").setValue(timestamps);
+        mRef.child("Sensorgame").child(format).child("x").setValue(acc_x);
+        mRef.child("Sensorgame").child(format).child("y").setValue(acc_y);
+        mRef.child("Sensorgame").child(format).child("z").setValue(acc_z);
+
+    }
 
     private void handleActionPutMLValues(String ml) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
