@@ -26,7 +26,7 @@ public class IntoxicationService extends Service {
 
     // Constant definitions
     private static final int INTOX_CHECK_PERIOD_S = 10; // 10 minutes
-    private static final float DRUNK_LEVEL = 2.0f; // Class 2 drunk or higher is too drunk
+    private static final float DRUNK_LEVEL = 1.5f; // Class 2 drunk or higher is too drunk
     private static final int DIFF_SAMPLES = 5; // 5 samples between each diff
 
     // Member variables
@@ -69,7 +69,6 @@ public class IntoxicationService extends Service {
         // Create member objects
         mScheduleTimer = new Timer();
         mVarLock = new ReentrantLock();
-
     }
 
     @Override
