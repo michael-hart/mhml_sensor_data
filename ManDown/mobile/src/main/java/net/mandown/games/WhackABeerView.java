@@ -108,7 +108,7 @@ public class  WhackABeerView extends SurfaceView implements WhackABeerDrinks.Cal
         buck3_pos_y=(dm.heightPixels-bucket_height)/2;
         buck4_pos_x= 3*bucket_width+4*buck_space;
         buck4_pos_y=(dm.heightPixels-bucket_height)/2;
-        buck5_pos_x= 4*bucket_width+5*buck_space;
+        buck5_pos_x= 4*bucket_width+4*buck_space;
         buck5_pos_y=(dm.heightPixels-bucket_height)/2;
 
         heart_width = 110*dm.widthPixels/1280;

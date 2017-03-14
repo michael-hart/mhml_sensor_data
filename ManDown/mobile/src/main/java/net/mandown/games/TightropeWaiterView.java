@@ -83,7 +83,7 @@ class TRWDrink {
     }
 
     public void Update(int _x, int _y){
-        x-=_x;
+        x+=_x;
         y+=_y;
     }
 
@@ -185,6 +185,8 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
         zero_y = dm.heightPixels/2 - drink_height/2;
 
         drink = new TRWDrink(zero_x,zero_y,drink_bm);
+        plate = new TRWPlate(800,res);
+        start_timer = SystemClock.elapsedRealtime();
 
         try {
             file_out = new OutputStreamWriter(
@@ -238,6 +240,8 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
         mSensorData.add(new SensorSample(mAccTS, mAccX, mAccY, mAccZ));
 
         int dist = distance(drink.getX(),drink.getY());
+
+        plate.Update(1.2f);
 
         if(dist>plate.getR()/2){
             gameOver();
