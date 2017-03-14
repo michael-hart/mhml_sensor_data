@@ -12,6 +12,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.SystemClock;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements DataApi.DataListe
     private static final int RC_SIGN_IN = 9001;
     private static final String TAG = "MainActivity";
 
+    private Vibrator myVibes;
 
     // Define member variables
     private final String mDisclaimerText =
@@ -139,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements DataApi.DataListe
         //setting the orientation to portrait
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        myVibes = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -214,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements DataApi.DataListe
         // Connect UI components
         txtBeer = (TextView) findViewById(R.id.watchtext);
         btnBeerGlass = (ImageButton) findViewById(R.id.BeerGlass);
+
     }
 
 
@@ -275,6 +279,13 @@ public class MainActivity extends AppCompatActivity implements DataApi.DataListe
         } else if (drunk_level == 2) {
             btnBeerGlass.setImageResource(R.drawable.full_glass_beer);
             txtBeer.setText("Drunk!");
+            myVibes.vibrate(1000);
+            AlertDialog dialog = (new AlertDialog.Builder(this))
+                    .setTitle("You're drunk!")
+                    .setMessage("It's time to put down the bottle and go home")
+                    .setPositiveButton("I understand", null)
+                    .create();
+            dialog.show();
         }
 
         //Update watch with intoxication data
@@ -282,15 +293,18 @@ public class MainActivity extends AppCompatActivity implements DataApi.DataListe
     }
 
 
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sign_in_button:
                 signIn();
+
                 break;
             case R.id.sign_out:
                 signOut();
                 break;
+
         }
     }
 
@@ -547,6 +561,7 @@ public class MainActivity extends AppCompatActivity implements DataApi.DataListe
             }
         }
     }
+
     @Override
     public void onStart() {
         super.onStart();

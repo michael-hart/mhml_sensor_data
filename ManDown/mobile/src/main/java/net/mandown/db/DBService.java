@@ -70,6 +70,15 @@ public class DBService extends IntentService {
         }
 
         String androidId =  name;
+        if(androidId == null){
+
+            androidId = Settings.Secure.getString(getContentResolver(),
+               Settings.Secure.ANDROID_ID);
+        }
+
+            androidId = androidId.replace(".", "");
+
+//        Log.d("SANTI:", androidId);
 //        Log.d("GOOGLE ID: ", uid);
 //        Log.d("GOOGLE ID: ", name);
 
