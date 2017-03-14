@@ -18,6 +18,35 @@
         layout="@layout/tool_bar"
         ></include>
 
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/sign_in_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tool_bar"
+        android:layout_alignParentStart="true" />
+
+        <Button
+            android:id="@+id/sign_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sign_out"
+            android:theme="@style/ThemeOverlay.MyDarkButton"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_below="@+id/tool_bar"
+            android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/signed_out"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        android:layout_above="@+id/JoyStick"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="43dp" />
+
     <ImageButton
         android:id="@+id/Journal"
         android:layout_width="100dp"
@@ -139,5 +168,38 @@
         android:text="TextView"
         android:layout_alignTop="@+id/BeerGlass"
         android:layout_toStartOf="@+id/textView2" />
+
+
+
+
+        <!--<LinearLayout-->
+            <!--android:id="@+id/sign_out_and_disconnect"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:paddingLeft="16dp"-->
+            <!--android:paddingRight="16dp"-->
+            <!--android:visibility="gone"-->
+            <!--tools:visibility="visible"-->
+            <!--android:layout_marginBottom="31dp"-->
+            <!--android:layout_above="@+id/Journal"-->
+            <!--android:layout_alignEnd="@+id/Journal">-->
+
+            <!--<Button-->
+                <!--android:id="@+id/sign_out_button"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="@string/sign_out"-->
+                <!--android:theme="@style/ThemeOverlay.MyDarkButton" />-->
+
+            <!--<Button-->
+                <!--android:id="@+id/disconnect_button"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="@string/disconnect"-->
+                <!--android:theme="@style/ThemeOverlay.MyDarkButton" />-->
+        <!--</LinearLayout>-->
 
 </RelativeLayout>
