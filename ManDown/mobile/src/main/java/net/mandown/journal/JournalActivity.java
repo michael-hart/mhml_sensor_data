@@ -36,6 +36,9 @@ public class JournalActivity extends AppCompatActivity implements View.OnClickLi
 
 
     private Button btnConfirm;
+    private ImageButton btnBeer;
+    private ImageButton btnWine;
+    private ImageButton btnShot;
     EditText enterUnit;
     TextView displayUnit;
 
@@ -59,7 +62,13 @@ public class JournalActivity extends AppCompatActivity implements View.OnClickLi
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         btnConfirm= (Button) findViewById(R.id.Confirm);
+        btnBeer= (ImageButton) findViewById(R.id.BeerUnit);
+        btnWine= (ImageButton) findViewById(R.id.WineUnit);
+        btnShot= (ImageButton) findViewById(R.id.ShotUnit);
         btnConfirm.setOnClickListener(this);
+        btnBeer.setOnClickListener(this);
+        btnWine.setOnClickListener(this);
+        btnShot.setOnClickListener(this);
 
         displayUnit=(TextView) findViewById(R.id.display);
         displayUnit.setMovementMethod(new ScrollingMovementMethod());
@@ -72,6 +81,16 @@ public class JournalActivity extends AppCompatActivity implements View.OnClickLi
 
 
         btnBeerGlass = (ImageButton) findViewById(R.id.BeerGlass);
+
+        enterUnit = (EditText) findViewById(R.id.Unit_input);
+        String sUsername = enterUnit.getText().toString();
+        if (sUsername.matches("")) {
+            findViewById(R.id.Confirm).setVisibility(View.GONE);
+
+        }else{
+            findViewById(R.id.Confirm).setVisibility(View.VISIBLE);
+
+        }
 
 
     }
@@ -142,7 +161,18 @@ public class JournalActivity extends AppCompatActivity implements View.OnClickLi
 
         if (v == btnConfirm){
             enterUnit=(EditText) findViewById(R.id.Unit_input);
-            displayUnit.setText("Your input: \n"+enterUnit.getText().toString());
+            displayUnit.setText("Your input: "+enterUnit.getText().toString());
+        }
+        if (v == btnBeer){
+            displayUnit.setText("Your input: 2");
+
+        }
+        if (v == btnWine){
+            displayUnit.setText("Your input: 1.5");
+
+        }
+        if (v == btnShot){
+            displayUnit.setText("Your input: 1");
         }
 
     }

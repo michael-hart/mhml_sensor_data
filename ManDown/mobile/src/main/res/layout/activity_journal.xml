@@ -30,21 +30,21 @@
         android:id="@+id/textView17"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/display"
-        android:layout_below="@+id/tool_bar_journal"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="7dp"
         android:fontFamily="sans-serif-smallcaps"
         android:text="Intoxication Level"
         android:textAllCaps="false"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="24sp"
-        android:typeface="monospace" />
+        android:typeface="monospace"
+        android:layout_below="@+id/tool_bar_journal"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/textView20"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="7dp"
+        android:layout_marginBottom="15dp"
         android:fontFamily="sans-serif-smallcaps"
         android:text="Or click drink options"
         android:textAllCaps="false"
@@ -52,7 +52,7 @@
         android:textSize="20sp"
         android:typeface="monospace"
         android:layout_above="@+id/WineUnit"
-        android:layout_alignEnd="@+id/Unit_input" />
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/textView16"
@@ -127,11 +127,10 @@
         android:id="@+id/BeerGlass"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginTop="34dp"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/glass_beer"
-        android:layout_below="@+id/tool_bar_journal"
+        android:layout_below="@+id/textView17"
         android:layout_toStartOf="@+id/ShotUnit" />
 
     <EditText
@@ -148,21 +147,21 @@
 
     <EditText
         android:id="@+id/display"
-        android:layout_width="wrap_content"
+        android:layout_width="230dp"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="none"
         android:layout_above="@+id/WineUnit"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="46dp" />
+        android:layout_marginBottom="46dp"
+        android:ems="10"
+        android:inputType="none" />
 
     <Button
         android:id="@+id/Confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Confirm"
-        android:layout_below="@+id/Unit_input"
+        android:layout_above="@+id/display"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" />
+        android:layout_marginBottom="7dp" />
 
 </RelativeLayout>
