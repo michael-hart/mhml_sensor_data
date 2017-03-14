@@ -3,9 +3,12 @@ package net.mandown.db;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.net.Uri;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -40,6 +43,8 @@ public class DBService extends IntentService {
         Log.d("DBService", "DBService created");
     }
 
+    String uid;
+    String name;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -47,12 +52,37 @@ public class DBService extends IntentService {
             sInstance = this;
         }
 
-        // Get unique Android ID
-        String androidId = Settings.Secure.getString(getContentResolver(),
-                Settings.Secure.ANDROID_ID);
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            // Name, email address, and profile photo Url
+            name = user.getDisplayName();
+            String email = user.getEmail();
+            Uri photoUrl = user.getPhotoUrl();
+
+            // Check if user's email is verified
+            boolean emailVerified = user.isEmailVerified();
+
+            // The user's ID, unique to the Firebase project. Do NOT use this value to
+            // authenticate with your backend server, if you have one. Use
+            // FirebaseUser.getToken() instead.
+            uid = user.getUid();
+        }
+
+        String androidId =  name;
+        Log.d("GOOGLE ID: ", uid);
+        Log.d("GOOGLE ID: ", name);
+
+        mRef = (FirebaseDatabase.getInstance()).getReference("Users").child(androidId);
+        //mRef = FirebaseDatabase.getInstance().getReference().getRoot().child("Users");
+
+//               mRef.setValue(null);
+//
+               // Get unique Android ID
+//        String androidId = Settings.Secure.getString(getContentResolver(),
+//                Settings.Secure.ANDROID_ID);
 
         // Instantiate reference to database
-        mRef = (FirebaseDatabase.getInstance()).getReference("Users").child(androidId);
 
     }
 
