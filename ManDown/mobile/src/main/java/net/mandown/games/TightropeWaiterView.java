@@ -228,7 +228,7 @@ public class TightropeWaiterView extends SurfaceView implements Runnable {
         context.unregisterReceiver(br);
 
         // Insert sensor values into database
-        DBService.startActionPutSensorList(context, mSensorData, SensorType.ACCELEROMETER);
+        DBService.startActionPutSensorGameData(context, mSensorData, SensorType.ACCELEROMETER);
     }
 
 
