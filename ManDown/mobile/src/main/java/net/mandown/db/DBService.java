@@ -70,8 +70,8 @@ public class DBService extends IntentService {
         }
 
         String androidId =  name;
-        Log.d("GOOGLE ID: ", uid);
-        Log.d("GOOGLE ID: ", name);
+//        Log.d("GOOGLE ID: ", uid);
+//        Log.d("GOOGLE ID: ", name);
 
         mRef = (FirebaseDatabase.getInstance()).getReference("Users").child(androidId);
         //mRef = FirebaseDatabase.getInstance().getReference().getRoot().child("Users");
