@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements DataApi.DataListe
     private static final String INTOX_KEY = "net.mandown.key.intox";
     private static final long CONNECTION_TIME_OUT_MS = 100;
     private static final int RC_SIGN_IN = 9001;
-    private static final String TAG = "SignInActivity";
+    private static final String TAG = "MainActivity";
 
 
     // Define member variables
@@ -138,6 +138,10 @@ public class MainActivity extends AppCompatActivity implements DataApi.DataListe
 
         //setting the orientation to portrait
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+
+        mAuth = FirebaseAuth.getInstance();
+
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -186,9 +190,9 @@ public class MainActivity extends AppCompatActivity implements DataApi.DataListe
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
+                .addOnConnectionFailedListener(this)
                 .build();
 
-        mAuth = FirebaseAuth.getInstance();
 
 
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
@@ -400,9 +404,10 @@ public class MainActivity extends AppCompatActivity implements DataApi.DataListe
         if (signedIn) {
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.sign_out).setVisibility(View.VISIBLE);
+            findViewById(R.id.status).setVisibility(View.VISIBLE);
         } else {
             mStatusTextView.setText(R.string.signed_out);
-
+            findViewById(R.id.status).setVisibility(View.GONE);
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_out).setVisibility(View.GONE);
         }

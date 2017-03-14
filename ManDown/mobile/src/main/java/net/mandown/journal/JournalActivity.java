@@ -81,16 +81,16 @@ public class JournalActivity extends AppCompatActivity implements View.OnClickLi
 
 
         btnBeerGlass = (ImageButton) findViewById(R.id.BeerGlass);
-
-        enterUnit = (EditText) findViewById(R.id.Unit_input);
-        String sUsername = enterUnit.getText().toString();
-        if (sUsername.matches("")) {
-            findViewById(R.id.Confirm).setVisibility(View.GONE);
-
-        }else{
-            findViewById(R.id.Confirm).setVisibility(View.VISIBLE);
-
-        }
+//
+//        enterUnit = (EditText) findViewById(R.id.Unit_input);
+//        String sUsername = enterUnit.getText().toString();
+//        if (sUsername.matches("")) {
+//            findViewById(R.id.Confirm).setVisibility(View.GONE);
+//
+//        }else{
+//            findViewById(R.id.Confirm).setVisibility(View.VISIBLE);
+//
+//        }
 
 
     }

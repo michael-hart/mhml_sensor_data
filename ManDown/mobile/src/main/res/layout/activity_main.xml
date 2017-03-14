@@ -40,12 +40,14 @@
         android:id="@+id/status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/sign_out"
+        android:layout_alignBottom="@+id/sign_out"
+        android:layout_alignStart="@+id/watchsamplenum"
         android:text="@string/signed_out"
-        android:textColor="@android:color/black"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="14sp"
-        android:layout_above="@+id/JoyStick"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="43dp" />
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <ImageButton
         android:id="@+id/Journal"
@@ -101,15 +103,15 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/watchsamplenum"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="19dp"
         android:fontFamily="sans-serif-smallcaps"
         android:text="Intoxication Level"
         android:textAllCaps="false"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="24sp"
-        android:typeface="monospace"
-        android:layout_marginBottom="19dp"
-        android:layout_above="@+id/watchsamplenum"
-        android:layout_centerHorizontal="true" />
+        android:typeface="monospace" />
 
     <TextView
         android:id="@+id/textView3"

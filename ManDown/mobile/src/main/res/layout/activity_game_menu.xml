@@ -19,23 +19,13 @@
         ></include>
 
 
-    <TextView
-        android:id="@+id/Title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="50dp"
-        android:textColor="@color/white_opaque"
-        android:text="GAMES"
-        android:layout_below="@+id/tool_bar_history"
-        android:layout_centerHorizontal="true" />
-
     <ImageButton
         android:id="@+id/Button_Whack_a_beer"
         android:background="@drawable/button_whack_a_beer"
         android:layout_width="500dp"
         android:layout_height="100dp"
-        android:layout_marginTop="8dp"
-        android:layout_below="@+id/Title"
+        android:layout_marginTop="14dp"
+        android:layout_below="@+id/tool_bar_history"
         android:layout_alignParentStart="true" />
 
     <ImageButton
