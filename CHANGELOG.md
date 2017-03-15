@@ -8,6 +8,14 @@ merged branch, and MAJOR is a change signalling a release.
 
 Each change will list Added, Changed, and Fixed.
 
+## 0.11.0 - 2017-03-13
+### Added
+- Implementation of getting history from DBService
+- Display of results from intoxication history
+
+### Fixed
+- Minor bug fixes such as bad callbacks and database not writing ML result
+
 ## 0.10.0 - 2017-03-13
 ### Added
 - Service for walking data collection
