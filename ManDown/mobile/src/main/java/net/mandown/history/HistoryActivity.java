@@ -22,7 +22,10 @@ import android.widget.ListView;
 
 import net.mandown.R;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class HistoryActivity extends AppCompatActivity  {
 
@@ -31,7 +34,11 @@ public class HistoryActivity extends AppCompatActivity  {
     private ListView lvHistory;
 
     // List adapter for lvHistory
-    ListAdapter mHistoryAdapter;
+    private ListAdapter mHistoryAdapter;
+    private ArrayList<IntoxicationRecord> mIntoxRecords;
+
+    // Tools for formatting history
+    private SimpleDateFormat mDateFormat, mTimeFormat;
 
     private Toolbar toolbar;
     private static final int REQUEST_PHONE_CALL = 1;
@@ -56,16 +63,22 @@ public class HistoryActivity extends AppCompatActivity  {
         getSupportActionBar().setTitle("History");
 
         // Set up data for History View
-        ArrayList<String> myNewList = new ArrayList<>();
-        myNewList.add("Testing string");
-        myNewList.add("Testing string");
-        myNewList.add("Testing string");
-        myNewList.add("Testing string");
-        myNewList.add("Testing string");
-        myNewList.add("Testing string");
-        myNewList.add("Testing string");
-        myNewList.add("Testing string");
-        mHistoryAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, myNewList);
+        mIntoxRecords = new ArrayList<>();
+        mDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        mTimeFormat = new SimpleDateFormat("HH:mm:ss");
+
+        Date now = new Date();
+        String strToday = mDateFormat.format(now);
+        String strNow = mTimeFormat.format(now);
+        String level = "0.12% BAC";
+        
+        mIntoxRecords.add(new IntoxicationRecord(strToday, strNow, level));
+        mIntoxRecords.add(new IntoxicationRecord(strToday, strNow, level));
+        mIntoxRecords.add(new IntoxicationRecord(strToday, strNow, level));
+        mIntoxRecords.add(new IntoxicationRecord(strToday, strNow, level));
+        mIntoxRecords.add(new IntoxicationRecord(strToday, strNow, level));
+
+        mHistoryAdapter = new RecordAdapter(this, mIntoxRecords);
 
         // Get reference to UI Controls
         btnBeerGlass = (ImageButton) findViewById(R.id.BeerGlass);
