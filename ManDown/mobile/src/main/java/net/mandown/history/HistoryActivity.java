@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,11 +22,14 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import net.mandown.R;
+import net.mandown.db.DBService;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class HistoryActivity extends AppCompatActivity  {
 
@@ -38,7 +42,7 @@ public class HistoryActivity extends AppCompatActivity  {
     private ArrayList<IntoxicationRecord> mIntoxRecords;
 
     // Tools for formatting history
-    private SimpleDateFormat mDateFormat, mTimeFormat;
+    private SimpleDateFormat mDateFormat, mTimeFormat, mFirebaseFormat;
 
     private Toolbar toolbar;
     private static final int REQUEST_PHONE_CALL = 1;
@@ -66,17 +70,7 @@ public class HistoryActivity extends AppCompatActivity  {
         mIntoxRecords = new ArrayList<>();
         mDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         mTimeFormat = new SimpleDateFormat("HH:mm:ss");
-
-        Date now = new Date();
-        String strToday = mDateFormat.format(now);
-        String strNow = mTimeFormat.format(now);
-        String level = "0.12% BAC";
-        
-        mIntoxRecords.add(new IntoxicationRecord(strToday, strNow, level));
-        mIntoxRecords.add(new IntoxicationRecord(strToday, strNow, level));
-        mIntoxRecords.add(new IntoxicationRecord(strToday, strNow, level));
-        mIntoxRecords.add(new IntoxicationRecord(strToday, strNow, level));
-        mIntoxRecords.add(new IntoxicationRecord(strToday, strNow, level));
+        mFirebaseFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
         mHistoryAdapter = new RecordAdapter(this, mIntoxRecords);
 
@@ -90,37 +84,30 @@ public class HistoryActivity extends AppCompatActivity  {
 
     }
 
-        //Trying to pull data from database
 
-//        //////reading from firebase
-//        DatabaseReference mRef2= mRef.child("drunken");
-//        // Read from the database
-//        mRef2.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                // This method is called once with the initial value and again
-//                // whenever data at this location is updated.
-//                Map<String,Long> value = (Map)dataSnapshot.getValue();
-//                Log.d("Value is: " , String.valueOf(value.entrySet()));
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mIntoxRecords.clear();
 
+        // Get intoxication readings and put into records
+        List<String[]> results = DBService.getIntoxHistory();
+        if (results != null) {
+            for (String[] result : results) {
+                Date record = null;
+                try {
+                    record = mFirebaseFormat.parse(result[0]);
+                } catch (ParseException pe) {
+                    Log.w("HistoryActivity", "Failed to parse string: " + result[0]);
+                    continue;
+                }
+                mIntoxRecords.add(new IntoxicationRecord(mDateFormat.format(record),
+                        mTimeFormat.format(record),
+                        result[1]));
+            }
+        }
 
-        //update text
-
-        // Set up a new handler to update the home textview with number of DB entries every 100ms
-//        private final Handler mDbUpdateHandler = new Handler();
-//        private Runnable mUpdateDBTxt = new Runnable() {
-//            @Override
-//            public void run() {
-//                if (DBService.sInstance != null) {
-//                    TextView txtDbInfo = (TextView) findViewById(R.id.txtDbView);
-//                    txtDbInfo.setText(String.format("%d accel data readings",
-//                            DBService.sInstance.getNumAccelReadings()));
-//                    mDbUpdateHandler.postDelayed(mUpdateDBTxt, 100);
-//                }
-//            }
-//        };
-
-
+    }
 
     private void update_drunk_level(int d_lvl){
 
