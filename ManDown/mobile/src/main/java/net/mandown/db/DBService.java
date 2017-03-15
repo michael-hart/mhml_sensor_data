@@ -75,23 +75,9 @@ public class DBService extends IntentService {
             androidId = Settings.Secure.getString(getContentResolver(),
                Settings.Secure.ANDROID_ID);
         }
-
-            androidId = androidId.replace(".", "");
-
-//        Log.d("SANTI:", androidId);
-//        Log.d("GOOGLE ID: ", uid);
-//        Log.d("GOOGLE ID: ", name);
+        androidId = androidId.replace(".", "");
 
         mRef = (FirebaseDatabase.getInstance()).getReference("Users").child(androidId);
-        //mRef = FirebaseDatabase.getInstance().getReference().getRoot().child("Users");
-
-//               mRef.setValue(null);
-//
-               // Get unique Android ID
-//        String androidId = Settings.Secure.getString(getContentResolver(),
-//                Settings.Secure.ANDROID_ID);
-
-        // Instantiate reference to database
 
     }
 
@@ -345,10 +331,8 @@ public class DBService extends IntentService {
                         intent.getSerializableExtra(getString(R.string.rt_arr));
                 handleActionPutReactionTimes(reactionTimes);
             } else if (getString(R.string.put_ml_values).equals(action)) {
-                //ArrayList<Long> reactionTimes = (ArrayList<Long>)
-                String MLValues= (new String());
-                        intent.getSerializableExtra(getString(R.string.classif));
-                handleActionPutMLValues(MLValues);
+                String mlValue = intent.getStringExtra(getString(R.string.classif));
+                handleActionPutMLValues(mlValue);
             } else if (getString(R.string.put_accel_list).equals(action)) {
                 ArrayList<Long> timestamps = (ArrayList<Long>)
                         intent.getSerializableExtra(getString(R.string.accel_timestamp_arr));
