@@ -96,7 +96,6 @@
         android:layout_marginStart="11dp"
         android:layout_toEndOf="@+id/JoyStick"
         android:background="@android:color/transparent"
-        android:onClick="vibs"
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/glass_beer" />
 
