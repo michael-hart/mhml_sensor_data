@@ -8,7 +8,15 @@ merged branch, and MAJOR is a change signalling a release.
 
 Each change will list Added, Changed, and Fixed.
 
-## 0.11.0 - 2017-03-13
+## 0.12.0 - 2017-03-15
+### Added
+- Stores Whack-A-Beer scores after a full game
+
+### Changed
+- Machine Learning predictor uses only Whack-A-Beer scores and reaction times; 
+more data will be used later
+
+## 0.11.0 - 2017-03-15
 ### Added
 - Implementation of getting history from DBService
 - Display of results from intoxication history
