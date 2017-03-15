@@ -9,8 +9,12 @@ import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import net.mandown.R;
 import net.mandown.sensors.SensorSample;
@@ -34,6 +38,7 @@ public class DBService extends IntentService {
     public static ArrayList<Long> mRecentReactions;
     public static List<SensorSample> mRecentAccel, mRecentGyro, mRecentMagn, mRecentWatchAccel;
     public static List<SensorSample> mRecentWalkAccel, mRecentWalkGyro, mRecentWalkMagn;
+    public static List<String[]> mIntoxHistory;
 
     /* Store database reference */
     DatabaseReference mRef;
@@ -78,6 +83,23 @@ public class DBService extends IntentService {
         androidId = androidId.replace(".", "");
 
         mRef = (FirebaseDatabase.getInstance()).getReference("Users").child(androidId);
+
+        mIntoxHistory = new ArrayList<>();
+        mRef.child("Drunkness").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                mIntoxHistory.add(new String[] {dataSnapshot.getKey(),
+                        dataSnapshot.getValue(String.class)});
+            }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
 
     }
 
@@ -313,6 +335,10 @@ public class DBService extends IntentService {
     public static List<SensorSample> getMostRecentWatchAccel() {
 
         return mRecentWatchAccel;
+    }
+
+    public static List<String[]> getIntoxHistory() {
+        return mIntoxHistory;
     }
 
     /**

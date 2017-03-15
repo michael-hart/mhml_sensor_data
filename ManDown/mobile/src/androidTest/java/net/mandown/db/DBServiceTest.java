@@ -45,4 +45,31 @@ public class DBServiceTest {
         Thread.sleep(1000);
     }
 
+    @Test
+    public void startActionPutML() throws Exception {
+        String testML = "0.12";
+        DBService.startActionPutML(InstrumentationRegistry.getTargetContext(), testML);
+        // Allow worker thread to finish
+        Thread.sleep(1000);
+    }
+
+    @Test
+    public void getIntoxHistory() throws Exception {
+        String testML = "0.12";
+        DBService.startActionPutML(InstrumentationRegistry.getTargetContext(), testML);
+        // Allow time to work
+        Thread.sleep(200);
+
+        // Get the new data
+        List<String[]> results = DBService.getIntoxHistory();
+
+        // Check for equality
+        assertNotNull(results);
+        assertTrue(results.size() > 0);
+        assertEquals(results.get(results.size() - 1)[1], testML);
+
+        // Allow worker thread to finish
+        Thread.sleep(1000);
+    }
+
 }
