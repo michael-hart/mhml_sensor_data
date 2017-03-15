@@ -28,7 +28,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -210,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements DataApi.DataListe
         if (getApplicationContext() != null) {
             startService(new Intent(this, SensorService.class));
             startService(new Intent(this, IntoxicationService.class));
+            startService(new Intent(this, DBService.class));
         }
 
         // Initialise Wearable connection
