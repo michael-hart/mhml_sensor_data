@@ -39,6 +39,7 @@ public class DBService extends IntentService {
     public static List<SensorSample> mRecentAccel, mRecentGyro, mRecentMagn, mRecentWatchAccel;
     public static List<SensorSample> mRecentWalkAccel, mRecentWalkGyro, mRecentWalkMagn;
     public static List<String[]> mIntoxHistory;
+    public static int mRecentWhackABeerScore = 0;
 
     /* Store database reference */
     DatabaseReference mRef;
@@ -124,6 +125,20 @@ public class DBService extends IntentService {
         intent.putExtra(context.getString(R.string.rt_arr), rtList);
         context.startService(intent);
 
+    }
+
+    /**
+     * Put a single Whack-A-Beer score into the Firebase Database. If
+     * the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionPutWhackABeerScore(Context context, int score) {
+        mRecentWhackABeerScore = score;
+        Intent intent = new Intent(context, DBService.class);
+        intent.setAction(context.getString(R.string.put_whackabeer_score));
+        intent.putExtra(context.getString(R.string.whackabeer_score), score);
+        context.startService(intent);
     }
 
 
@@ -340,6 +355,9 @@ public class DBService extends IntentService {
     public static List<String[]> getIntoxHistory() {
         return mIntoxHistory;
     }
+    public static int getMostRecentWhackABeerScore() {
+        return mRecentWhackABeerScore;
+    }
 
     /**
      * Overrides method to handle the intent, analysing the intent action and calling the
@@ -439,6 +457,12 @@ public class DBService extends IntentService {
                 ArrayList<Float> z = (ArrayList<Float>)
                         intent.getSerializableExtra(getString(R.string.accel_z_game));
                 handleActionPutSensorGamedata(timestamps, x, y, z);
+
+            } else if (getString(R.string.put_whackabeer_score).equals(action)) {
+                // Check for whack-a-beer put score
+
+                int score = intent.getIntExtra(getString(R.string.whackabeer_score), 0);
+                handleActionPutWhackABeerScore(score);
 
             }
         }
@@ -544,6 +568,12 @@ public class DBService extends IntentService {
         mRef.child("Magnetometer").child(format).child("x").setValue(mag_x);
         mRef.child("Magnetometer").child(format).child("y").setValue(mag_y);
         mRef.child("Magnetometer").child(format).child("z").setValue(mag_z);
+    }
+
+    private void handleActionPutWhackABeerScore(int score) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+        String format = dateFormat.format(new Date());
+        mRef.child("Whack-A-Beer Score").child(format).setValue(score);
     }
 
 }

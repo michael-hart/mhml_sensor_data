@@ -10,9 +10,11 @@
     <string name="put_walk_gyro">net.mandown.db.put.walk.gyro</string>
     <string name="put_walk_magnet">net.mandown.db.put.walk.magnet</string>
 
-    <!-- RT is reaction time -->
+    <!-- Whack-A-Beer - RT is reaction time -->
     <string name="put_whackabeer_rt">net.mandown.db.put.whackabeer.rt</string>
     <string name="rt_arr">rt.arr</string>
+    <string name="put_whackabeer_score">net.mandown.db.put.whackabeer.score</string>
+    <string name="whackabeer_score">net.mandown.whackabeer.score</string>
 
     
     <!-- RT is MAchine learning -->
@@ -25,8 +27,6 @@
     <string name="accel_x_game">accel.x.game</string>
     <string name="accel_y_game">accel.y.game</string>
     <string name="accel_z_game">accel.z.game</string>
-
-
 
     <!-- Data for put accel -->
     <string name="accel_timestamp_arr">accel.timestamp.arr</string>
