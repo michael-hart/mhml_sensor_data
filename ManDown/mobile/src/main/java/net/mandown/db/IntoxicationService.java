@@ -27,7 +27,6 @@ public class IntoxicationService extends Service {
     // Constant definitions
     private static final int INTOX_CHECK_PERIOD_S = 600; // 10 minutes
     private static final float DRUNK_LEVEL = 1.5f; // Class 2 drunk or higher is too drunk
-    private static final int DIFF_SAMPLES = 5; // 5 samples between each diff
 
     // Member variables
     private Timer mScheduleTimer;
@@ -156,12 +155,12 @@ public class IntoxicationService extends Service {
         public void run() {
 
             // Grab the recent data to get a prediction from
-            List<SensorSample> accel = DBService.getMostRecentAccel();
-            List<SensorSample> gyro = DBService.getMostRecentGyro();
-            List<SensorSample> magnet = DBService.getMostRecentMagn();
             List<Long> reactions = DBService.getMostRecentReactionTime();
-
-            List<Float[]> intoxLevels = new ArrayList<>();
+            int score = DBService.getMostRecentWhackABeerScore();
+            if (reactions == null) {
+                Log.w("IntoxicationService", "Early return due to null value");
+                return;
+            }
 
             // Create the predictor object
             RealtimePrediction predictor;
@@ -174,105 +173,49 @@ public class IntoxicationService extends Service {
             }
 
             // Initialise to prevent errors during loop
-            List<SensorSample> current = new ArrayList<>();
+            List<SensorSample> current = null;
 
-            // Check three sensor arrays with readings
-            for (int i = 0; i < 3; i++) {
-                String[] xyz = {"", "", ""};
-                switch(i) {
-                    case 0:
-                        current = accel;
-                        xyz[0] = "ax";
-                        xyz[1] = "ay";
-                        xyz[2] = "az";
-                        break;
-                    case 1:
-                        current = gyro;
-                        xyz[0] = "gx";
-                        xyz[1] = "gy";
-                        xyz[2] = "gz";
-                        break;
-                    case 2:
-                        current = magnet;
-                        xyz[0] = "mx";
-                        xyz[1] = "my";
-                        xyz[2] = "mz";
-                        break;
-                }
-                if (current.size() < DIFF_SAMPLES) {
-                    continue;
-                }
-                for (int j = DIFF_SAMPLES; j < current.size(); j++) {
-                    SensorSample recent = current.get(j);
-                    SensorSample previous = current.get(j-DIFF_SAMPLES);
-
-                    // If recent isn't null, we found a sample of the correct age
-                    if (recent != null) {
-                        Map<String, String> classifySamples = new HashMap<String, String>();
-                        classifySamples.put(xyz[0], Float.toString(recent.mX - previous.mX));
-                        classifySamples.put(xyz[1], Float.toString(recent.mY - previous.mY));
-                        classifySamples.put(xyz[2], Float.toString(recent.mZ - previous.mZ));
-
-                        try {
-                            predictor.predict(classifySamples);
-                            String intox = predictor.getPredictedLabel();
-                            float conf = predictor.getPredictedScore(intox);
-                            Float[] result = {Float.parseFloat(intox), conf};
-                            intoxLevels.add(result);
-                        } catch (PredictionException pe) {
-                            Log.e("IntoxicationService", "Error in ML connection: " +
-                                    pe.getStackTrace());
-                        }
-                    }
-                }
+            // Calculate a mean over all the samples in reactions
+            long meanRT = 0;
+            for (Long rt : reactions) {
+                meanRT += rt;
             }
+            meanRT = meanRT / reactions.size();
 
-            for (Long l : reactions) {
-                Map<String, String> classifySamples = new HashMap<>();
-                classifySamples.put("rt", Double.toString(l));
+            Map<String, String> classifySamples = new HashMap<>();
+            classifySamples.put("score", Integer.toString(score));
+            classifySamples.put("rt", Long.toString(meanRT));
 
-                try {
-                    predictor.predict(classifySamples);
-                    String intox = predictor.getPredictedLabel();
-                    float conf = predictor.getPredictedScore(intox);
-                    Float[] result = {Float.parseFloat(intox), conf};
-                    intoxLevels.add(result);
-                } catch (PredictionException pe) {
-                    Log.e("IntoxicationService", "Error in ML connection: " + pe.getStackTrace());
-                }
+            float result = 0f;
+            float conf = 0f;
+
+            try {
+                predictor.predict(classifySamples);
+                String intox = predictor.getPredictedLabel();
+                conf = predictor.getPredictedScore(intox);
+                result = Float.parseFloat(intox);
+            } catch (PredictionException pe) {
+                Log.e("IntoxicationService", "Error in ML connection: " + pe.getStackTrace());
             }
-
-            // Based on the results just obtained, calculate a final weight mean
-            if (intoxLevels.size() == 0) {
-                Log.w("IntoxicationService", "No results during intoxication check!");
-                return;
-            }
-
-            float finalIntox = 0f;
-            float intoxWeights = 0f;
-            for (Float[] result : intoxLevels) {
-                finalIntox += result[0] * result[1];
-                intoxWeights += result[1];
-            }
-            finalIntox = finalIntox / intoxWeights;
 
             // Record data in member variables
             mVarLock.lock();
-            mIntoxicationLevel = finalIntox;
+            mIntoxicationLevel = result;
             mLastTimestamp = System.currentTimeMillis();
             mVarLock.unlock();
 
             // Insert new value into database
-            DBService.startActionPutML(getApplicationContext(), Float.toString(finalIntox));
+            DBService.startActionPutML(getApplicationContext(), Float.toString(result));
 
             // Send a broadcast to any other listener in the system
             Intent intent = new Intent(getString(R.string.intox_broadcast));
-            intent.putExtra("ml", finalIntox);
+            intent.putExtra("ml", result);
+            intent.putExtra("conf", conf);
             intent.putExtra("ts", mLastTimestamp);
             sendBroadcast(intent);
 
             // Create a notification if too drunk
-            if (finalIntox > DRUNK_LEVEL) {
+            if (result > DRUNK_LEVEL) {
                 NotificationManager nm = (NotificationManager) getSystemService(
                         Service.NOTIFICATION_SERVICE);
                 Notification notif = (new Notification.Builder(getApplicationContext()))
