@@ -91,13 +91,14 @@
         android:id="@+id/BeerGlass"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:background="@android:color/transparent"
-        android:scaleType="fitCenter"
-        app:srcCompat="@drawable/glass_beer"
         android:layout_above="@+id/Journal"
-        android:layout_toEndOf="@+id/JoyStick"
+        android:layout_marginBottom="103dp"
         android:layout_marginStart="11dp"
-        android:layout_marginBottom="103dp" />
+        android:layout_toEndOf="@+id/JoyStick"
+        android:background="@android:color/transparent"
+        android:onClick="vibs"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/glass_beer" />
 
     <TextView
         android:id="@+id/textView2"
