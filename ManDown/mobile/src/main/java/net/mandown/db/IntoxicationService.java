@@ -28,6 +28,23 @@ public class IntoxicationService extends Service {
     private static final int INTOX_CHECK_PERIOD_S = 600; // 10 minutes
     private static final float DRUNK_LEVEL = 1.5f; // Class 2 drunk or higher is too drunk
 
+    private static final String SCORE_WHACKABEER = "score";
+    private static final String VARIANCE_REACTION_TIME = "vrt";
+    private static final String MEAN_REACTION_TIME = "mrt";
+
+    private static final String VARIANCE_WALK_GYRO_X = "vargx";
+    private static final String VARIANCE_WALK_GYRO_Y = "vargy";
+    private static final String VARIANCE_WALK_GYRO_Z = "vargz";
+
+    private static final String VARIANCE_WALK_ACCEL_X = "varax";
+    private static final String VARIANCE_WALK_ACCEL_Y = "varay";
+    private static final String VARIANCE_WALK_ACCEL_Z = "varaz";
+
+    private static final String VARIANCE_SGAME_X = "varxs";
+    private static final String VARIANCE_SGAME_Y = "varys";
+    private static final String VARIANCE_SGAME_Z = "varzs";
+
+
     // Member variables
     private Timer mScheduleTimer;
     private boolean mTimerIsCancelled = false;
@@ -154,14 +171,6 @@ public class IntoxicationService extends Service {
         @Override
         public void run() {
 
-            // Grab the recent data to get a prediction from
-            List<Long> reactions = DBService.getMostRecentReactionTime();
-            int score = DBService.getMostRecentWhackABeerScore();
-            if (reactions == null) {
-                Log.w("IntoxicationService", "Early return due to null value");
-                return;
-            }
-
             // Create the predictor object
             RealtimePrediction predictor;
             try {
@@ -172,19 +181,20 @@ public class IntoxicationService extends Service {
                 return;
             }
 
-            // Initialise to prevent errors during loop
-            List<SensorSample> current = null;
-
-            // Calculate a mean over all the samples in reactions
-            long meanRT = 0;
-            for (Long rt : reactions) {
-                meanRT += rt;
-            }
-            meanRT = meanRT / reactions.size();
-
+            // Create data map
             Map<String, String> classifySamples = new HashMap<>();
-            classifySamples.put("score", Integer.toString(score));
-            classifySamples.put("rt", Long.toString(meanRT));
+
+            // Extract and pack all data
+            putWhackABeerData(classifySamples);
+            putWalkGyroData(classifySamples);
+            putWalkAccelData(classifySamples);
+            putSensorGameData(classifySamples);
+
+            // Return if there is no valid data
+            if (classifySamples.size() == 0) {
+                Log.w("IntoxicationService", "No valid data found during classification attempt");
+                return;
+            }
 
             float result = 0f;
             float conf = 0f;
@@ -228,5 +238,126 @@ public class IntoxicationService extends Service {
             }
 
         }
+
+        private void putWhackABeerData(Map<String, String> map) {
+            // Grab the recent data to get a prediction from
+            List<Long> reactions = DBService.getMostRecentReactionTime();
+            int score = DBService.getMostRecentWhackABeerScore();
+
+            // Extract features
+            double meanRT = IntoxAlgs.LongAlgs.mean(reactions);
+            double varRT = IntoxAlgs.LongAlgs.variance(reactions);
+
+            // Only put the data in the map if it is valid and useful
+            if (score > 0) {
+                map.put(SCORE_WHACKABEER, Integer.toString(score));
+            }
+
+            if (meanRT >= 0) {
+                map.put(MEAN_REACTION_TIME, Double.toString(score));
+            }
+
+            if (varRT >= 0) {
+                map.put(VARIANCE_REACTION_TIME, Double.toString(score));
+            }
+
+        }
+
+        private void putWalkGyroData(Map<String, String> map) {
+            // Get recent data for prediction
+            List<SensorSample> gyro = DBService.getMostRecentGyro();
+
+            // Separate into x,y,z
+            List<Float> gyroX = IntoxAlgs.getSensorX(gyro);
+            List<Float> gyroY = IntoxAlgs.getSensorY(gyro);
+            List<Float> gyroZ = IntoxAlgs.getSensorZ(gyro);
+
+            // Extract features
+            double varX = IntoxAlgs.FloatAlgs.variance(gyroX);
+            double varY = IntoxAlgs.FloatAlgs.variance(gyroY);
+            double varZ = IntoxAlgs.FloatAlgs.variance(gyroZ);
+
+            // Only pack the data if it is valid
+            if (varX >= 0) {
+                map.put(VARIANCE_WALK_GYRO_X, Double.toString(varX));
+            }
+            if (varY >= 0) {
+                map.put(VARIANCE_WALK_GYRO_Y, Double.toString(varY));
+            }
+            if (varZ >= 0) {
+                map.put(VARIANCE_WALK_GYRO_Z, Double.toString(varZ));
+            }
+        }
+
+        private void putWalkAccelData(Map<String, String> map) {
+            // Get recent data for prediction
+            List<SensorSample> phoneAccel = DBService.getMostRecentWalkAccel();
+            List<SensorSample> watchAccel = DBService.getMostRecentWatchAccel();
+
+            // Separate into x, y, z for all
+            List<Float> phoneX = IntoxAlgs.getSensorX(phoneAccel);
+            List<Float> phoneY = IntoxAlgs.getSensorY(phoneAccel);
+            List<Float> phoneZ = IntoxAlgs.getSensorZ(phoneAccel);
+
+            List<Float> watchX = IntoxAlgs.getSensorX(watchAccel);
+            List<Float> watchY = IntoxAlgs.getSensorY(watchAccel);
+            List<Float> watchZ = IntoxAlgs.getSensorZ(watchAccel);
+
+            // Extract features
+            double varX = -1;
+            double varY = -1;
+            double varZ = -1;
+
+            double varPhoneX = IntoxAlgs.FloatAlgs.variance(phoneX);
+            double varPhoneY = IntoxAlgs.FloatAlgs.variance(phoneY);
+            double varPhoneZ = IntoxAlgs.FloatAlgs.variance(phoneZ);
+
+            double varWatchX = IntoxAlgs.FloatAlgs.variance(watchX);
+            double varWatchY = IntoxAlgs.FloatAlgs.variance(watchY);
+            double varWatchZ = IntoxAlgs.FloatAlgs.variance(watchZ);
+
+            // Take average and pack if useful
+            if (varPhoneX >= 0 && varWatchX >= 0) {
+                varX = (varPhoneX + varWatchX) / 2;
+                map.put(VARIANCE_WALK_ACCEL_X, Double.toString(varX));
+            }
+
+            if (varPhoneY >= 0 && varWatchY >= 0) {
+                varY = (varPhoneY + varWatchY) / 2;
+                map.put(VARIANCE_WALK_ACCEL_Y, Double.toString(varY));
+            }
+
+            if (varPhoneZ >= 0 && varWatchZ >= 0) {
+                varZ = (varPhoneZ + varWatchZ) / 2;
+                map.put(VARIANCE_WALK_ACCEL_Z, Double.toString(varZ));
+            }
+        }
+
+        private void putSensorGameData(Map<String, String> map) {
+            // Get recent data for prediction
+            List<SensorSample> sgAccel = DBService.getMostRecentSensorGameData();
+
+            // Separate into x, y, z
+            List<Float> sgX = IntoxAlgs.getSensorX(sgAccel);
+            List<Float> sgY = IntoxAlgs.getSensorY(sgAccel);
+            List<Float> sgZ = IntoxAlgs.getSensorZ(sgAccel);
+
+            // Extract features
+            double varX = IntoxAlgs.FloatAlgs.variance(sgX);
+            double varY = IntoxAlgs.FloatAlgs.variance(sgY);
+            double varZ = IntoxAlgs.FloatAlgs.variance(sgZ);
+
+            // Only pack the data if it is valid
+            if (varX >= 0) {
+                map.put(VARIANCE_SGAME_X, Double.toString(varX));
+            }
+            if (varY >= 0) {
+                map.put(VARIANCE_SGAME_Y, Double.toString(varY));
+            }
+            if (varZ >= 0) {
+                map.put(VARIANCE_SGAME_Z, Double.toString(varZ));
+            }
+        }
+
     }
 }
