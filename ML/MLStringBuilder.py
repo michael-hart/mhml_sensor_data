@@ -37,17 +37,24 @@ WALK_FIELDS = ["accelerometer", "gyro", "Magnetometer"]
 
 def get_datetimes(input_dict):
     """Produces a list of all date times containing data"""
-    times = OrderedSet()
+    times = []
     for field in SENSOR_FIELDS:
         if field in input_dict:
-            for dt in input_dict[field].keys():
-                times.add(dt)
+            for dt_str in input_dict[field].keys():
+                # Add if unique
+                if dt_str not in times:
+                    times += [dt_str]
 
     for field in WALK_FIELDS:
         if "Walk" in input_dict and field in input_dict["Walk"]:
-            for dt in input_dict["Walk"][field].keys():
-                times.add(dt)
-    return list(times)
+            for dt_str in input_dict["Walk"][field].keys():
+                # Add if unique
+                if dt_str not in times:
+                    times += [dt_str]
+
+    # Convert to datetime objects to properly sort
+    date_times = [datetime.strptime(x, "%d-%m-%Y %H:%M:%S") for x in times]
+    return sorted(date_times)
 
 
 class MLStringBuilder(object):
@@ -82,7 +89,7 @@ class MLStringBuilder(object):
         # Check each conf in dictionary and change it if necessary
         for conf in argspec.args[1:]:
             current = locals()[conf]
-            if (current != None):
+            if current != None:
                 self._config[conf] = current
 
 
@@ -109,23 +116,23 @@ class MLStringBuilder(object):
         total_str = ""
 
         # Get list of datetimes
-        for dt_str in get_datetimes(input_dict):
+        for dt in get_datetimes(input_dict):
 
             # User name string and current row string
             user_str = ""
             build_str = ""
 
-            # Get datetime object from string
-            dt = datetime.strptime(dt_str, "%d-%m-%Y %H:%M:%S")
+            # Get string from datetime object
+            dt_str = dt.strftime("%d-%m-%Y %H:%M:%S")
                 
             # Check minimum date
             if (self._config["min_datetime"] != None and 
-                self._config["min_datetime"] > dt):
+                    self._config["min_datetime"] > dt):
                 continue
 
             # Check maximum date
             if (self._config["max_datetime"] != None and 
-                self._config["max_datetime"] < dt):
+                    self._config["max_datetime"] < dt):
                 continue
 
             # Add given username if required
@@ -137,7 +144,7 @@ class MLStringBuilder(object):
 
             # Calculate passive accelerometer variance
             if (self._config["var_passive_accel"] 
-                and "accelerometer" in input_dict):
+                    and "accelerometer" in input_dict):
 
                 if dt_str in input_dict["accelerometer"]:
 
@@ -160,8 +167,8 @@ class MLStringBuilder(object):
 
             # Calculate walk accelerometer variance
             if (self._config["var_walk_accel"] 
-                and "Walk" in input_dict 
-                and "accelerometer" in input_dict["Walk"]):
+                    and "Walk" in input_dict 
+                    and "accelerometer" in input_dict["Walk"]):
 
                 if dt_str in input_dict["Walk"]["accelerometer"]:
 
@@ -184,7 +191,7 @@ class MLStringBuilder(object):
 
             # Calculate walk gyro variance
             if (self._config["var_walk_gyro"] 
-                and "Walk" in input_dict):
+                    and "Walk" in input_dict):
 
                 if dt_str in input_dict["Walk"]["gyro"]:
 
@@ -205,7 +212,7 @@ class MLStringBuilder(object):
                     build_str += ",,,"
 
             # Calculate game score accelerometer variance
-            if (self._config["var_gamescore"] and "Sensorgame" in input_dict):
+            if self._config["var_gamescore"] and "Sensorgame" in input_dict:
 
                 if dt_str in input_dict["Sensorgame"]:
 
@@ -227,7 +234,7 @@ class MLStringBuilder(object):
 
             # Get the beer score if available
             if (self._config["beer_score"] 
-                and "Whack-A-Beer Score" in input_dict):
+                    and "Whack-A-Beer Score" in input_dict):
 
                 if dt_str in input_dict["Whack-A-Beer Score"]:
                     build_str += str(input_dict["Whack-A-Beer Score"][dt_str])
@@ -236,7 +243,7 @@ class MLStringBuilder(object):
             # Calculate mean/variance of reaction times
             if ((self._config["var_beer_time"] 
                  or self._config["mean_beer_time"])
-                and "reaction" in input_dict):
+                    and "reaction" in input_dict):
 
                 if dt_str in input_dict["reaction"]:
 
@@ -257,7 +264,7 @@ class MLStringBuilder(object):
 
             # Only add the timestamp if we're sure there's other data
             if (len(build_str.replace(',', '')) > 0 
-                and self._config["timestamps"]):
+                    and self._config["timestamps"]):
                 build_str = dt_str + "," + build_str
 
             # Add user string, done at the end to allow timestamp insertion

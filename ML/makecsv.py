@@ -77,7 +77,7 @@ def collect_data():
         out_f.write(builder.csv_headers())
         out_f.write(builder.build_from(user_data, username))
 
-    print("Printing to file. Exiting...")
+    print("Written to file. Exiting...")
 
 
 def main():
