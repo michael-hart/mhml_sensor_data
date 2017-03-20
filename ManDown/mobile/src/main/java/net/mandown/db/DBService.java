@@ -38,6 +38,7 @@ public class DBService extends IntentService {
     public static ArrayList<Long> mRecentReactions;
     public static List<SensorSample> mRecentAccel, mRecentGyro, mRecentMagn, mRecentWatchAccel;
     public static List<SensorSample> mRecentWalkAccel, mRecentWalkGyro, mRecentWalkMagn;
+    public static List<SensorSample> mRecentSensorGameData;
     public static List<String[]> mIntoxHistory;
     public static int mRecentWhackABeerScore = 0;
 
@@ -154,9 +155,10 @@ public class DBService extends IntentService {
     // (Sensor Game) in Firebase
     public static void startActionPutSensorGameData(Context context, List<SensorSample> list,
                                                     SensorType type) {
+        mRecentSensorGameData = list;
         Intent intent = new Intent(context, DBService.class);
 
-        intent.setAction("net.mandown.db.put.tightropewaiter.sn");
+        intent.setAction(context.getString(R.string.put_tightropewaiter_sn));
 
         ArrayList<Long> timestamps = new ArrayList<>();
         ArrayList<Float> x = new ArrayList<>();
@@ -350,6 +352,10 @@ public class DBService extends IntentService {
     public static List<SensorSample> getMostRecentWatchAccel() {
 
         return mRecentWatchAccel;
+    }
+    public static List<SensorSample> getMostRecentSensorGameData() {
+
+        return mRecentSensorGameData;
     }
 
     public static List<String[]> getIntoxHistory() {
