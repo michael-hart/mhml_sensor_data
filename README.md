@@ -1,63 +1,44 @@
 # ManDown
 
-TODO everyone: create a CHANGELOG file. For every merge from a feature branch, modify the changelog with the new feature so the whole team knows the stage of the app. Can we also have some version number that is incremented with each merge?
-
-TODO Michael: monitor progress on all branches and ensure conflicts between features are resolved.
-
 Android application and server-side code for our ManDown application, used to detect alcohol intoxication levels of the user using game data and passive sensor data. The components are as follows:
 
 ## Android Application
 
-The Android application will be split into a Mobile project, a Wear project, and a common folder containing components used for both projects.
+The Android application will be split into a Mobile project, a Wear project, and machine learning components.
 
-### Common Components
+### Mobile Application
 
-TODO Wei, Daryl: Check whether the SensorService and DBService both contain code that can run on both Android and Android Wear. If so, create the common folder, move the files inside, and check the mobile application still works; then implement WearListenerService.
+#### Activities
+- MainActivity: The splash screen for the user, containing navigation options and a sign-in button to sign into a Google account.
+- HistoryActivity: A display of the most recent records for intoxication levels identified by the machine learning component.
+- JournalActivity: An activity that allows the user to input a number of drinks consumed.
+- GameMenuActivity: A menu for selecting which game to play, containing information about each game.
 
-#### SensorService
-Threaded background service to continuously take data from passive sensors, depending on whether it is started by the Mobile application or the Wear application. Polls at a set rate for a set period of time, then waits an interval before another sampling session. The service then writes all the data into the database using the DBService.
+#### Games
+- Whack-A-Beer: A game where the user taps full beer glasses or cocktails to earn points. The game score and the reaction times are stored in the database.
+- Tightrope Waiter: A game where the user walks in a straight line, trying to balance the glass on the tray. The passive sensor readings are stored in the database.
+- Who Am I: A game that doesn't take data, but that the user can play with friends as a fun drinking game.
+- Ring of Fire: A game that doesn't take data, but that the user can play with friends as a fun drinking game.
 
-TODO Michael: modify SensorService to include Gyro and Magnetometer data. 
-
-#### DBService
-Intent-based service that provides interface to Firebase database. Stores the user ID after a sign-in and provides helper methods for inserting data of all kinds and reading out the latest intoxication level from the server.
-
-TODO Arshan: Replace SQLite with Firebase calls. If possible, use the same style of interface, so other parts of the app can do static calls e.g. DBService.startActionPutPassive(whatever). Create a public gmail account for Firebase and share details with the group via a new file in the repository.
+#### Services
+- SensorService: Threaded background service to continuously take data from passive sensors, depending on whether it is started by the Mobile application or the Wear application. Polls at a set rate for a set period of time, then waits an interval before another sampling session. The service then writes all the data into the database using the DBService.
+- DBService: Intent-based service that provides interface to Firebase database. Stores the user ID after a sign-in and provides helper methods for inserting data of all kinds and reading out the latest intoxication level from the server.
+- IntoxicationService: Threaded background service to collect latest data from user games and passive data collection, and post the results to Amazon AWS to get an intoxication classification. This service then broadcasts the result, notifies the user if above a certain level, and stores the latest result for other components to check.
+- SensorBroadcastService: Simple service to take data from passive sensors and broadcast them until the service is stopped. This service will be started by an activity requiring the data immediately, such as TightropeWaiter, and stopped by the same activity.
+- WalkSensorService: Simple service to take data for a fixed amount of time at a fixed poll rate and store the results in the database. This service will be started when the user requests taking walking data manually.
 
 ### Wear Components
 
-The only Android Wear component not in the common components folder is a Service to listen for messages.
+#### Activities
+- MainActivity: The watch splash screen that allows the user to select one of the other activities.
+- InputDrinks: An interface for the user to select how many drinks have been consumed.
+- CallSOS: Allows the user to contact the local emergency services.
 
-#### WearListenerService
-Listens for commands from the Mobile application to begin taking data, and stop taking data. If not connected, the mobile application will continue to run without it.
+#### Services
+- SensorBroadcast: Operates in the same manner as the SensorBroadcastService in the mobile application.
 
-### Mobile Components
+## ML Components
 
-The mobile application contains the same background data collection as in Wear, but also includes all the UI components and the games, making it substantially more complex.
+The machine learning components contain a script for collecting data from the Firebase database for a given user and URL. The script allows configuration of which elements to include  in an output CSV file for use in training a model.
 
-#### MainActivity
-
-The first screen to be displayed to the user. Checks with the DBService to see if the user is signed in, and if not, redirects to the SignInActivity. Once the user is signed in, triggers the SensorService to begin collection, and allows the user access to the app, including games and current intoxication level.
-
-TODO Diyar: Your existing UI work will mainly fit in here, but also implementing a sign-in activity, preferably with Firebase Authentication (talk to Arshan?). Block access to the activity until sign-in is complete. Might also want a developer mode so we use a standard user ID and don't need to sign in to use the app.
-
-Other TODOs: Journal activity which sends alcohol unit data to databse. 
-             History activity which pulls intoxication findings and displays in table/graph.
-             Options to allow user customisation i.e. text size.
-             Emergency button which links to other users?
-             Warning popups when High Intoxication read.
-
-#### Game Activities
-
-This includes all games to be written as part of the application, such as Ring of Fire and Whack-A-Beer. These games will be used as normal, using DBService to write data into Firebase. As Intent Services are threaded by default, the games can continue to write data uninterrupted.
-
-TODO Santi: Modify game data so it is written to Firebase using DBService.
-
-other notice: Whack-a-beer hit-box has inaccuracy, as low detection rate when tapping a popping up beer. 
-
-## Server-side Application
-
-The server-side application will include code to filter database results, use machine learning to adapt a general model to each user, and calculate intoxication levels for recent data. Once the intoxication level is obtained, it will be inserted back into the database so that the Android Application can retrieve it during its next network connection.
-
-TODO Max: Implement the entire application here, leaving an empty interface for filtering functions.
-TODO Daryl: Fill the function interface with code to filter the sensor data before machine learning is applied.
+The remainder of the work done by the machine learning is not contained in this repository as it is done in an Amazon AWS instance.
