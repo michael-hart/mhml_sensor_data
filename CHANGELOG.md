@@ -8,6 +8,10 @@ merged branch, and MAJOR is a change signalling a release.
 
 Each change will list Added, Changed, and Fixed.
 
+## 0.13.0 - 2017-03-20
+### Fixed
+- Whack-A-Beer now receives touch events for all buckets on all screen sizes
+
 ## 0.12.0 - 2017-03-15
 ### Added
 - Stores Whack-A-Beer scores after a full game
