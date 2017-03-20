@@ -3,7 +3,6 @@
 from datetime import datetime
 import inspect
 import numpy as np
-from OrderedSet import OrderedSet
 
 # To add to dictionary:
 # - Add a print friendly name to CSV_FRIENDLY if you want it printed, or None 
