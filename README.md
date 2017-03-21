@@ -4,6 +4,7 @@ Android application and server-side code for our ManDown application, used to de
 
 Results for the UI evaluation survey were taken using Google Forms. The results can be found [here](https://drive.google.com/open?id=17OrrTdKJB31FA79Uh3R_s4NaZMptEC2HQYk8HqucgSI).
 
+The link to the ManDown Demo Video can also be found [here](https://drive.google.com/open?id=0B2Zqwkn4s50FT0M4a19ObDN4TVU).
 The components are as follows:
 
 ## Android Application
