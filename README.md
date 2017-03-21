@@ -1,6 +1,10 @@
 # ManDown
 
-Android application and server-side code for our ManDown application, used to detect alcohol intoxication levels of the user using game data and passive sensor data. The components are as follows:
+Android application and server-side code for our ManDown application, used to detect alcohol intoxication levels of the user using game data and passive sensor data. 
+
+Results for the UI evaluation survey were taken using Google Forms. The results can be found [here](https://drive.google.com/open?id=17OrrTdKJB31FA79Uh3R_s4NaZMptEC2HQYk8HqucgSI).
+
+The components are as follows:
 
 ## Android Application
 
